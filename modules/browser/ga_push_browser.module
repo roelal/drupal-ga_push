@@ -90,7 +90,7 @@ function ga_push_browser_event_save($ga_push_browser_event) {
 function ga_push_browser_menu() {
 
   $items['admin/config/system/ga-push/browser-add'] = array(
-    'title' => t('Ga push: Add browser event'),
+    'title' => 'Ga push: Add browser event',
     'page callback' => 'ga_push_browser_event_add',
     'access arguments' => array('admin ga push'),
     'description' => 'Global configuration of ga push.',
@@ -100,7 +100,7 @@ function ga_push_browser_menu() {
   );
 
   $items['admin/config/system/ga-push/browser/%ga_push_browser_event/edit'] = array(
-    'title' => t('Ga push: browser'),
+    'title' => 'Ga push: browser',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('ga_push_browser_event_form', 5),
     'access arguments' => array('admin ga push'),
