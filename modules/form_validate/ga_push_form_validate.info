@@ -1,0 +1,7 @@
+name = Google Analytics Push: Form Validate
+description = Google Analytics module to attach push events for form validate errors
+core = 7.x
+package = Statistics
+dependencies[] = googleanalytics
+dependencies[] = libraries
+dependencies[] = ga_push
