@@ -39,7 +39,7 @@ function ga_push_permissions() {
 function ga_push_menu() {
 
   $items['admin/config/system/ga-push'] = array(
-    'title' => t('Ga push'),
+    'title' => 'Ga push',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('ga_push_settings_form'),
     'access arguments' => array('admin ga push'),
@@ -48,7 +48,7 @@ function ga_push_menu() {
   );
 
   $items['admin/config/system/ga-push/settings'] = array(
-    'title' => t('Ga push'),
+    'title' => 'Ga push',
     'type' => MENU_DEFAULT_LOCAL_TASK,
   );
 
