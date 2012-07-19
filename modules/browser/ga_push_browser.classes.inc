@@ -1,10 +1,8 @@
 <?php
 /**
  * @file
- *   GA Psuh Browser event classes.
+ *   GA Push Browser event classes.
  */
-
-
 
  /**
   * CRUD controller for GA Push Browser events.
@@ -13,7 +11,6 @@ class GAPushBrowserEventController extends EntityAPIController {
 
   /**
    * @brief Creates a GA Push Browser event.
-   *
    *
    * @param $values
    *   Intial values for the GA Push Browser event.
@@ -39,12 +36,9 @@ class GAPushBrowserEventController extends EntityAPIController {
 }
 
 
-
-
 /**
- * @brief Clase entidad de un event.
+ * @brief Entity class
  */
 class GAPushBrowserEvent extends Entity {
-
-
+  //TODO!
 }

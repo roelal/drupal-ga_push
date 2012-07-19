@@ -18,20 +18,20 @@ function ga_push_browser_init() {
   if (isset($result['ga_push_browser_event'])) {
     $gapb_events_nids = array_keys($result['ga_push_browser_event']);
     $gapb_events = ga_push_browser_event_load_multiple($gapb_events_nids);
-  }
 
-  foreach ($gapb_events as $gapb_event) {
-    $jsoptions[] = array(
-      'selector' => $gapb_event->selector,
-      'push' => array($gapb_event->ga_category, $gapb_event->ga_action, $gapb_event->ga_label, $gapb_event->ga_value),
-      'bind' => $gapb_event->bind,
-    );
-  }
+    foreach ($gapb_events as $gapb_event) {
+      $jsoptions[] = array(
+        'selector' => $gapb_event->selector,
+        'push' => array($gapb_event->ga_category, $gapb_event->ga_action, $gapb_event->ga_label, $gapb_event->ga_value),
+        'bind' => $gapb_event->bind,
+      );
+    }
 
-  drupal_add_js(array('ga_push_browser' => $jsoptions), 'setting');
+    drupal_add_js(array('ga_push_browser' => $jsoptions), 'setting');
+
+  }
 
 }
-
 
 /**
  * Implementation of hook_entity_info()
