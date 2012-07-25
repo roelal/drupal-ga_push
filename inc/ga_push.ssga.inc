@@ -3,18 +3,13 @@
 /**
  * Necesita la librería de Zend :: Zend_Http_Client
  */
-
 function ga_push_send_php($push = array(), $data = array()) {
 
-  $type = $data['type'] ? $data['type'] : GA_PUSH_TYPE_EVENT;
+  $type = isset($data['type']) ? $data['type'] : GA_PUSH_TYPE_EVENT;
 
-  if (($ssga_path = libraries_get_path('ssga')) && class_exists('Zend_Http_Client')) {
+  if (class_exists('ssga')) {
 
-    if (!class_exists('Elements_Tools_Serversideanalytics')) {
-      include($ssga_path . '/ssga.class.php');
-    }
-
-    $ga = new Elements_Tools_Serversideanalytics();
+    $ga = new ssga();
 
     //Set your Google Analytics key
     $id = variable_get('googleanalytics_account', '');
@@ -36,6 +31,7 @@ function ga_push_send_php($push = array(), $data = array()) {
       case GA_PUSH_TYPE_EVENT:
         //Category, Acction, Label, Value
         $ga->setEvent($push[0], $push[1], $push[2], $push[3]);
+
         break;
       /*
       case '_trackPageview': //TODO ¿Tiene sentido?
@@ -50,8 +46,11 @@ function ga_push_send_php($push = array(), $data = array()) {
     }
 
     //Submit an event
-    $ga->createEvent();
+    $ga->create(); //createEvent
 
+  }
+  else {
+    //Throw an error
   }
 
 }

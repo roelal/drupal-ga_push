@@ -68,13 +68,14 @@ function ga_push_page_alter($main = 0) {
  *
  * An example API request could be:
  * ga_push_add(array('Category', 'Action', 'Label', 'Value (Numeric)'));
- * @param push (Array) push parameters
- * @param data (Array) TODO: Añadir información
+ * @param push (Array)
+ * push parameters
+ * @param data (Array)
+ * TODO: Añadir información
  *  - type: GA_PUSH_TYPE_EVENT
  *  - method : método
  */
 function ga_push_add($push = array(), $data = array()) {
-
   global $user;
 
   $type = isset($data['type']) ? $data['type'] : GA_PUSH_TYPE_EVENT;
@@ -150,7 +151,7 @@ function ga_push_send_js() {
         $script .= "]); \n";
 
       }
-      dpm($script, 't');
+      //dpm($script, 't');
       unset($_SESSION['ga_push']);
 
       $options = array(
@@ -179,11 +180,12 @@ function ga_push_method_available($method) {
       break;
 
     case GA_PUSH_METHOD_SSGA:
-      $available = class_exists('Zend_Http_Client') && libraries_get_path('ssga');
+      //$available = class_exists('Zend_Http_Client') && libraries_get_path('ssga');
+      $available = class_exists('ssga');
       break;
 
     case GA_PUSH_METHOD_PHP_GA:
-      //$available = FALSE; //@TODO!
+      $available = FALSE; //@TODO!
       break;
 
   }
