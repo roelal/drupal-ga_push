@@ -181,7 +181,7 @@ function ga_push_method_available($method) {
 
     case GA_PUSH_METHOD_SSGA:
       //$available = class_exists('Zend_Http_Client') && libraries_get_path('ssga');
-      $available = class_exists('ssga');
+      $available = class_exists('ssga') && is_callable('curl_init');
       break;
 
     case GA_PUSH_METHOD_PHP_GA:
