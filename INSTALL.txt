@@ -4,13 +4,15 @@ INSTALL.txt
 This module sends informations to analytics by using two methods:
 
 - JS: It sends the infomation on next page load.
-- PHP: 
+- PHP:
     - SSGA: Deprecated library(2009) to PHP 5.2+ versions
     - PHP-GA: Recomended library only for versión 5.3+ (@TODO: Integration)
 
 SSGA:
-Download from: http://code.google.com/p/serversidegoogleanalytics/
+You don't need to download this library, it's incorporated on the module to implement curl.
+Starting code: http://code.google.com/p/serversidegoogleanalytics/
 
 PHP-GA:
+Requires PHP 5.3 as namespaces and closures are used.
+Download from: http://code.google.com/p/php-ga/
 Not implemented yet.
- 
