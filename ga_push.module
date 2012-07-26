@@ -7,8 +7,15 @@
 define('GA_PUSH_METHOD_JS', 'javascript');
 define('GA_PUSH_METHOD_SSGA', 'ssga');
 define('GA_PUSH_METHOD_PHP_GA', 'php-ga');
+
 //Types:
+define('GA_PUSH_TYPE_PAGEVIEW', 'pageview');
 define('GA_PUSH_TYPE_EVENT', 'event');
+define('GA_PUSH_TYPE_ECOMMERCE', 'ecommerce');
+define('GA_PUSH_TYPE_CUSTOM_VARIABLE', 'customvariable');
+define('GA_PUSH_TYPE_CAMPAING', 'campaing');
+define('GA_PUSH_TYPE_SOCIAL', 'social');
+define('GA_PUSH_TYPE_SPEED', 'speed');
 
 /**
  * Implements hook_help().
@@ -60,7 +67,7 @@ function ga_push_menu() {
  * Implements hook_page_alter().
  */
 function ga_push_page_alter($main = 0) {
-  ga_push_send_js();
+  ga_push_method_javascript_push();
 }
 
 /**
@@ -75,10 +82,8 @@ function ga_push_page_alter($main = 0) {
  *  - type: GA_PUSH_TYPE_EVENT
  *  - method : método
  */
-function ga_push_add($push = array(), $data = array()) {
+function ga_push_add($push, $type = GA_PUSH_TYPE_EVENT, $method_key = NULL) {
   global $user;
-
-  $type = isset($data['type']) ? $data['type'] : GA_PUSH_TYPE_EVENT;
 
   if (is_array($push) && count($push)) {
 
@@ -87,37 +92,38 @@ function ga_push_add($push = array(), $data = array()) {
       $value = check_plain($value);
     }
 
-    //If de 4th argument is not numeric -> NULL
-    $push[3] = isset($push[3]) && is_numeric($push[3]) ? $push[3] : NULL;
-
     if (_googleanalytics_visibility_user($user)) {
 
-      $method = variable_get('ga_push_default_method', GA_PUSH_METHOD_JS);
-
-      //Si se solicita un método y está disponible se utiliza, si no se lanza con el método por defecto:
-      if (isset($data['method']) && ga_push_method_available($data['method'])) {
-        $method = $data['method'];
+      //If the select method is not available or is not defined:
+      if (is_null($method_key) || !is_null($method_key) && !ga_push_method_available($method_key, $type)) {
+        $default_method_key = variable_get('ga_push_default_method', GA_PUSH_METHOD_JS);
+        $method_key = $default_method_key;
       }
 
-      switch ($method) {
+      if (!is_null($method_key)) {
 
-        case GA_PUSH_METHOD_JS:
-          $push_info = array(
-            'push' => $push,
-            'type' => $type,
-          );
-          $_SESSION['ga_push'][] = $push_info;
-          break;
+        $method = ga_push_get_method($method_key);
 
-        case GA_PUSH_METHOD_PHP_GA:
-          //@TODO!: add this library
-          break;
+        if (isset($method['file'])) require_once($method['file']);
 
-        case GA_PUSH_METHOD_SSGA:
-          module_load_include('inc', 'ga_push', 'inc/ga_push.ssga');
-          ga_push_send_php($push, $data);
-          break;
+        switch ($type) { //TODO: deprecated!
 
+          case GA_PUSH_TYPE_EVENT:
+            //If de 4th argument is not numeric -> NULL
+            $push[3] = isset($push[3]) && is_numeric($push[3]) ? $push[3] : 1;
+            break;
+
+          case GA_PUSH_TYPE_ECOMMERCE:
+            //TODO: COmmerce
+            break;
+
+        }
+
+        call_user_func($method['callback'], $push, $type);
+
+      }
+      else {
+        //TODO: watchdog there's no method available
       }
 
     }
@@ -129,7 +135,7 @@ function ga_push_add($push = array(), $data = array()) {
 /**
  * Send the ga push to JS on page load
  */
-function ga_push_send_js() {
+function ga_push_method_javascript_push() {
   if (isset($_SESSION['ga_push'])) {
 
     $id = variable_get('googleanalytics_account', '');
@@ -169,27 +175,102 @@ function ga_push_send_js() {
 /**
  * Check if a GA PUSH method is available:
  */
-function ga_push_method_available($method) {
+function ga_push_method_available($key) {
 
   $available = FALSE; //Init
+  $methods   = ga_push_get_methods();
 
-  switch ($method) {
+  $method = $methods[$key];
 
-    case GA_PUSH_METHOD_JS:
-      $available = TRUE;
-      break;
-
-    case GA_PUSH_METHOD_SSGA:
-      //$available = class_exists('Zend_Http_Client') && libraries_get_path('ssga');
-      $available = class_exists('ssga') && is_callable('curl_init');
-      break;
-
-    case GA_PUSH_METHOD_PHP_GA:
-      $available = FALSE; //@TODO!
-      break;
-
+  if (is_bool($method['available'])) {
+    $available = $method['available'];
+  }
+  elseif(is_string($method['available'])) {
+    $available = call_user_func($method['available']);
   }
 
   return $available;
+}
 
+/**
+ * Get all ga_push_methods
+ */
+function ga_push_get_methods() {
+
+  static $callbacks = array();
+  if (!count($callbacks)) {
+    foreach (module_implements('ga_push_method') as $module) {
+      $router_items = call_user_func($module . '_ga_push_method');
+      if (isset($router_items) && is_array($router_items)) {
+        foreach (array_keys($router_items) as $method) {
+          $router_items[$method]['module'] = $module;
+        }
+        $callbacks = array_merge($callbacks, $router_items);
+      }
+    }
+  }
+
+  return $callbacks;
+}
+
+/**
+ * Get method
+ */
+function ga_push_get_method($key) {
+  $methods = ga_push_get_methods();
+  return isset($methods[$key]) ? $methods[$key] : NULL;
+}
+
+/**
+ * Implements hook_ga_push_method()
+ */
+function ga_push_ga_push_method() {
+
+  $method[GA_PUSH_METHOD_JS] = array(
+    'name' => 'Javascript',
+    'description' => 'the action will be send on the next page load',
+    'machine_name' => GA_PUSH_METHOD_JS,
+    'callback' => 'ga_push_method_javascript',
+    'file' => drupal_get_path('module', 'ga_push') . '/inc/ga_push.javascript.inc',
+    'implements' => array(
+      GA_PUSH_TYPE_EVENT => TRUE,
+      GA_PUSH_TYPE_ECOMMERCE => TRUE,
+    ),
+    'available' => TRUE,
+  );
+
+  $method[GA_PUSH_METHOD_SSGA] = array(
+    'name' => 'SSGA (php)',
+    'description' => 'requires php 5.2+, curl and ssga libraries',
+    'machine_name' => GA_PUSH_METHOD_PHP_GA,
+    'callback' => 'ga_push_method_ssga',
+    'file' => drupal_get_path('module', 'ga_push') . '/inc/ga_push.ssga.inc',
+    'implements' => array(
+      GA_PUSH_TYPE_EVENT => TRUE,
+    ),
+    'available' => class_exists('ssga') && is_callable('curl_init'),
+  );
+
+  $method[GA_PUSH_METHOD_PHP_GA] = array(
+    'name' => 'PHP-GA (php)',
+    'description' => 'requires php 5.3 and php-ga libraries',
+    'machine_name' => GA_PUSH_METHOD_PHP_GA,
+    'callback' => 'ga_push_method_php_ga',
+    'file' => drupal_get_path('module', 'ga_push') . '/inc/ga_push.php_ga.inc',
+    'implements' => array(
+      GA_PUSH_TYPE_EVENT => TRUE,
+    ),
+    'available' => 'ga_push_method_php_ga_available',
+  );
+
+  return $method;
+
+}
+
+/**
+ * Check if php_ga is available
+ */
+function ga_push_method_php_ga_available() {
+  $libraries = libraries_get_libraries();
+  return strnatcmp(phpversion(),'5.3.0') >= 0 && isset($libraries['php-ga']);
 }

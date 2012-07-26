@@ -1,11 +1,9 @@
 <?php
 
 /**
- * Necesita la librería de Zend :: Zend_Http_Client
+ * Method: SSGA
  */
-function ga_push_send_php($push = array(), $data = array()) {
-
-  $type = isset($data['type']) ? $data['type'] : GA_PUSH_TYPE_EVENT;
+function ga_push_method_ssga($push, $type) {
 
   if (class_exists('ssga')) {
 
@@ -31,7 +29,6 @@ function ga_push_send_php($push = array(), $data = array()) {
       case GA_PUSH_TYPE_EVENT:
         //Category, Acction, Label, Value
         $ga->setEvent($push[0], $push[1], $push[2], $push[3]);
-
         break;
       /*
       case '_trackPageview': //TODO ¿Tiene sentido?
