@@ -46,7 +46,7 @@ function ga_push_form_validate_form_alter(&$form, &$form_state, $form_id) {
 }
 
 /**
- * Añade la función de validate en último lugar para recoger todos los errores (TODO: traducir)
+ * Add the function on the last place to record all errors
  */
 function ga_push_form_validate_form_after_build($form, $form_state) {
   $form['#validate'][] = 'ga_push_form_validate_get_validate_errors';
@@ -62,8 +62,14 @@ function ga_push_form_validate_get_validate_errors($form, $form_state) {
 
   if (is_array($errors)) {
     foreach ($errors as $key => $error) {
-      //TODO ¿filtrar el campo?
-      ga_push_add(array(t('Form validate error'), $form['form_id']['#value'] . ' - ' . $key, $error , 1));
+      //@TODO ¿filter the field?
+      $push = array(
+        t('Form validate error'),
+        $form['form_id']['#value'] . ' - ' . $key,
+        $error,
+        1
+      );
+      ga_push_add($push, GA_PUSH_TYPE_EVENT);
     }
   }
 
