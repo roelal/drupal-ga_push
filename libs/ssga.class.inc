@@ -38,7 +38,7 @@ class ssga {
 
   private function setCookieVariables() {
     $today = time();
-    $this->utmcc = '__utma=1.' . rand(10000000  ,99999999  ) . "00145214523" . '.' . rand(1000000000,2147483647  ) . '.' . $today . '.' . $today . '.15;+__utmz=1.' . $today . '.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none);';
+    $this->utmcc = '__utma=1.' . rand(10000000  ,99999999  ) . "00145214523" . '.' . rand(1000000000, 2147483647) . '.' . $today . '.' . $today . '.15;+__utmz=1.' . $today . '.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none);';
   }
 
   public function setEvent($category, $action, $label = "", $value = "") {
@@ -47,13 +47,13 @@ class ssga {
       "5(" . ((string) $category) . "*" . ((string) $action) .
       ($label ? "*" . ((string) $label ) . ")" : ")") .
       (intval($value) != 0 ? "(" . ((int) intval($value) ) . ")" : '' );
-    
+
   }
 
   //get data
   private function getCookieVariables(){ return $this->utmcc; }
   private function getEventString()    { return $this->eventString; }
-  private function getAnalyticsType()  {  return $this->utmt; }
+  private function getAnalyticsType()  { return $this->utmt; }
   private function getAccountId()      { return $this->utmac; }
   private function getPageView()       { return $this->utmp; }
   private function getVersion()        { return $this->utmwv; }
@@ -76,35 +76,36 @@ class ssga {
   private  function setUtmhid()                  { $this->utmhid= mt_rand(100000000,999999999); }
 
   public function create() {
+
     if ($this->getEventString()) {  #Event
       $this->setAnalyticsType();
       $parameters = array(
         'utmwv'  => $this->getVersion(),
-        'utmn'  => $this->getRandomNumber(),
+        'utmn'   => $this->getRandomNumber(),
         'utmhn'  => $this->getHostName(),
-        'utmt'  => 'event',
-        'utme'  => $this->getEventString(),
+        'utmt'   => 'event',
+        'utme'   => $this->getEventString(),
         'utmcs'  => $this->getCharset(),
-        "utmul"  => $this->getLanguage(),
+        'utmul'  => $this->getLanguage(),
         #  "utmdt"  => $this->getPageTitle(),
-        "utmhid"=> $this->getGetUniqueId(),
+        'utmhid' => $this->getGetUniqueId(),
         #  "utmp"  => $this->getPageView(),
-        "utmac"  => $this->getAccountId(),
-        "utmcc"  => $this->getCookieVariables()
+        'utmac'  => $this->getAccountId(),
+        'utmcc'  => $this->getCookieVariables()
       );
     }
     else {  #PageView
       $parameters = array(
         'utmwv'  => $this->getVersion(),
-        'utmn'  => $this->getRandomNumber(),
+        'utmn'   => $this->getRandomNumber(),
         'utmhn'  => $this->getHostName(),
         'utmcs'  => $this->getCharset(),
-        "utmul"  => $this->getLanguage(),
-        "utmdt"  => $this->getPageTitle(),
-        "utmhid"=> $this->getGetUniqueId(),
-        "utmp"  => $this->getPageView(),
-        "utmac"  => $this->getAccountId(),
-        "utmcc"  => $this->getCookieVariables()
+        'utmul'  => $this->getLanguage(),
+        'utmdt'  => $this->getPageTitle(),
+        'utmhid' => $this->getGetUniqueId(),
+        'utmp'   => $this->getPageView(),
+        'utmac'  => $this->getAccountId(),
+        'utmcc'  => $this->getCookieVariables()
       );
     }
 
