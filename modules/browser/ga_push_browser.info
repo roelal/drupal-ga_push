@@ -3,7 +3,6 @@ description = Google Analytics module to attach push events from browser actions
 core = 7.x
 package = Statistics
 dependencies[] = ga_push
-dependencies[] = context
 dependencies[] = entity
 scripts[] = ga_push_browser.js
 files[] = ga_push_browser.classes.inc
