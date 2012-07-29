@@ -68,6 +68,7 @@ function ga_push_menu() {
  * Implements hook_page_alter().
  */
 function ga_push_page_alter($main = 0) {
+  module_load_include('inc', 'ga_push', 'inc/ga_push.javascript');
   ga_push_method_javascript_push();
 }
 
@@ -163,46 +164,6 @@ function ga_push_add($push, $type = GA_PUSH_TYPE_EVENT, $method_key = NULL) {
 
   }
 
-}
-
-/**
- * Send the ga push to JS on page load
- */
-function ga_push_method_javascript_push() {
-  if (isset($_SESSION['ga_push'])) {
-
-    $id = variable_get('googleanalytics_account', '');
-
-    if (!empty($id)) {
-      $script = 'var _gaq = _gaq || []; ';
-
-      //TODO: ¿Do something with the type?
-      foreach ($_SESSION['ga_push'] as $queued) {
-
-        $num = 0;
-        $script .= "_gaq.push([";
-        $script .= "'_trackEvent', ";
-        while ($num < count($queued['push'])) {
-          $script .=  ($num != 3) ? "'" . $queued['push'][$num] . "'" : $queued['push'][$num];
-          $script .= isset($queued['push'][$num+1]) ? ", " : "";
-          $num++;
-        }
-        $script .= "]); \n";
-
-      }
-      //dpm($script, 't');
-      unset($_SESSION['ga_push']);
-
-      $options = array(
-        'type' => 'inline',
-        'scope' => 'footer',
-        //'weight' => 0,
-        //'group' => JS_DEFAULT,
-      );
-      drupal_add_js($script, $options);
-
-    }
-  }
 }
 
 /**
