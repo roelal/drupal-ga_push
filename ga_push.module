@@ -175,19 +175,28 @@ function ga_push_method_javascript_push() {
 
 /**
  * Check if a GA PUSH method is available:
+ * @param method_key
+ * method identificator
+ * @param type
+ * Push type
  */
-function ga_push_method_available($key) {
+function ga_push_method_available($method_key, $type = NULL) {
 
   $available = FALSE; //Init
   $methods   = ga_push_get_methods();
+  $method    = $methods[$method_key];
 
-  $method = $methods[$key];
-
+  //Check the method:
   if (is_bool($method['available'])) {
     $available = $method['available'];
   }
   elseif(is_string($method['available'])) {
     $available = call_user_func($method['available']);
+  }
+
+  //Check its implements:
+  if (!is_null($type) && $available) {
+    $available = isset($method['implements'][$type]) ? $method['implements'][$type] : FALSE;
   }
 
   return $available;
@@ -225,7 +234,7 @@ function ga_push_get_method($key) {
 /**
  * Returns all available methods as option list:
  */
-function ga_push_get_methods_option_list($default = TRUE) {
+function ga_push_get_methods_option_list($type, $default = TRUE) {
   $options = array();
   if ($default) {
     $options['default'] = t('Default');
@@ -233,13 +242,19 @@ function ga_push_get_methods_option_list($default = TRUE) {
   $methods = ga_push_get_methods();
 
   foreach ($methods as $key => $method) {
-    if (ga_push_method_available($key)) {
+    if (ga_push_method_available($key, $type)) {
       $options[$key] = $method['name'] . ': ' . $method['description'];
     }
   }
   return $options;
 }
 
+/**
+ * Get the options list for events
+ */
+function ga_push_get_methods_option_list_event() {
+  return ga_push_get_methods_option_list(GA_PUSH_TYPE_EVENT);
+}
 
 /**
  * Implements hook_ga_push_method()
