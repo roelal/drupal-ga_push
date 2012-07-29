@@ -74,24 +74,52 @@ function ga_push_page_alter($main = 0) {
 /**
  * API for other modules to call in order to add events to the queue.
  *
- * An example API request could be:
- * ga_push_add(array('Category', 'Action', 'Label', 'Value (Numeric)'));
  * @param push (Array)
- * push parameters
- * @param data (Array)
- * TODO: Añadir información
- *  - type: GA_PUSH_TYPE_EVENT
- *  - method : método
+ * push parameters.
+ * Structure:
+ *
+ * EVENT:
+ *  array(
+ *    'Videos',              //Category,
+ *    'Play',                //Action',
+ *    'Gone With the Wind' , //Label,
+ *    1,                     //'Value (Numeric)'
+ *  );
+ *
+ * ECOMMERCE:
+ *  array(
+ *    'trans' => array(
+ *      '1234',           // order ID - required
+ *      'Acme Clothing',  // affiliation or store name
+ *      '11.99',          // total - required
+ *      '1.29',           // tax
+ *      '5',              // shipping
+ *      'San Jose',       // city
+ *      'California',     // state or province
+ *      'USA'             // country
+ *    ),
+ *    'items' => array(
+ *      array(
+ *        '1234',         // order ID - required
+ *        'DD44',         // SKU/code - required
+ *        'T-Shirt',      // product name
+ *        'Green Medium', // category or variation
+ *        '11.99',        // unit price - required
+ *        '1'             // quantity - required
+ *      ),
+ *    ),
+ *  )
+ *
+ *
+ * @param type String
+ * The GA PUsh type: Event, Ecommerce... Use the defined constants
+ * @param method_key String
+ * The method identificator
  */
 function ga_push_add($push, $type = GA_PUSH_TYPE_EVENT, $method_key = NULL) {
   global $user;
 
   if (is_array($push) && count($push)) {
-
-    // escape any nasty characters, including quote characters which could break the javascript
-    foreach ($push as &$value) {
-      $value = check_plain($value);
-    }
 
     if (_googleanalytics_visibility_user($user)) {
 
@@ -110,12 +138,16 @@ function ga_push_add($push, $type = GA_PUSH_TYPE_EVENT, $method_key = NULL) {
         switch ($type) { //TODO: deprecated!
 
           case GA_PUSH_TYPE_EVENT:
+            // escape any nasty characters, including quote characters which could break the javascript
+            foreach ($push as &$value) {
+              $value = check_plain($value);
+            }
             //If de 4th argument is not numeric -> NULL
             $push[3] = isset($push[3]) && is_numeric($push[3]) ? $push[3] : 1;
             break;
 
           case GA_PUSH_TYPE_ECOMMERCE:
-            //TODO: COmmerce
+            //Commerce
             break;
 
         }
@@ -294,6 +326,7 @@ function ga_push_ga_push_method() {
     'file' => drupal_get_path('module', 'ga_push') . '/inc/ga_push.php_ga.inc',
     'implements' => array(
       GA_PUSH_TYPE_EVENT => TRUE,
+      GA_PUSH_TYPE_ECOMMERCE => TRUE,
     ),
     'available' => 'ga_push_method_php_ga_available',
   );
