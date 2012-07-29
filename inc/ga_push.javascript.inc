@@ -21,7 +21,7 @@ function ga_push_method_javascript_push() {
     $id = variable_get('googleanalytics_account', '');
 
     if (!empty($id)) {
-      $script = 'var _gaq = _gaq || []; ';
+      $script = "var _gaq = _gaq || [];\n ";
 
       foreach ($_SESSION['ga_push'] as $queued) {
 
@@ -58,7 +58,7 @@ function ga_push_method_javascript_push() {
                        "'" . $push['trans'][5] . "', " . // city
                        "'" . $push['trans'][6] . "', " . // state or province
                        "'" . $push['trans'][7] . "'" .   // country
-                       "]); ";
+                       "]);\n ";
 
 
             foreach ($push['items'] as $value) {
@@ -70,7 +70,7 @@ function ga_push_method_javascript_push() {
                          "'" . $value[3] . "', " . // category or variation
                          "'" . $value[4] . "', " . // unit price - required
                          "'" . $value[5] . "'" .   // quantity - required
-                         "]); ";
+                         "]);\n ";
 
             }
 
