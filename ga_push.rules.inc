@@ -36,7 +36,7 @@ function ga_push_rules_action_info() {
           'type' => 'text',
           'label' => t('Method'),
           'description' => t("Select the method"),
-          'options list' => 'ga_push_get_methods_option_list',
+          'options list' => 'ga_push_get_methods_option_list_event',
           'default value' => GA_PUSH_METHOD_DEFAULT,
           'optional' => FALSE,
         ),
