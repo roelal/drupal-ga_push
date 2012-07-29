@@ -1,6 +1,8 @@
 <?php
 
-//TODO: PHP 5.3
+/**
+ * Method: PHP-GA
+ */
 function ga_push_method_php_ga($push, $type) {
 
   $php_ga_path = libraries_get_path('php-ga');
@@ -19,12 +21,15 @@ function ga_push_method_php_ga($push, $type) {
 
   $event = new UnitedPrototype\GoogleAnalytics\Event();
   $event->setCategory($push[0]);
-  $event->setAction($push[0]);
-  $event->setLabel($push[0]);
-  $event->setValue($push[0]);
-  $event->setNoninteraction("true"); // TODO
+  $event->setAction($push[1]);
+  $event->setLabel($push[2]);
+  $event->setValue($push[3]);
+  if (isset($push[4])) {
+    $event->setNoninteraction($push[4]);
+  }
   $tracker->trackEvent($event, $session, $visitor);
-  dpm('trazado');
+  //dpm('set');
+  //print 'set';
   /*
   $page = new GoogleAnalytics\Page('/path'); //TODO
   $page->setTitle('Títle') //TODO
