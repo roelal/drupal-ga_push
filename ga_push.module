@@ -4,6 +4,7 @@
  */
 
 //Methods:
+define('GA_PUSH_METHOD_DEFAULT', 'default');
 define('GA_PUSH_METHOD_JS', 'javascript');
 define('GA_PUSH_METHOD_SSGA', 'ssga');
 define('GA_PUSH_METHOD_PHP_GA', 'php-ga');
@@ -95,7 +96,7 @@ function ga_push_add($push, $type = GA_PUSH_TYPE_EVENT, $method_key = NULL) {
     if (_googleanalytics_visibility_user($user)) {
 
       //If the select method is not available or is not defined:
-      if (is_null($method_key) || !is_null($method_key) && !ga_push_method_available($method_key, $type)) {
+      if (is_null($method_key) || $method_key == GA_PUSH_METHOD_DEFAULT || !is_null($method_key) && !ga_push_method_available($method_key, $type)) {
         $default_method_key = variable_get('ga_push_default_method', GA_PUSH_METHOD_JS);
         $method_key = $default_method_key;
       }
@@ -220,6 +221,25 @@ function ga_push_get_method($key) {
   $methods = ga_push_get_methods();
   return isset($methods[$key]) ? $methods[$key] : NULL;
 }
+
+/**
+ * Returns all available methods as option list:
+ */
+function ga_push_get_methods_option_list($default = TRUE) {
+  $options = array();
+  if ($default) {
+    $options['default'] = t('Default');
+  }
+  $methods = ga_push_get_methods();
+
+  foreach ($methods as $key => $method) {
+    if (ga_push_method_available($key)) {
+      $options[$key] = $method['name'] . ': ' . $method['description'];
+    }
+  }
+  return $options;
+}
+
 
 /**
  * Implements hook_ga_push_method()

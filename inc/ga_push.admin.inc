@@ -7,15 +7,7 @@ function ga_push_settings_form($form, $form_state) {
 
   $form = array();
 
-  //TODO: hacer filtro de los métodos en función de disponibilidad: (PHP);
-  $options = array();
-  $methods = ga_push_get_methods();
-
-  foreach ($methods as $key => $method) {
-    if (ga_push_method_available($key)) {
-      $options[$key] = $method['name'] . ': ' . $method['description'];
-    }
-  }
+  $options = ga_push_get_methods_option_list(FALSE);
 
   $form['ga_push_default_method'] = array(
     '#type' => 'radios',
