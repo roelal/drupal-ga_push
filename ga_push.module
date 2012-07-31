@@ -227,7 +227,7 @@ function ga_push_get_method($key) {
 /**
  * Returns all available methods as option list:
  */
-function ga_push_get_methods_option_list($type, $default = TRUE) {
+function ga_push_get_methods_option_list($type = NULL, $default = TRUE) {
   $options = array();
   if ($default) {
     $options['default'] = t('Default');

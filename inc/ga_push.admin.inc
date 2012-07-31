@@ -7,7 +7,7 @@ function ga_push_settings_form($form, $form_state) {
 
   $form = array();
 
-  $options = ga_push_get_methods_option_list(FALSE);
+  $options = ga_push_get_methods_option_list(NULL, FALSE);
 
   $form['ga_push_default_method'] = array(
     '#type' => 'radios',
