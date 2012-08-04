@@ -52,7 +52,9 @@ function ga_push_method_php_ga($push, $type) {
           $item->setOrderId($value[0]);
           $item->setSku($value[1]);
           $item->setName($value[2]);
-          //$item->setCategory($value[3]); //TODO! This method is not set on the current library
+          //$item->setCategory($value[3]);
+          //Until it changes in the current library, the category method  -> set Variation. http://code.google.com/p/php-ga/issues/detail?id=13
+          $item->setVariation($value[3]);
           $item->setPrice($value[4]);
           $item->setQuantity($value[5]);
 
