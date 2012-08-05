@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Rules implementation
+ */
 
 /**
  * Implements hook_rules_action_info

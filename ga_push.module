@@ -183,7 +183,7 @@ function ga_push_method_available($method_key, $type = NULL) {
   if (is_bool($method['available'])) {
     $available = $method['available'];
   }
-  elseif(is_string($method['available'])) {
+  elseif (is_string($method['available'])) {
     $available = call_user_func($method['available']);
   }
 
@@ -301,5 +301,5 @@ function ga_push_ga_push_method() {
  */
 function ga_push_method_php_ga_available() {
   $libraries = libraries_get_libraries();
-  return strnatcmp(phpversion(),'5.3.0') >= 0 && isset($libraries['php-ga']);
+  return strnatcmp(phpversion(), '5.3.0') >= 0 && isset($libraries['php-ga']);
 }

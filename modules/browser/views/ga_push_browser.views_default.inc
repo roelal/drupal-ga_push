@@ -1,6 +1,7 @@
 <?php
 
 /**
+ * @file
  * Views for the default order UI.
  */
 
@@ -9,7 +10,7 @@
  */
 function ga_push_browser_views_default_views() {
   $views = array();
-  
+
   $view = new view;
   $view->name = 'ga_push_browser_event';
   $view->description = '';
@@ -281,7 +282,7 @@ function ga_push_browser_views_default_views() {
     t('admin/config/system/ga-push/ga-browser/[id]/edit'),
     t('Page'),
   );
-  
+
   $views[$view->name] = $view;
 
   return $views;

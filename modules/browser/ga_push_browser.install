@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Install, update, and uninstall functions for the ga_push_browser module.
+ */
 
 /**
  * Implements hook_schema().

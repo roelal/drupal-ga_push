@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * @file
+ * Forms for the ga_push_browser module.
+ */
 
 /**
  * Add new GA PUsh Browser Event page callback.
@@ -104,4 +107,3 @@ function ga_push_browser_event_form_submit($form, &$form_state) {
 
   $form_state['redirect'] = 'admin/config/system/ga-push/browser';
 }
-

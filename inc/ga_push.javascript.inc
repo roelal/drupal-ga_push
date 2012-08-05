@@ -1,6 +1,7 @@
 <?php
 /**
- * Method: javascript
+ * @file
+ * Javascript: method and functions
  */
 function ga_push_method_javascript($push, $type) {
 

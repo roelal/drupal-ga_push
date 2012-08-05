@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * PHP-GA: method and functions
+ */
 
 /**
  * Method: PHP-GA
@@ -11,7 +15,7 @@ function ga_push_method_php_ga($push, $type) {
   //use UnitedPrototype\GoogleAnalytics;  //causes 500 Internal Server error, so need to use full namespace references eg UnitedPrototype\GoogleAnalytics\Tracker instead of GoogleAnalytics\Tracker
 
   $ua = variable_get('googleanalytics_account', '');
-  $host = str_replace(array('http://', 'https://'), array('',''), $GLOBALS['base_url']);
+  $host = str_replace(array('http://', 'https://'), array('', ''), $GLOBALS['base_url']);
   $tracker = new UnitedPrototype\GoogleAnalytics\Tracker($ua, $host);
 
   $visitor = new UnitedPrototype\GoogleAnalytics\Visitor();

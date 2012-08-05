@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * The administration functions and forms.
+ */
 
 /**
  * Form: ga_push settings().

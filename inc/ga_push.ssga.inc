@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * SSGA: method and functions
+ */
 
 /**
  * Method: SSGA
