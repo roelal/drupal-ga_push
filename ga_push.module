@@ -30,9 +30,9 @@ function ga_push_help($path, $arg) {
 }
 
 /**
- * Implements hook_permissions().
+ * Implements hook_permission().
  */
-function ga_push_permissions() {
+function ga_push_permission() {
   return array(
     'admin ga push' => array(
       'title' => t('Administer ga push'),
