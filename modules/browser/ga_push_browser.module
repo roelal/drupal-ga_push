@@ -84,6 +84,37 @@ function ga_push_browser_event_save($ga_push_browser_event) {
 }
 
 
+
+ /**
+  * Deletes one single browser event.
+  *
+  * @param $order_id
+  *   The ID of the GA Push browser event to delete.
+  *
+  * @return
+  *   TRUE on success, FALSE otherwise.
+  **/
+function ga_push_browser_delete($ga_push_browser_event_id) {
+  return entity_delete('ga_push_browser_event', $ga_push_browser_event_id);
+}
+
+
+
+ /**
+  * Delete multiple GA Push browser events.
+  *
+  * @param $ga_push_browser_event_ids
+  *   Array of browser events id to delete.
+  *
+  * @return
+  *   TRUE on success, FALSE otherwise.
+  **/
+function ga_push_browser_delete_multiple($ga_push_browser_event_ids) {
+  return entity_delete_multiple('ga_push_browser_event', $ga_push_browser_event_ids);
+}
+
+
+
 /**
  * Implements hook_menu().
  */
