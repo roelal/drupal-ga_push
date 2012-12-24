@@ -140,6 +140,16 @@ function ga_push_browser_menu() {
     'type' => MENU_CALLBACK,
   );
 
+  $items['admin/config/system/ga-push/browser/%ga_push_browser_event/delete'] = array(
+    'title' => 'Delete',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('ga_push_browser_event_confirm_delete_form', 5),
+    'access arguments' => array('admin ga push'),
+    'file' => 'ga_push_browser.forms.inc',
+    'type' => MENU_LOCAL_TASK,
+  );
+
+
   return $items;
 
 }

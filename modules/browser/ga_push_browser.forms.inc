@@ -107,3 +107,38 @@ function ga_push_browser_event_form_submit($form, &$form_state) {
 
   $form_state['redirect'] = 'admin/config/system/ga-push/browser';
 }
+
+
+
+/**
+ * Delete GA Push browser event confirm form.
+ *
+ * @param $ga_push_browser_event
+ *   GA Push browser evento to delete.
+ *
+ * @return
+ *   Form structure.
+ */
+function ga_push_browser_event_confirm_delete_form($form, &$form_state, $ga_push_browser_event) {
+
+  $form['ga_push_browser_id'] = array('#type' => 'value', '#value' => $ga_push_browser_event->id);
+  return confirm_form($form,
+    t('Are you sure you want to delete %title?', array('%title' => $ga_push_browser_event->name)),
+    '/admin/config/system/ga-push/browser/',
+    t('This action cannot be undone.'),
+    t('Delete'),
+    t('Cancel')
+  );
+
+
+}
+
+
+/**
+ * Submit function for GA Push browser event delete confirm form.
+ */
+function ga_push_browser_event_confirm_delete_form_submit($form, &$form_state) {
+  ga_push_browser_delete($form['ga_push_browser_id']['#value']);
+  $form_state['redirect'] = '/admin/config/system/ga-push/browser/';
+}
+
