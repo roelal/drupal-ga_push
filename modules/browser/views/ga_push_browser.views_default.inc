@@ -12,6 +12,7 @@ function ga_push_browser_views_default_views() {
   $views = array();
 
   $view = new view;
+  $view = new view;
   $view->name = 'ga_push_browser_event';
   $view->description = '';
   $view->tag = 'default';
@@ -227,7 +228,7 @@ function ga_push_browser_views_default_views() {
   $handler->display->display_options['fields']['nothing']['id'] = 'nothing';
   $handler->display->display_options['fields']['nothing']['table'] = 'views';
   $handler->display->display_options['fields']['nothing']['field'] = 'nothing';
-  $handler->display->display_options['fields']['nothing']['label'] = '';
+  $handler->display->display_options['fields']['nothing']['label'] = 'Edit';
   $handler->display->display_options['fields']['nothing']['alter']['text'] = 'edit';
   $handler->display->display_options['fields']['nothing']['alter']['make_link'] = 1;
   $handler->display->display_options['fields']['nothing']['alter']['path'] = 'admin/config/system/ga-push/browser/[id]/edit';
@@ -242,11 +243,35 @@ function ga_push_browser_views_default_views() {
   $handler->display->display_options['fields']['nothing']['alter']['strip_tags'] = 0;
   $handler->display->display_options['fields']['nothing']['alter']['trim'] = 0;
   $handler->display->display_options['fields']['nothing']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['nothing']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['nothing']['element_label_colon'] = 0;
   $handler->display->display_options['fields']['nothing']['element_default_classes'] = 1;
   $handler->display->display_options['fields']['nothing']['hide_empty'] = 0;
   $handler->display->display_options['fields']['nothing']['empty_zero'] = 0;
   $handler->display->display_options['fields']['nothing']['hide_alter_empty'] = 0;
+  /* Campo: Global: Texto personalizado */
+  $handler->display->display_options['fields']['nothing_1']['id'] = 'nothing_1';
+  $handler->display->display_options['fields']['nothing_1']['table'] = 'views';
+  $handler->display->display_options['fields']['nothing_1']['field'] = 'nothing';
+  $handler->display->display_options['fields']['nothing_1']['label'] = 'Delete';
+  $handler->display->display_options['fields']['nothing_1']['alter']['text'] = 'delete';
+  $handler->display->display_options['fields']['nothing_1']['alter']['make_link'] = 1;
+  $handler->display->display_options['fields']['nothing_1']['alter']['path'] = 'admin/config/system/ga-push/browser/[id]/delete';
+  $handler->display->display_options['fields']['nothing_1']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['nothing_1']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['nothing_1']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['nothing_1']['alter']['trim_whitespace'] = 0;
+  $handler->display->display_options['fields']['nothing_1']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['nothing_1']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['nothing_1']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['nothing_1']['alter']['more_link'] = 0;
+  $handler->display->display_options['fields']['nothing_1']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['nothing_1']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['nothing_1']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['nothing_1']['element_label_colon'] = 1;
+  $handler->display->display_options['fields']['nothing_1']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['nothing_1']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['nothing_1']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['nothing_1']['hide_alter_empty'] = 0;
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
@@ -278,8 +303,12 @@ function ga_push_browser_views_default_views() {
     t('Ga_label'),
     t('Ga_value'),
     t('Estado'),
+    t('Edit'),
     t('edit'),
-    t('admin/config/system/ga-push/ga-browser/[id]/edit'),
+    t('admin/config/system/ga-push/browser/[id]/edit'),
+    t('Delete'),
+    t('delete'),
+    t('admin/config/system/ga-push/browser/[id]/delete'),
     t('Page'),
   );
 
