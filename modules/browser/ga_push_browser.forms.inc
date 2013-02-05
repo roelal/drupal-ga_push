@@ -19,7 +19,7 @@ function ga_push_browser_event_add() {
 
 
 
-function ga_push_browser_event_form($form, $form_state, $gapb_event) {
+function ga_push_browser_event_form($form, &$form_state, $gapb_event) {
   $form_state['gapb_event'] = $gapb_event;
 
   $form = array();
