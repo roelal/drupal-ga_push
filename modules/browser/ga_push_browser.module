@@ -66,7 +66,8 @@ function ga_push_browser_entity_info() {
  * Load a single record.
  */
 function ga_push_browser_event_load($id, $reset = FALSE) {
-  return reset(ga_push_browser_event_load_multiple(array($id), $reset));
+  $event = ga_push_browser_event_load_multiple(array($id), $reset);
+  return reset($event);
 }
 
 /**
