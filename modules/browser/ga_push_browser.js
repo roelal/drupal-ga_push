@@ -1,7 +1,8 @@
 (function ($) {
   Drupal.behaviors.ga_push_browser = {
     attach: function (context, settings) {
-      jQuery.each(Drupal.settings.ga_push_browser, function(index, value) {
+      Drupal.settings.ga_push_browser = Drupal.settings.ga_push_browser || {};
+      $.each(Drupal.settings.ga_push_browser, function(index, value) {
         $(value['selector'], context).once('ga_push_browser_listener', function () {
           $elem = $(this);
           $elem.bind(value['bind'], function() {
