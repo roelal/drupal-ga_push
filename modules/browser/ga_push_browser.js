@@ -7,6 +7,8 @@
           $elem = $(this);
           $elem.bind(value['bind'], function() {
             if (typeof(_gaq) == 'object') {
+              // Make sure the fourth argument is numeric and if not, set to 0.
+              value['push'][3] = Number(value['push'][3]) || 0;
               _gaq.push(['_trackEvent', value['push'][0], value['push'][1], value['push'][2] , value['push'][3]]);
             }
           });
