@@ -251,6 +251,17 @@ function ga_push_get_methods_option_list_event() {
 }
 
 /**
+ * Get the event non interaction rules options list
+ */
+function ga_push_get_event_non_interaction_option_list() {
+  return array(
+    false => t("False"),
+    true  => t("True")
+  );
+}
+
+
+/**
  * Implements hook_ga_push_method()
  */
 function ga_push_ga_push_method() {
