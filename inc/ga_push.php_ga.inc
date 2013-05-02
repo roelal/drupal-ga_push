@@ -42,25 +42,25 @@ function ga_push_method_php_ga($push, $type) {
       if (isset($push['trans']) && isset($push['items']) && count($push['items'])) {
 
         $transaction = new UnitedPrototype\GoogleAnalytics\Transaction();
-        $transaction->setOrderId($push['trans'][0]);
-        $transaction->setAffiliation($push['trans'][1]);
-        $transaction->setTotal($push['trans'][2]);
-        $transaction->setTax($push['trans'][3]);
-        $transaction->setShipping($push['trans'][4]);
-        $transaction->setCity($push['trans'][5]);
-        $transaction->setRegion($push['trans'][6]);
-        $transaction->setCountry($push['trans'][6]);
+        $transaction->setOrderId($push['trans']['order_id']);
+        $transaction->setAffiliation($push['trans']['affiliation']);
+        $transaction->setTotal($push['trans']['total']);
+        $transaction->setTax($push['trans']['total_tax']);
+        $transaction->setShipping($push['trans']['total_shipping']);
+        $transaction->setCity($push['trans']['city']);
+        $transaction->setRegion($push['trans']['region']);
+        $transaction->setCountry($push['trans']['country']);
 
         foreach ($push['items'] as $value) {
           $item = new UnitedPrototype\GoogleAnalytics\Item();
-          $item->setOrderId($value[0]);
-          $item->setSku($value[1]);
-          $item->setName($value[2]);
-          //$item->setCategory($value[3]);
+          $item->setOrderId($value['order_id']);
+          $item->setSku($value['sku']);
+          $item->setName($value['name']);
+          //$item->setCategory($value['category]);
           //Until it changes in the current library, the category method  -> set Variation. http://code.google.com/p/php-ga/issues/detail?id=13
-          $item->setVariation($value[3]);
-          $item->setPrice($value[4]);
-          $item->setQuantity($value[5]);
+          $item->setVariation($value['category']);
+          $item->setPrice($value['price']);
+          $item->setQuantity($value['quantity']);
 
           $transaction->addItem($item);
         }

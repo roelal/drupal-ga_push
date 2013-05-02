@@ -90,23 +90,23 @@ function ga_push_page_alter($main = 0) {
  * ECOMMERCE:
  *  array(
  *    'trans' => array(
- *      '1234',           // order ID - required
- *      'Acme Clothing',  // affiliation or store name
- *      '11.99',          // total - required
- *      '1.29',           // tax
- *      '5',              // shipping
- *      'San Jose',       // city
- *      'California',     // state or province
- *      'USA'             // country
+ *      'order_id' => '1234',           // order ID - required
+ *      'affiliation' => 'Acme Clothing',  // affiliation or store name
+ *      'total' => '11.99',          // total - required
+ *      'total_tax' => '1.29',           // tax
+ *      'total_shipping' => '5',              // shipping
+ *      'city' => 'San Jose',       // city
+ *      'region' => 'California',     // state or province
+ *      'country' => 'USA'             // country
  *    ),
  *    'items' => array(
  *      array(
- *        '1234',         // order ID - required
- *        'DD44',         // SKU/code - required
- *        'T-Shirt',      // product name
- *        'Green Medium', // category or variation
- *        '11.99',        // unit price - required
- *        '1'             // quantity - required
+ *        'order_id' => '1234',         // order ID - required
+ *        'sku' => 'DD44',         // SKU/code - required
+ *        'name' => 'T-Shirt',      // product name
+ *        'category' => 'Green Medium', // category
+ *        'price' => '11.99',        // unit price - required
+ *        'quantity' => '1'             // quantity - required
  *      ),
  *    ),
  *  )

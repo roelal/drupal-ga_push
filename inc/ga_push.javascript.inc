@@ -51,26 +51,26 @@ function ga_push_method_javascript_push() {
 
             //Transaction:
             $script .= "_gaq.push(['_addTrans', " .
-                       "'" . $push['trans'][0] . "', " . // order ID - required
-                       "'" . $push['trans'][1] . "', " . // affiliation or store name
-                       "'" . $push['trans'][2] . "', " . // total - required
-                       "'" . $push['trans'][3] . "', " . // tax
-                       "'" . $push['trans'][4] . "', " . // shipping
-                       "'" . $push['trans'][5] . "', " . // city
-                       "'" . $push['trans'][6] . "', " . // state or province
-                       "'" . $push['trans'][7] . "'" .   // country
+                       "'" . $push['trans']['order_id'] . "', " . // order ID - required
+                       "'" . $push['trans']['affiliation'] . "', " . // affiliation or store name
+                       "'" . $push['trans']['total'] . "', " . // total - required
+                       "'" . $push['trans']['total_tax'] . "', " . // tax
+                       "'" . $push['trans']['total_shipping'] . "', " . // shipping
+                       "'" . $push['trans']['city'] . "', " . // city
+                       "'" . $push['trans']['region'] . "', " . // state or province
+                       "'" . $push['trans']['country'] . "'" .   // country
                        "]);\n ";
 
 
             foreach ($push['items'] as $value) {
 
               $script .= "_gaq.push(['_addItem', " .
-                         "'" . $value[0] . "', " . // order ID - required
-                         "'" . $value[1] . "', " . // SKU/code - required
-                         "'" . $value[2] . "', " . // product name
-                         "'" . $value[3] . "', " . // category or variation
-                         "'" . $value[4] . "', " . // unit price - required
-                         "'" . $value[5] . "'" .   // quantity - required
+                         "'" . $value['order_id'] . "', " . // order ID - required
+                         "'" . $value['sku'] . "', " . // SKU/code - required
+                         "'" . $value['name'] . "', " . // product name
+                         "'" . $value['category'] . "', " . // category or variation
+                         "'" . $value['price'] . "', " . // unit price - required
+                         "'" . $value['quantity'] . "'" .   // quantity - required
                          "]);\n ";
 
             }
