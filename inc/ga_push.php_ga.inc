@@ -27,13 +27,22 @@ function ga_push_method_php_ga($push, $type) {
 
     case GA_PUSH_TYPE_EVENT:
       $event = new UnitedPrototype\GoogleAnalytics\Event();
-      $event->setCategory($push[0]);
-      $event->setAction($push[1]);
-      $event->setLabel($push[2]);
-      $event->setValue($push[3]);
-      if (isset($push[4])) {
-        $event->setNoninteraction($push[4]);
+      
+      // Required:
+      $event->setCategory($push['category']);
+      $event->setAction($push['action']);
+      
+      // Optional:
+      if (isset($push['label'])) {
+        $event->setLabel($push['label']);
       }
+      if (isset($push['value'])) {
+        $event->setValue($push['value']);
+      }
+      if (isset($push['non-interaction'])) {
+        $event->setNoninteraction($push['non-interaction']);
+      }
+      
       $tracker->trackEvent($event, $session, $visitor);
       break;
 
@@ -72,13 +81,5 @@ function ga_push_method_php_ga($push, $type) {
       break;
 
   }
-
-  //dpm('set');
-  //print 'set';
-  /*
-  $page = new GoogleAnalytics\Page('/path'); //TODO
-  $page->setTitle('Títle') //TODO
-  //$tracker->trackPagevire($page, $session, $visitor);
-  */
 
 }

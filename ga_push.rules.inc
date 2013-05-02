@@ -54,6 +54,11 @@ function ga_push_rules_action_info() {
  * Add a push form a rule action
  */
 function ga_push_action_push_event($category, $action, $label, $value, $method) {
-  $push = array($category, $action, $label, $value);
+  $push = array(
+    'category' => $category,
+    'action'   => $action,
+    'label'    => $label,
+    'value'    => (int) $value
+  );
   ga_push_add($push, GA_PUSH_TYPE_EVENT, $method);
 }

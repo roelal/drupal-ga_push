@@ -57,22 +57,20 @@ function ga_push_form_validate_form_after_build($form, $form_state) {
  * Add erros info to push
  */
 function ga_push_form_validate_get_validate_errors($form, $form_state) {
-
   $errors = form_get_errors();
 
   if (is_array($errors)) {
     foreach ($errors as $key => $error) {
       //@TODO ¿filter the field?
       $push = array(
-        t('Form validate error'),
-        $form['form_id']['#value'] . ' - ' . $key,
-        $error,
-        1
+        'category' => t('Form validate error'),
+        'action'   => $form['form_id']['#value'] . ' - ' . $key,
+        'label'    => $error,
+        'value'    => 1
       );
       ga_push_add($push, GA_PUSH_TYPE_EVENT);
     }
   }
-
 }
 
 /**

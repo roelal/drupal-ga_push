@@ -34,15 +34,22 @@ function ga_push_method_javascript_push() {
 
           case GA_PUSH_TYPE_EVENT:
 
-            $script .= "_gaq.push([";
-
-            $script .= "'_trackEvent', ";
-            while ($num < count($push)) {
-              $script .=  ($num != 3) ? "'" . $push[$num] . "'" : $push[$num];
-              $script .= isset($push[$num+1]) ? ", " : "";
-              $num++;
-            }
-
+            $script .= "_gaq.push(['_trackEvent'";
+            
+            // Required:
+            $script .= ", '" . $push['category'] . "'";
+            $script .= ", '" . $push['action'] . "'";
+            
+            // Optional: default values
+            $push += array(
+              'label' => '',
+              'value' => 1,
+              'non-interaction' => false,
+            );
+            $script .= ", '" . $push['label'] . "'";
+            $script .= is_numeric($push['value']) ? ", " . $push['value'] : "," . 1;
+            $script .= $push['non-interaction'] ? ", " . "true" : "";
+            
             $script .= "]); \n";
 
             break;
@@ -82,10 +89,8 @@ function ga_push_method_javascript_push() {
 
         }
 
-
-
       }
-      //dpm($script, 't');
+
       unset($_SESSION['ga_push']);
 
       $options = array(
