@@ -65,6 +65,20 @@ function ga_push_menu() {
 }
 
 /**
+ * Implements hook_module_implements_alter().
+ */
+function ga_push_module_implements_alter(&$implementations, $hook) {
+  // Ensure GA Push runs after Google Analytics.
+  if ($hook == 'page_alter' && isset($implementations['ga_push'])) {
+    $group = $implementations['ga_push'];
+    unset($implementations['ga_push']);
+    $implementations['ga_push'] = $group;
+  }
+}
+
+
+
+/**
  * Implements hook_page_alter().
  */
 function ga_push_page_alter($main = 0) {
