@@ -296,7 +296,7 @@ function ga_push_ga_push_method() {
   $method[GA_PUSH_METHOD_SSGA] = array(
     'name' => 'SSGA (php)',
     'description' => 'requires php 5.2+, curl and ssga libraries',
-    'machine_name' => GA_PUSH_METHOD_PHP_GA,
+    'machine_name' => GA_PUSH_METHOD_SSGA,
     'callback' => 'ga_push_method_ssga',
     'file' => drupal_get_path('module', 'ga_push') . '/inc/ga_push.ssga.inc',
     'implements' => array(
