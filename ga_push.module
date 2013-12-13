@@ -8,6 +8,7 @@ define('GA_PUSH_METHOD_DEFAULT', 'default');
 define('GA_PUSH_METHOD_JS', 'javascript');
 define('GA_PUSH_METHOD_SSGA', 'ssga');
 define('GA_PUSH_METHOD_PHP_GA', 'php-ga');
+define('GA_PUSH_METHOD_PHP_UTMP', 'utmp');  // Universal Tracking, Measurement Protocol.
 
 //Types:
 define('GA_PUSH_TYPE_PAGEVIEW', 'pageview');
@@ -316,6 +317,19 @@ function ga_push_ga_push_method() {
       GA_PUSH_TYPE_ECOMMERCE => TRUE,
     ),
     'available' => 'ga_push_method_php_ga_available',
+  );
+
+  $method[GA_PUSH_METHOD_PHP_UTMP] = array(
+    'name' => 'UTMP (php)',
+    'description' => 'Universal Tracking, Measuremente Protocol server-side',
+    'machine_name' => GA_PUSH_METHOD_PHP_UTMP,
+    'callback' => 'ga_push_method_php_utmp',
+    'file' => drupal_get_path('module', 'ga_push') . '/inc/ga_push.utmp.inc',
+    'implements' => array(
+      GA_PUSH_TYPE_EVENT => TRUE,
+      GA_PUSH_TYPE_ECOMMERCE => TRUE,
+    ),
+    'available' => TRUE,
   );
 
   return $method;
