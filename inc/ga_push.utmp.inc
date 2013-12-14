@@ -6,11 +6,8 @@
  * Check https://developers.google.com/analytics/devguides/collection/protocol/v1/devguide
  */
 
-
 // Google UTMP Endpoint URL.
-define('GA_PUSH_METHOD_UTMP_HOST_ENDPOINT', 'www.google-analytics.com');
-
-
+define('GA_PUSH_METHOD_UTMP_HOST_ENDPOINT', 'ssl.google-analytics.com/collect');
 
 /**
  * Method: UTMP
@@ -135,11 +132,11 @@ function ga_push_method_php_utmp_request($data = array(), $method = 'POST') {
   $data += array(
     'v' => 1,
     'tid' => variable_get('googleanalytics_account', ''),
-    'cid' => ga_push_method_php_utmp_gen_uuid(), /// @TODO determine this value.
+    'cid' => ga_push_method_php_utmp_get_uuid(), /// @TODO determine this value.
   );
 
 
-  $url = 'http://' . GA_PUSH_METHOD_UTMP_HOST_ENDPOINT;
+  $url = 'https://' . GA_PUSH_METHOD_UTMP_HOST_ENDPOINT;
 
 
   $options = array(
@@ -155,7 +152,20 @@ function ga_push_method_php_utmp_request($data = array(), $method = 'POST') {
   return;
 }
 
+/**
+ * Get an UUID ver 4 identifier form cookie or generates one on fallback
+ * @return UUID ver 4 identifier
+ */
+function ga_push_method_php_utmp_get_uuid() {
+  if (isset($_COOKIE['_ga'])) {
+    list($version, $domainDepth, $cid1, $cid2) = split('[\.]', $_COOKIE["_ga"], 4);
+    $contents = array('version' => $version, 'domainDepth' => $domainDepth, 'cid' => $cid1 . '.' . $cid2);
+    $cid = $contents['cid'];
+  }
+  else $cid = ga_push_method_php_utmp_gen_uuid();
 
+  return $cid;
+}
 
 /**
  * Generates an UUID ver 4 identifier.
