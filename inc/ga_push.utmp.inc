@@ -158,11 +158,13 @@ function ga_push_method_php_utmp_request($data = array(), $method = 'POST') {
  */
 function ga_push_method_php_utmp_get_uuid() {
   if (isset($_COOKIE['_ga'])) {
-    list($version, $domainDepth, $cid1, $cid2) = split('[\.]', $_COOKIE["_ga"], 4);
+    list($version, $domainDepth, $cid1, $cid2) = explode('.', $_COOKIE["_ga"], 4);
     $contents = array('version' => $version, 'domainDepth' => $domainDepth, 'cid' => $cid1 . '.' . $cid2);
     $cid = $contents['cid'];
   }
-  else $cid = ga_push_method_php_utmp_gen_uuid();
+  else {
+    $cid = ga_push_method_php_utmp_gen_uuid();
+  }
 
   return $cid;
 }
