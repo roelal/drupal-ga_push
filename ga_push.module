@@ -281,12 +281,14 @@ function ga_push_get_event_non_interaction_option_list() {
  */
 function ga_push_ga_push_method() {
 
+  $module_path = drupal_get_path('module', 'ga_push');
+
   $method[GA_PUSH_METHOD_JS] = array(
     'name' => 'Javascript',
     'description' => 'the action will be send on the next page load',
     'machine_name' => GA_PUSH_METHOD_JS,
     'callback' => 'ga_push_method_javascript',
-    'file' => drupal_get_path('module', 'ga_push') . '/inc/ga_push.javascript.inc',
+    'file' => $module_path . '/inc/ga_push.javascript.inc',
     'implements' => array(
       GA_PUSH_TYPE_EVENT => TRUE,
       GA_PUSH_TYPE_ECOMMERCE => TRUE,
@@ -299,7 +301,7 @@ function ga_push_ga_push_method() {
     'description' => 'requires php 5.2+, curl and ssga libraries',
     'machine_name' => GA_PUSH_METHOD_SSGA,
     'callback' => 'ga_push_method_ssga',
-    'file' => drupal_get_path('module', 'ga_push') . '/inc/ga_push.ssga.inc',
+    'file' => $module_path . '/inc/ga_push.ssga.inc',
     'implements' => array(
       GA_PUSH_TYPE_EVENT => TRUE,
     ),
@@ -311,7 +313,7 @@ function ga_push_ga_push_method() {
     'description' => 'requires php 5.3 and php-ga libraries',
     'machine_name' => GA_PUSH_METHOD_PHP_GA,
     'callback' => 'ga_push_method_php_ga',
-    'file' => drupal_get_path('module', 'ga_push') . '/inc/ga_push.php_ga.inc',
+    'file' => $module_path . '/inc/ga_push.php_ga.inc',
     'implements' => array(
       GA_PUSH_TYPE_EVENT => TRUE,
       GA_PUSH_TYPE_ECOMMERCE => TRUE,
@@ -324,7 +326,7 @@ function ga_push_ga_push_method() {
     'description' => 'Universal Tracking, Measuremente Protocol server-side',
     'machine_name' => GA_PUSH_METHOD_PHP_UTMP,
     'callback' => 'ga_push_method_php_utmp',
-    'file' => drupal_get_path('module', 'ga_push') . '/inc/ga_push.utmp.inc',
+    'file' =>  $module_path . '/inc/ga_push.utmp.php.inc',
     'implements' => array(
       GA_PUSH_TYPE_EVENT => TRUE,
       GA_PUSH_TYPE_ECOMMERCE => TRUE,
