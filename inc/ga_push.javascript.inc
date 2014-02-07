@@ -3,6 +3,14 @@
  * @file
  * Javascript: method and functions
  */
+
+
+/**
+ * Callback for Javascript Classic method.
+ * 
+ * @param type $push
+ * @param type $type
+ */
 function ga_push_method_javascript($push, $type) {
 
   $push_info = array(
@@ -26,7 +34,6 @@ function ga_push_method_javascript_push() {
 
       foreach ($_SESSION['ga_push'] as $queued) {
 
-        $num = 0;
         $push = $queued['push'];
         $type = $queued['type'];
 
@@ -35,11 +42,11 @@ function ga_push_method_javascript_push() {
           case GA_PUSH_TYPE_EVENT:
 
             $script .= "_gaq.push(['_trackEvent'";
-            
+
             // Required:
             $script .= ", '" . $push['category'] . "'";
             $script .= ", '" . $push['action'] . "'";
-            
+
             // Optional: default values
             $push += array(
               'label' => '',
@@ -49,7 +56,7 @@ function ga_push_method_javascript_push() {
             $script .= ", '" . $push['label'] . "'";
             $script .= is_numeric($push['value']) ? ", " . $push['value'] : "," . 1;
             $script .= $push['non-interaction'] ? ", " . "true" : "";
-            
+
             $script .= "]); \n";
 
             break;
