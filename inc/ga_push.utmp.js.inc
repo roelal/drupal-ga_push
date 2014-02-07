@@ -57,7 +57,22 @@ function ga_push_method_utmp_js_push() {
  */
 function _ga_push_method_utmp_js_push_event_script($push) {
 
+  // Optional: default values
+  $push += array(
+    'label' => '',
+    'value' => 1,
+    'non-interaction' => FALSE,
+  );
 
+  $event_value = is_numeric($push['value']) ? $push['value'] : 1;
+  $script = "ga('send', 'event', {\n
+    eventCategory: '" . $push['category'] . "',\n
+    eventAction: '" . $push['action'] . "',\n
+    eventLabel: '" . $push['label'] . "',\n
+    eventValue: " . $event_value . "
+  });";
+
+  return $script;
 }
 
 
@@ -73,7 +88,32 @@ function _ga_push_method_utmp_js_push_event_script($push) {
  */
 function _ga_push_method_utmp_js_push_ecommerce_script($push) {
 
+  // Include needed additional ga e-commerce library.
+  $script = "ga('require', 'ecommerce', 'ecommerce.js');\n";
 
+  // Build up the transaction.
+  $script .= "ga('ecommerce:addTransaction', {
+    id:          '" . $push['trans']['order_id'] . "',
+    affiliation: '" . $push['trans']['affiliation'] . "',
+    revenue:     '" . $push['trans']['total'] . "',
+    shipping:    '" . $push['trans']['total_shipping'] . "',
+    tax:         '" . $push['trans']['total_tax'] . "'
+  });\n";
+
+  // Build up the items.
+  foreach ($push['items'] as $value) {
+      $script .= "ga('ecommerce:addItem', {
+        id:       '" . $value['order_id'] . "',
+        sku:      '" . $value['sku'] . "',
+        name:     '" . $value['name']  . "',
+        category: '" . $value['category'] . "',
+        price:    '" . $value['price'] . "',
+        quantity: '" . $value['quantity'] . "'
+      });\n";
+  }
+  $script .= "ga('ecommerce:send');";
+
+  return $script;
 }
 
 
