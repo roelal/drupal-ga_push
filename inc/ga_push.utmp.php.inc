@@ -12,24 +12,24 @@ define('GA_PUSH_METHOD_UTMP_HOST_ENDPOINT', 'ssl.google-analytics.com/collect');
 /**
  * Method: UTMP
  */
-function ga_push_method_php_utmp($push, $type) {
+function ga_push_method_utmp_php($push, $type) {
 
   switch ($type) {
 
     case GA_PUSH_TYPE_EVENT:
       $event_data = ga_push_method_php_utmp_construct_event_request_data($push);
       // @TODO: Check response.
-      ga_push_method_php_utmp_request($event_data);
+      ga_push_method_utmp_php_request($event_data);
       break;
 
     case GA_PUSH_TYPE_ECOMMERCE:
       if (isset($push['trans']) && isset($push['items']) && count($push['items'])) {
         // Construct arrays.
-        $ecommerce_data = ga_push_method_php_utmp_construct_ecommerce_request_data($push);
+        $ecommerce_data = ga_push_method_utmp_php_construct_ecommerce_request_data($push);
         // @TODO: Check request response.
-        ga_push_method_php_utmp_request($ecommerce_data['transaction']);
+        ga_push_method_utmp_php_request($ecommerce_data['transaction']);
         foreach($ecommerce_data['items'] as $item_data) {
-          ga_push_method_php_utmp_request($item_data);
+          ga_push_method_utmp_php_request($item_data);
         }
       }
       break;
@@ -84,7 +84,7 @@ function ga_push_method_php_utmp_construct_event_request_data($push) {
  *     - transaction: transaction data to send to GA.
  *     - items: Array with data to send to GA for each item.
  */
-function ga_push_method_php_utmp_construct_ecommerce_request_data($push) {
+function ga_push_method_utmp_php_construct_ecommerce_request_data($push) {
 
   $data = array();
 
@@ -128,7 +128,7 @@ function ga_push_method_php_utmp_construct_ecommerce_request_data($push) {
  *
  * @return
  */
-function ga_push_method_php_utmp_request($data = array(), $method = 'POST') {
+function ga_push_method_utmp_php_request($data = array(), $method = 'POST') {
   $data += array(
     'v' => 1,
     'tid' => variable_get('googleanalytics_account', ''),
