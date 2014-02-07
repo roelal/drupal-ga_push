@@ -4,11 +4,15 @@
  */
 
 //Methods:
+// Classic GA.
 define('GA_PUSH_METHOD_DEFAULT', 'default');
 define('GA_PUSH_METHOD_JS', 'javascript');
 define('GA_PUSH_METHOD_SSGA', 'ssga');
 define('GA_PUSH_METHOD_PHP_GA', 'php-ga');
-define('GA_PUSH_METHOD_PHP_UTMP', 'utmp');  // Universal Tracking, Measurement Protocol.
+// Universal Tracking, Measurement Protocol.
+define('GA_PUSH_METHOD_UTMP_PHP', 'utmp-php');
+define('GA_PUSH_METHOD_UTMP_JS', 'utmp-js');
+
 
 //Types:
 define('GA_PUSH_TYPE_PAGEVIEW', 'pageview');
@@ -85,6 +89,9 @@ function ga_push_module_implements_alter(&$implementations, $hook) {
 function ga_push_page_alter($main = 0) {
   module_load_include('inc', 'ga_push', 'inc/ga_push.javascript');
   ga_push_method_javascript_push();
+
+  module_load_include('inc', 'ga_push', 'inc/ga_push.utmp.js');
+  ga_push_method_utmp_js_push();
 }
 
 /**
@@ -284,7 +291,7 @@ function ga_push_ga_push_method() {
   $module_path = drupal_get_path('module', 'ga_push');
 
   $method[GA_PUSH_METHOD_JS] = array(
-    'name' => 'Javascript',
+    'name' => 'Javascript Classic (js)',
     'description' => 'the action will be send on the next page load',
     'machine_name' => GA_PUSH_METHOD_JS,
     'callback' => 'ga_push_method_javascript',
@@ -321,12 +328,25 @@ function ga_push_ga_push_method() {
     'available' => 'ga_push_method_php_ga_available',
   );
 
-  $method[GA_PUSH_METHOD_PHP_UTMP] = array(
+  $method[GA_PUSH_METHOD_UTMP_PHP] = array(
     'name' => 'UTMP (php)',
     'description' => 'Universal Tracking, Measuremente Protocol server-side',
-    'machine_name' => GA_PUSH_METHOD_PHP_UTMP,
-    'callback' => 'ga_push_method_php_utmp',
+    'machine_name' => GA_PUSH_METHOD_UTMP_PHP,
+    'callback' => 'ga_push_method_utmp_php',
     'file' =>  $module_path . '/inc/ga_push.utmp.php.inc',
+    'implements' => array(
+      GA_PUSH_TYPE_EVENT => TRUE,
+      GA_PUSH_TYPE_ECOMMERCE => TRUE,
+    ),
+    'available' => TRUE,
+  );
+
+  $method[GA_PUSH_METHOD_UTMP_JS] = array(
+    'name' => 'UTMP (js)',
+    'description' => 'Universal Tracking, Measuremente Protocol client-side',
+    'machine_name' => GA_PUSH_METHOD_UTMP_JS,
+    'callback' => 'ga_push_method_utmp_js',
+    'file' =>  $module_path . '/inc/ga_push.utmp.js.inc',
     'implements' => array(
       GA_PUSH_TYPE_EVENT => TRUE,
       GA_PUSH_TYPE_ECOMMERCE => TRUE,
@@ -345,3 +365,5 @@ function ga_push_method_php_ga_available() {
   $libraries = libraries_get_libraries();
   return strnatcmp(phpversion(), '5.3.0') >= 0 && isset($libraries['php-ga']);
 }
+
+
