@@ -5,3 +5,4 @@ package = Statistics
 dependencies[] = googleanalytics
 dependencies[] = libraries
 files[] = libs/ssga.class.inc
+configure = admin/config/system/ga-push/settings
