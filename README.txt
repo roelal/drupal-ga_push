@@ -33,6 +33,8 @@ Requeriments: Google Analytics 7.x-1.x https://drupal.org/project/google_analyti
   - PHP-GA: Recomended library only for versión 5.3+
     Requires PHP 5.3 as namespaces and closures are used.
     Download from: https://github.com/thomasbachem/php-ga
+    Use the default libraries directory, usually "sites/all/libraries/",
+    naming the folder "php-ga" (sites/all/libraries/php-ga).
 
 --------------------------------------------------------------------------------
  FEATURES:
