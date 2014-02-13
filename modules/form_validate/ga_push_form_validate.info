@@ -5,3 +5,4 @@ package = Statistics
 dependencies[] = googleanalytics
 dependencies[] = libraries
 dependencies[] = ga_push
+configure = admin/config/system/ga-push/form-validate

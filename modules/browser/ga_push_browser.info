@@ -7,3 +7,4 @@ dependencies[] = entity
 dependencies[] = views
 scripts[] = ga_push_browser.js
 files[] = ga_push_browser.classes.inc
+configure = admin/config/system/ga-push/browser
