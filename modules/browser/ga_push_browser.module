@@ -121,13 +121,13 @@ function ga_push_browser_delete_multiple($ga_push_browser_event_ids) {
  */
 function ga_push_browser_menu() {
 
-  $items['admin/config/system/ga-push/browser-add'] = array(
+  $items['admin/config/system/ga-push/browser/add'] = array(
     'title' => 'Ga push: Add browser event',
     'page callback' => 'ga_push_browser_event_add',
     'access arguments' => array('admin ga push'),
     'description' => 'Global configuration of ga push.',
     'file' => 'ga_push_browser.forms.inc',
-    'type' => MENU_LOCAL_TASK,
+    'type' => MENU_LOCAL_ACTION,
     'weight' => 3,
   );
 

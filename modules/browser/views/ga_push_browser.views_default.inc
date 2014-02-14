@@ -45,7 +45,7 @@ function ga_push_browser_views_default_views() {
   $handler->display->display_options['empty']['area']['table'] = 'views';
   $handler->display->display_options['empty']['area']['field'] = 'area';
   $handler->display->display_options['empty']['area']['empty'] = TRUE;
-  $handler->display->display_options['empty']['area']['content'] = 'There are no GA Push browser events defined. <a href="/admin/config/system/ga-push/browser-add">Add your own event</a>.';
+  $handler->display->display_options['empty']['area']['content'] = 'There are no GA Push browser events defined.';
   $handler->display->display_options['empty']['area']['format'] = 'filtered_html';
   /* Field: Ga Push Browser entity: Ga push browser entity ID */
   $handler->display->display_options['fields']['id']['id'] = 'id';
