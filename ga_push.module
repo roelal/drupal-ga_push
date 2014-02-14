@@ -273,6 +273,13 @@ function ga_push_get_methods_option_list_event() {
 }
 
 /**
+ * Get the options list for ecommerce
+ */
+function ga_push_get_methods_option_list_ecommerce() {
+  return ga_push_get_methods_option_list(GA_PUSH_TYPE_ECOMMERCE);
+}
+
+/**
  * Get the event non interaction rules options list
  */
 function ga_push_get_event_non_interaction_option_list() {
