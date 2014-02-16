@@ -18,10 +18,19 @@ function ga_push_method_php_ga($push, $type) {
   $host = str_replace(array('http://', 'https://'), array('', ''), $GLOBALS['base_url']);
   $tracker = new UnitedPrototype\GoogleAnalytics\Tracker($ua, $host);
 
+  // Visitor:
   $visitor = new UnitedPrototype\GoogleAnalytics\Visitor();
   $visitor->setIpAddress($_SERVER['REMOTE_ADDR']);
   $visitor->setUserAgent($_SERVER['HTTP_USER_AGENT']);
+  if (!empty($_COOKIE['__utma'])) {
+    $visitor->fromUtma($_COOKIE['__utma']);
+  }
+
+  // Session:
   $session = new UnitedPrototype\GoogleAnalytics\Session();
+  if (!empty($_COOKIE['__utmb'])) {
+    $session->fromUtmb($_COOKIE['__utmb']);
+  }
 
   switch ($type) {
 
