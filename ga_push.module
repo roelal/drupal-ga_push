@@ -13,6 +13,13 @@ define('GA_PUSH_METHOD_PHP_GA', 'php-ga');
 define('GA_PUSH_METHOD_UTMP_PHP', 'utmp-php');
 define('GA_PUSH_METHOD_UTMP_JS', 'utmp-js');
 
+// Tracking methods:
+define('GA_PUSH_TRACKING_METHOD_CLASSIC', 'classic');
+define('GA_PUSH_TRACKING_METHOD_UNIVERSAL', 'universal');
+
+// Sides:
+define('GA_PUSH_CLIENT_SIDE', 'client-side');
+define('GA_PUSH_SERVER_SIDE', 'server-side');
 
 //Types:
 define('GA_PUSH_TYPE_PAGEVIEW', 'pageview');
@@ -259,7 +266,9 @@ function ga_push_get_methods_option_list($type = NULL, $default = TRUE) {
 
   foreach ($methods as $key => $method) {
     if (ga_push_method_available($key, $type)) {
-      $options[$key] = $method['name'] . ': ' . $method['description'];
+      $options[$key] = $method['name'];
+      $options[$key] .= !empty($method['description']) ? ': ' . $method['description'] : '';
+      $options[$key] .= ' | ' . $method['side'] . ' (' . $method['tracking_method'] . ' analytics)';
     }
   }
   return $options;
@@ -299,7 +308,7 @@ function ga_push_ga_push_method() {
 
   $method[GA_PUSH_METHOD_JS] = array(
     'name' => 'Javascript Classic (js)',
-    'description' => 'the action will be send on the next page load',
+    'description' => '',
     'machine_name' => GA_PUSH_METHOD_JS,
     'callback' => 'ga_push_method_javascript',
     'file' => $module_path . '/inc/ga_push.javascript.inc',
@@ -307,6 +316,8 @@ function ga_push_ga_push_method() {
       GA_PUSH_TYPE_EVENT => TRUE,
       GA_PUSH_TYPE_ECOMMERCE => TRUE,
     ),
+    'side' => GA_PUSH_CLIENT_SIDE,
+    'tracking_method' => GA_PUSH_TRACKING_METHOD_CLASSIC,
     'available' => TRUE,
   );
 
@@ -319,12 +330,14 @@ function ga_push_ga_push_method() {
     'implements' => array(
       GA_PUSH_TYPE_EVENT => TRUE,
     ),
+    'side' => GA_PUSH_SERVER_SIDE,
+    'tracking_method' => GA_PUSH_TRACKING_METHOD_CLASSIC,
     'available' => class_exists('ssga') && is_callable('curl_init'),
   );
 
   $method[GA_PUSH_METHOD_PHP_GA] = array(
     'name' => 'PHP-GA (php)',
-    'description' => 'requires php 5.3 and php-ga libraries',
+    'description' => 'requires php 5.3 and php-ga library',
     'machine_name' => GA_PUSH_METHOD_PHP_GA,
     'callback' => 'ga_push_method_php_ga',
     'file' => $module_path . '/inc/ga_push.php_ga.inc',
@@ -332,12 +345,14 @@ function ga_push_ga_push_method() {
       GA_PUSH_TYPE_EVENT => TRUE,
       GA_PUSH_TYPE_ECOMMERCE => TRUE,
     ),
+    'side' => GA_PUSH_SERVER_SIDE,
+    'tracking_method' => GA_PUSH_TRACKING_METHOD_CLASSIC,
     'available' => 'ga_push_method_php_ga_available',
   );
 
   $method[GA_PUSH_METHOD_UTMP_PHP] = array(
     'name' => 'UTMP (php)',
-    'description' => 'Universal Tracking, Measuremente Protocol server-side',
+    'description' => 'Universal Tracking, Measurement Protocol',
     'machine_name' => GA_PUSH_METHOD_UTMP_PHP,
     'callback' => 'ga_push_method_utmp_php',
     'file' =>  $module_path . '/inc/ga_push.utmp.php.inc',
@@ -345,12 +360,14 @@ function ga_push_ga_push_method() {
       GA_PUSH_TYPE_EVENT => TRUE,
       GA_PUSH_TYPE_ECOMMERCE => TRUE,
     ),
+    'side' => GA_PUSH_SERVER_SIDE,
+    'tracking_method' => GA_PUSH_TRACKING_METHOD_UNIVERSAL,
     'available' => TRUE,
   );
 
   $method[GA_PUSH_METHOD_UTMP_JS] = array(
     'name' => 'UTMP (js)',
-    'description' => 'Universal Tracking, Measuremente Protocol client-side',
+    'description' => 'Universal Tracking, Measurement Protocol',
     'machine_name' => GA_PUSH_METHOD_UTMP_JS,
     'callback' => 'ga_push_method_utmp_js',
     'file' =>  $module_path . '/inc/ga_push.utmp.js.inc',
@@ -358,6 +375,8 @@ function ga_push_ga_push_method() {
       GA_PUSH_TYPE_EVENT => TRUE,
       GA_PUSH_TYPE_ECOMMERCE => TRUE,
     ),
+    'side' => GA_PUSH_CLIENT_SIDE,
+    'tracking_method' => GA_PUSH_TRACKING_METHOD_UNIVERSAL,
     'available' => TRUE,
   );
 
