@@ -129,25 +129,44 @@ function ga_push_method_utmp_php_construct_ecommerce_request_data($push) {
  * @return
  */
 function ga_push_method_utmp_php_request($data = array(), $method = 'POST') {
+  $ga_config = \Drupal::config('google_analytics.settings');
   $data += array(
     'v' => 1,
-    'tid' => variable_get('googleanalytics_account', ''),
+    'tid' => $ga_config->get('account'),
     'cid' => ga_push_method_php_utmp_get_uuid(), /// @TODO determine this value.
   );
 
-
   $url = 'https://' . GA_PUSH_METHOD_UTMP_HOST_ENDPOINT;
-
-
   $options = array(
-    'method' => $method,
-    'data' => drupal_http_build_query($data),
+    'body' => array(\Drupal\Component\Utility\UrlHelper::buildQuery($data)),
   );
+  $response = NULL;
+  // @TODO Check \Drupal::httpClient()->get method, add defines to POST / GET
+  // constatns and complete switch
+  try {
+    switch($method) {
+      case 'POST':
+        $response = \Drupal::httpClient()->post($url, $options)->getBody();
+        break;
 
-  // @TODO: Check errors here so caller doesn't have to do it.
-  //dpm($options, 'request options');
-  $response = drupal_http_request($url, $options);
-  //dpm($response, 'response');
+      case 'GET':
+        $response = \Drupal::httpClient()->get($url, $options)->getBody();
+        break;
+
+      default:
+        break;
+    }
+
+  }
+  catch (BadResponseException $exception) { // @TODO
+    $response = $exception->getResponse();
+    drupal_set_message(t('Failed to fetch file due to HTTP error "%error"', array('%error' => $response->getStatusCode() . ' ' . $response->getReasonPhrase())), 'error');
+    return FALSE;
+  }
+  catch (RequestException $exception) { // @TODO
+    drupal_set_message(t('Failed to fetch file due to error "%error"', array('%error' => $exception->getMessage())), 'error');
+    return FALSE;
+  }
 
   return;
 }
