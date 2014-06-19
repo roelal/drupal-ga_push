@@ -97,7 +97,7 @@ function ga_push_method_utmp_php_construct_ecommerce_request_data($push) {
     'tr' => $push['trans']['total'],
     'tt' => $push['trans']['total_tax'],
     'ts' => $push['trans']['total_shipping'],
-    'cu' => 'EUR',  // @TODO: Get currency code.
+    'cu' => $push['trans']['currency'],
   );
 
   // Items data.
@@ -111,7 +111,7 @@ function ga_push_method_utmp_php_construct_ecommerce_request_data($push) {
       'iq' => !empty($value['quantity']) ? $value['quantity'] : NULL,
       'ic' => !empty($value['sku']) ? $value['sku'] : NULL,
       'iv' => !empty($value['category']) ? $value['category'] : NULL,
-      'cu' => 'EUR',  // @TODO: Get currency code.
+      'cu' => !empty($value['currency']) ? $value['currency'] : NULL,
     );
   }
   return $data;
