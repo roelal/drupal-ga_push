@@ -97,7 +97,8 @@ function _ga_push_method_utmp_js_push_ecommerce_script($push) {
     affiliation: '" . $push['trans']['affiliation'] . "',
     revenue:     '" . $push['trans']['total'] . "',
     shipping:    '" . $push['trans']['total_shipping'] . "',
-    tax:         '" . $push['trans']['total_tax'] . "'
+    tax:         '" . $push['trans']['total_tax'] . "',
+    currency:    '" . $push['trans']['currency'] . "'
   });\n";
 
   // Build up the items.
@@ -108,7 +109,8 @@ function _ga_push_method_utmp_js_push_ecommerce_script($push) {
         name:     '" . $value['name']  . "',
         category: '" . $value['category'] . "',
         price:    '" . $value['price'] . "',
-        quantity: '" . $value['quantity'] . "'
+        quantity: '" . $value['quantity'] . "',
+        currency: '" . $value['currency'] . "'
       });\n";
   }
   $script .= "ga('ecommerce:send');";
