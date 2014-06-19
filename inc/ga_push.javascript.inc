@@ -23,6 +23,7 @@ function ga_push_method_javascript($push, $type) {
 
 /**
  * Send the ga push to JS on page load
+ * @see https://developers.google.com/analytics/devguides/collection/gajs
  */
 function ga_push_method_javascript_push() {
   if (isset($_SESSION['ga_push'])) {
@@ -87,6 +88,15 @@ function ga_push_method_javascript_push() {
                          "'" . $value['quantity'] . "'" .   // quantity - required
                          "]);\n ";
 
+            }
+
+            // Currency: by default, you can configure a common, global, currency
+            // for all transactions and items through the Google Analytics management
+            // web interface. By default, the global currency is used for all items
+            // and transactions.
+            if (!empty($push['trans']['currency'])) {
+              $script .= "_gaq.push(['_set', 'currencyCode', '"
+                . $push['trans']['currency'] . "']);\n";
             }
 
             //Transaction - end:
