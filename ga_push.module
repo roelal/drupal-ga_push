@@ -26,7 +26,7 @@ define('GA_PUSH_TYPE_PAGEVIEW', 'pageview');
 define('GA_PUSH_TYPE_EVENT', 'event');
 define('GA_PUSH_TYPE_ECOMMERCE', 'ecommerce');
 define('GA_PUSH_TYPE_CUSTOM_VARIABLE', 'customvariable');
-define('GA_PUSH_TYPE_CAMPAING', 'campaing');
+define('GA_PUSH_TYPE_CAMPAIGN', 'campaign');
 define('GA_PUSH_TYPE_SOCIAL', 'social');
 define('GA_PUSH_TYPE_SPEED', 'speed');
 
