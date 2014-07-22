@@ -6,7 +6,7 @@
 
 
 
-function ga_push_method_utmp_js($push, $type) {
+function ga_push_method_utmp_js($push, $type, $options) {
   $push_info = array(
     'push' => $push,
     'type' => $type,

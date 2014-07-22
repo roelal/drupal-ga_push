@@ -7,11 +7,11 @@
 
 /**
  * Callback for Javascript Classic method.
- * 
+ *
  * @param type $push
  * @param type $type
  */
-function ga_push_method_javascript($push, $type) {
+function ga_push_method_javascript($push, $type, $options) {
 
   $push_info = array(
     'push' => $push,

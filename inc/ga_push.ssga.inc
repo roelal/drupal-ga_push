@@ -7,14 +7,14 @@
 /**
  * Method: SSGA
  */
-function ga_push_method_ssga($push, $type) {
+function ga_push_method_ssga($push, $type, $options) {
 
   if (class_exists('ssga')) {
 
     $ga = new ssga();
 
     //Set your Google Analytics key
-    $id = variable_get('googleanalytics_account', '');
+    $id = !empty($options['tid']) ? $options['tid'] : variable_get('googleanalytics_account', '');
     $ga->setAccountId($id);
 
     //Set your charset
@@ -31,7 +31,7 @@ function ga_push_method_ssga($push, $type) {
     switch ($type) {
 
       case GA_PUSH_TYPE_EVENT:
-        
+
         // Complete optional parameters
         $push += array(
           'label' => '',
@@ -44,7 +44,7 @@ function ga_push_method_ssga($push, $type) {
       case '_trackPageview': //TODO: is useful?
 
         //Set a pageview
-        $ga->setPageView("/de/serverside/test"); 
+        $ga->setPageView("/de/serverside/test");
         //Set page title
         $ga->setPageTitle("Test");
 

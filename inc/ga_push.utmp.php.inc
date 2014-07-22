@@ -12,14 +12,14 @@ define('GA_PUSH_METHOD_UTMP_HOST_ENDPOINT', 'ssl.google-analytics.com/collect');
 /**
  * Method: UTMP
  */
-function ga_push_method_utmp_php($push, $type) {
+function ga_push_method_utmp_php($push, $type, $options) {
 
   switch ($type) {
 
     case GA_PUSH_TYPE_EVENT:
       $event_data = ga_push_method_php_utmp_construct_event_request_data($push);
       // @TODO: Check response.
-      ga_push_method_utmp_php_request($event_data);
+      ga_push_method_utmp_php_request($event_data, $options);
       break;
 
     case GA_PUSH_TYPE_ECOMMERCE:
@@ -28,8 +28,8 @@ function ga_push_method_utmp_php($push, $type) {
         $ecommerce_data = ga_push_method_utmp_php_construct_ecommerce_request_data($push);
         // @TODO: Check request response.
         ga_push_method_utmp_php_request($ecommerce_data['transaction']);
-        foreach($ecommerce_data['items'] as $item_data) {
-          ga_push_method_utmp_php_request($item_data);
+        foreach ($ecommerce_data['items'] as $item_data) {
+          ga_push_method_utmp_php_request($item_data, $options);
         }
       }
       break;
@@ -70,7 +70,6 @@ function ga_push_method_php_utmp_construct_event_request_data($push) {
 
   return $data;
 }
-
 
 
 /**
@@ -120,36 +119,30 @@ function ga_push_method_utmp_php_construct_ecommerce_request_data($push) {
 /**
  * Sends tracking data to GA.
  *
- * @param Array $data
+ * @param array $data
  *   Data prepared for GA.
- *
- * @param String $method
+ * @param array $options
+ *   Custom options from ga_push_add().
+ * @param string $method
  *   Method to use (GET or POST).
  *
- * @return
+ * @see ga_push_add().
  */
-function ga_push_method_utmp_php_request($data = array(), $method = 'POST') {
-  $data += array(
-    'v' => 1,
-    'tid' => variable_get('googleanalytics_account', ''),
-    'cid' => ga_push_method_php_utmp_get_uuid(), /// @TODO determine this value.
-  );
+function ga_push_method_utmp_php_request($data = array(), $options = array(), $method = 'POST') {
 
+  $data['v']   = 1;
+  $data['tid'] = !empty($options['tid']) ? $options['tid'] : variable_get('googleanalytics_account', '');
+  $data['cid'] = !empty($options['cid']) ? $options['cid'] : ga_push_method_php_utmp_get_uuid();
 
   $url = 'https://' . GA_PUSH_METHOD_UTMP_HOST_ENDPOINT;
 
-
-  $options = array(
+  $httpr_options = array(
     'method' => $method,
     'data' => drupal_http_build_query($data),
   );
 
   // @TODO: Check errors here so caller doesn't have to do it.
-  //dpm($options, 'request options');
-  $response = drupal_http_request($url, $options);
-  //dpm($response, 'response');
-
-  return;
+  $response = drupal_http_request($url, $httpr_options);
 }
 
 /**

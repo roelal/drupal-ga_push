@@ -103,7 +103,7 @@ function ga_push_page_alter($main = 0) {
 
 /**
  * Add a new google analytics tracking push.
- * 
+ *
  * The behavior of this function depends on the parameters it is called with.
  * The following actions can be performed using this function:
  * - Event tracking
@@ -166,16 +166,39 @@ function ga_push_page_alter($main = 0) {
  *    @see https://developers.google.com/analytics/devguides/collection/analyticsjs/
  *     - GA_PUSH_METHOD_UTMP_PHP
  *     - GA_PUSH_METHOD_UTMP_JS
+ *
+ * @param $options
+ *   (optional) An associative array of additional options, with the following
+ *   elements:
+ *
+ *   Only for server-side methods:
+ *     - 'tid': Override Tracking ID / Web Property ID (Classic User account aka UA)
+ *       of the google analytics module config.
+ *       Universal and Classic GA Methods.
+ *     - 'cid': Override Universal Client ID of the current user cookie.
+ *       Only for Universal GA methods.
+ *     - 'utma': Force Classic GA __utma cookie of the current user cookie
+ *       Only for Classic GA methods.
+ *     - 'utmb': Force Classic GA __utmb cookie of the current user cookie
+ *       Only for Classic GA methods.
+ *
+ *   All methods:
+ *     - 'context': An array of aditional info to be passed to drupal_alter implementations.
  */
-function ga_push_add($push, $type = GA_PUSH_TYPE_EVENT, $method_key = NULL) {
+function ga_push_add($push, $type = GA_PUSH_TYPE_EVENT, $method_key = NULL, $options = array()) {
   global $user;
+
+  // Let other modules alter the current push data:
+  drupal_alter('ga_push_add', $push, $type, $method_key, $options);
 
   if (is_array($push) && count($push)) {
 
     if (_googleanalytics_visibility_user($user)) {
 
-      //If the select method is not available or is not defined:
-      if (is_null($method_key) || $method_key == GA_PUSH_METHOD_DEFAULT || !is_null($method_key) && !ga_push_method_available($method_key, $type)) {
+      // If the select method is not available or is not defined:
+      if (is_null($method_key)
+        || $method_key == GA_PUSH_METHOD_DEFAULT
+        || !is_null($method_key) && !ga_push_method_available($method_key, $type)) {
         $default_method_key = variable_get('ga_push_default_method', GA_PUSH_METHOD_JS);
         $method_key = $default_method_key;
       }
@@ -203,7 +226,7 @@ function ga_push_add($push, $type = GA_PUSH_TYPE_EVENT, $method_key = NULL) {
 
         }
 
-        call_user_func($method['callback'], $push, $type);
+        call_user_func($method['callback'], $push, $type, $options);
 
       }
       else {
@@ -401,7 +424,6 @@ function ga_push_ga_push_method() {
   );
 
   return $method;
-
 }
 
 /**
@@ -411,5 +433,3 @@ function ga_push_method_php_ga_available() {
   $libraries = libraries_get_libraries();
   return strnatcmp(phpversion(), '5.3.0') >= 0 && isset($libraries['php-ga']);
 }
-
-
