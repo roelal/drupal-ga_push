@@ -22,7 +22,7 @@ function ga_push_method_utmp_js_push() {
   if (isset($_SESSION['ga_push_utmp'])) {
     $id = variable_get('googleanalytics_account', '');
     if (!empty($id)) {
-      $script = "var ga = ga || [];\n ";
+      $script = "var ga = ga || [];\n";
 
       // Process each push data that needs to be sent to Google Analytics.
       foreach ($_SESSION['ga_push_utmp'] as $queued) {
@@ -96,29 +96,42 @@ function _ga_push_method_utmp_js_push_ecommerce_script($push) {
   // Include needed additional ga e-commerce library.
   $script = "ga('require', 'ecommerce', 'ecommerce.js');\n";
 
+  // Transaction.
+  $transaction_push_map = array(
+    'order_id'       => 'id',
+    'affiliation'    => 'affiliation',
+    'total'          => 'revenue',
+    'total_shipping' => 'shipping',
+    'total_tax'      => 'tax',
+    'currency'       => 'currency',
+  );
+
+  // Mapping.
+  $transaction_mapped_push = ga_push_push_mapper($transaction_push_map, $push['trans']);
+
   // Build up the transaction.
-  $script .= "ga('ecommerce:addTransaction', {
-    id:          '" . $push['trans']['order_id'] . "',
-    affiliation: '" . $push['trans']['affiliation'] . "',
-    revenue:     '" . $push['trans']['total'] . "',
-    shipping:    '" . $push['trans']['total_shipping'] . "',
-    tax:         '" . $push['trans']['total_tax'] . "',
-    currency:    '" . $push['trans']['currency'] . "'
-  });\n";
+  $script .= "ga('ecommerce:addTransaction', " . json_encode($transaction_mapped_push) . ");\n";
+
+  // Items.
+  $item_push_map = array(
+    'order_id' => 'id',
+    'name'     => 'name',
+    'sku'      => 'sku',
+    'category' => 'category',
+    'price'    => 'price',
+    'quantity' => 'quantity',
+    'currency' => 'currency',
+  );
 
   // Build up the items.
   foreach ($push['items'] as $value) {
-      $script .= "ga('ecommerce:addItem', {
-        id:       '" . $value['order_id'] . "',
-        sku:      '" . $value['sku'] . "',
-        name:     '" . $value['name']  . "',
-        category: '" . $value['category'] . "',
-        price:    '" . $value['price'] . "',
-        quantity: '" . $value['quantity'] . "',
-        currency: '" . $value['currency'] . "'
-      });\n";
+    // Mapping.
+    $item_mapped_push = ga_push_push_mapper($item_push_map, $value);
+    $script .= "ga('ecommerce:addItem', " . json_encode($item_mapped_push) . ");\n";
   }
-  $script .= "ga('ecommerce:send');";
+
+  // Sending!
+  $script .= "ga('ecommerce:send');\n";
 
   return $script;
 }

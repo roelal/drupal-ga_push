@@ -140,7 +140,7 @@ function ga_push_page_alter($main = 0) {
  *         'name'     => 'T-Shirt',      // product name
  *         'category' => 'Green Medium', // category
  *         'price'    => '11.99',        // unit price - required
- *         'quantity' => '1'             // quantity - required
+ *         'quantity' => '1',             // quantity - required
  *         'currency' => 'EUR'           // currency (ISO 4217)
  *       ),
  *     ),
@@ -441,15 +441,39 @@ function ga_push_method_php_ga_available() {
  *   Array with keys to translate.
  * @param array $data
  *   Data push array.
+ * @param bool $initialize_empty
+ *   Initialize empty values.
  * @return array
  *   Mapped data.
  */
-function ga_push_push_mapper($key_map, $data) {
+function ga_push_push_mapper($key_map, $data, $initialize_empty = FALSE) {
   $mapped_data = array();
   foreach ($key_map as $key => $target) {
     if (isset($data[$key])) {
       $mapped_data[$target] = $data[$key];
     }
+    elseif ($initialize_empty) {
+      $mapped_data[$target] = '';
+    }
   }
   return $mapped_data;
+}
+
+/**
+ * Recursive function to delete last empty array entries.
+ *
+ * @param array $array
+ *   Array to filter.
+ * @return array
+ *   Filtered array.
+ */
+function ga_push_clean_empty_array_tail($array) {
+  if (count($array)) {
+    $last_elem = end($array);
+    if ($last_elem == '') {
+      array_pop($array);
+      $array = ga_push_clean_empty_array_tail($array);
+    }
+  }
+  return $array;
 }
