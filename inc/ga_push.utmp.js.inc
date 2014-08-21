@@ -64,13 +64,18 @@ function _ga_push_method_utmp_js_push_event_script($push) {
     'non-interaction' => FALSE,
   );
 
-  $event_value = is_numeric($push['value']) ? $push['value'] : 1;
-  $script = "ga('send', 'event', {\n
-    eventCategory: '" . $push['category'] . "',\n
-    eventAction: '" . $push['action'] . "',\n
-    eventLabel: '" . $push['label'] . "',\n
-    eventValue: " . $event_value . "
-  });";
+  $push_map = array(
+    'category' => 'eventCategory',
+    'action'   => 'eventAction',
+    'label'    => 'eventLabel',
+    'value'    => 'eventValue',
+  );
+
+  // Mapping.
+  $mapped_push = ga_push_push_mapper($push_map, $push);
+
+  // Convert to JS function.
+  $script = "ga('send', 'event', " . json_encode($mapped_push) . ");";
 
   return $script;
 }

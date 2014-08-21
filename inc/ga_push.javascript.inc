@@ -42,23 +42,33 @@ function ga_push_method_javascript_push() {
 
           case GA_PUSH_TYPE_EVENT:
 
-            $script .= "_gaq.push(['_trackEvent'";
-
-            // Required:
-            $script .= ", '" . $push['category'] . "'";
-            $script .= ", '" . $push['action'] . "'";
 
             // Optional: default values
             $push += array(
               'label' => '',
               'value' => 1,
-              'non-interaction' => false,
+              // 'non-interaction' => false,
             );
-            $script .= ", '" . $push['label'] . "'";
-            $script .= is_numeric($push['value']) ? ", " . $push['value'] : "," . 1;
-            $script .= $push['non-interaction'] ? ", " . "true" : "";
 
-            $script .= "]); \n";
+            $push_map = array(
+              'category' => 'category',
+              'action'   => 'action',
+              'label'    => 'label',
+              'value'    => 'value',
+              'non-interaction' => 'non-interaction',
+            );
+
+            // Mapping.
+            $mapped_push = ga_push_push_mapper($push_map, $push);
+
+            // Add method.
+            array_unshift($mapped_push, '_trackEvent');
+
+            // Convert to JSON to avoid special chars problems that could broke syntax.
+            $script_params = json_encode(array_values($mapped_push));
+
+            // Convert to JS function.
+            $script = '_gaq.push(' . $script_params . ");\n";
 
             break;
 

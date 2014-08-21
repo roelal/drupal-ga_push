@@ -207,16 +207,15 @@ function ga_push_add($push, $type = GA_PUSH_TYPE_EVENT, $method_key = NULL, $opt
 
         $method = ga_push_get_method($method_key);
 
-        if (isset($method['file'])) require_once($method['file']);
+        if (isset($method['file'])) {
+          require_once($method['file']);
+        }
 
         switch ($type) { //TODO: deprecated!
 
           case GA_PUSH_TYPE_EVENT:
-            // escape any nasty characters, including quote characters which could break the javascript
-            foreach ($push as &$value) {
-              $value = check_plain($value);
-            }
-            //If the VALUE argument is not numeric -> 1
+
+            // If the VALUE argument is not numeric -> 1
             $push['value'] = isset($push['value']) && is_numeric($push['value']) ? $push['value'] : 1;
             break;
 
@@ -432,4 +431,25 @@ function ga_push_ga_push_method() {
 function ga_push_method_php_ga_available() {
   $libraries = libraries_get_libraries();
   return strnatcmp(phpversion(), '5.3.0') >= 0 && isset($libraries['php-ga']);
+}
+
+
+/**
+ * Helper function to translate array keys.
+ *
+ * @param array $key_map
+ *   Array with keys to translate.
+ * @param array $data
+ *   Data push array.
+ * @return array
+ *   Mapped data.
+ */
+function ga_push_push_mapper($key_map, $data) {
+  $mapped_data = array();
+  foreach ($key_map as $key => $target) {
+    if (isset($data[$key])) {
+      $mapped_data[$target] = $data[$key];
+    }
+  }
+  return $mapped_data;
 }
