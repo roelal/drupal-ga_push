@@ -27,7 +27,11 @@ function ga_push_method_utmp_php($push, $type, $options) {
         // Construct arrays.
         $ecommerce_data = ga_push_method_utmp_php_construct_ecommerce_request_data($push);
         // @TODO: Check request response.
-        ga_push_method_utmp_php_request($ecommerce_data['transaction']);
+
+        // Sending the transaction:
+        ga_push_method_utmp_php_request($ecommerce_data['transaction'], $options);
+
+        // Sending the items:
         foreach ($ecommerce_data['items'] as $item_data) {
           ga_push_method_utmp_php_request($item_data, $options);
         }
