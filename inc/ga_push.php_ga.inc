@@ -32,7 +32,7 @@ function ga_push_method_php_ga($push, $type, $options) {
   // Session:
   $session = new UnitedPrototype\GoogleAnalytics\Session();
   if (!empty($options['utmb'])) {
-    $visitor->fromUtma($options['utmb']);
+    $session->fromUtmb($options['utmb']);
   }
   elseif (!empty($_COOKIE['__utmb'])) {
     $session->fromUtmb($_COOKIE['__utmb']);
