@@ -37,6 +37,12 @@ function ga_push_method_utmp_php($push, $type, $options) {
         }
       }
       break;
+
+    case GA_PUSH_TYPE_PAGEVIEW:
+      $pageview_data = ga_push_method_php_utmp_construct_pageview_request_data($push);
+      // @TODO: Check response.
+      ga_push_method_utmp_php_request($pageview_data, $options);
+      break;
   }
 }
 
@@ -117,6 +123,29 @@ function ga_push_method_utmp_php_construct_ecommerce_request_data($push) {
       'cu' => !empty($value['currency']) ? $value['currency'] : NULL,
     );
   }
+  return $data;
+}
+
+/**
+ * Returns data array for a pageview tracking.
+ *
+ * @param Array $push
+ *   Array with pageview data.
+ *
+ * @return Array
+ *   Array with the pageview data ready to be sent to GA.
+ *
+ */
+function ga_push_method_php_utmp_construct_pageview_request_data($push) {
+
+  // Initiallization with required keys.
+  $data = array(
+    't' => 'pageview',
+    'dh' => !empty($push['location']) ? $push['location'] : NULL,
+    'dp' => !empty($push['page']) ? $push['page'] : NULL,
+    'dt' => !empty($push['title']) ? $push['title'] : NULL,
+  );
+
   return $data;
 }
 

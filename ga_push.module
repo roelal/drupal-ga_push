@@ -415,6 +415,7 @@ function ga_push_ga_push_method() {
     'implements' => array(
       GA_PUSH_TYPE_EVENT => TRUE,
       GA_PUSH_TYPE_ECOMMERCE => TRUE,
+      GA_PUSH_TYPE_PAGEVIEW => TRUE,
     ),
     'side' => GA_PUSH_SERVER_SIDE,
     'tracking_method' => GA_PUSH_TRACKING_METHOD_UNIVERSAL,
