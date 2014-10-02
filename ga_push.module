@@ -145,6 +145,13 @@ function ga_push_page_alter($main = 0) {
  *       ),
  *     ),
  *   ), GA_PUSH_TYPE_ECOMMERCE);
+ *
+ *   PAGEVIEW:
+ *   ga_push_add(array(
+ *     'location' => 'https://google.com/analytics', // (optional) URL of the page being tracked. By default, analytics.js sets this to the full document URL, excluding the fragment identifier.
+ *     'page'     => '/my-overridden-page?id=1',     // (optional) A string that is uniquely paired with each category, and commonly used to define the type of user interaction for the web object.
+ *     'title'    => 'My overridden page',           // (optional) The title of the page.
+ *   ), GA_PUSH_TYPE_PAGEVIEW);
  * @endcode
  *
  * @param array $push
@@ -324,6 +331,13 @@ function ga_push_get_methods_option_list_event() {
 }
 
 /**
+ * Get the options list for page views
+ */
+function ga_push_get_methods_option_list_pageview() {
+  return ga_push_get_methods_option_list(GA_PUSH_TYPE_PAGEVIEW);
+}
+
+/**
  * Get the options list for ecommerce
  */
 function ga_push_get_methods_option_list_ecommerce() {
@@ -416,6 +430,7 @@ function ga_push_ga_push_method() {
     'implements' => array(
       GA_PUSH_TYPE_EVENT => TRUE,
       GA_PUSH_TYPE_ECOMMERCE => TRUE,
+      GA_PUSH_TYPE_PAGEVIEW => TRUE,
     ),
     'side' => GA_PUSH_CLIENT_SIDE,
     'tracking_method' => GA_PUSH_TRACKING_METHOD_UNIVERSAL,

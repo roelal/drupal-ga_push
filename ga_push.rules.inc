@@ -56,6 +56,40 @@ function ga_push_rules_action_info() {
     ),
   );
 
+  $items['ga_push_action_push_pageview'] = array(
+    'label' => t('Ga push: page view'),
+    'group' => t('Others'),
+    'parameter' => array(
+      'location' => array(
+        'type' => 'text',
+        'label' => t('Location'),
+        'description' => t('URL of the page being tracked. By default, analytics.js sets this to the full document URL, excluding the fragment identifier.'),
+        'translatable' => FALSE,
+        'optional' => TRUE,
+      ),
+      'page' => array(
+        'type' => 'text',
+        'label' => t('Page'),
+        'description' => t("A string that is uniquely paired with each category, and commonly used to define the type of user interaction for the web object."),
+        'optional' => TRUE,
+      ),
+      'title' => array(
+        'type' => 'text',
+        'label' => t('Title'),
+        'description' => t("The title of the page."),
+        'optional' => TRUE,
+      ),
+      'method' => array(
+        'type' => 'text',
+        'label' => t('Method'),
+        'description' => t("Select the method"),
+        'options list' => 'ga_push_get_methods_option_list_pageview',
+        'default value' => GA_PUSH_METHOD_DEFAULT,
+        'optional' => FALSE,
+      ),
+    ),
+  );
+
   return $items;
 }
 
@@ -71,4 +105,17 @@ function ga_push_action_push_event($category, $action, $label, $value, $non_inte
     'non-interaction' => (bool) $non_interaction,
   );
   ga_push_add($push, GA_PUSH_TYPE_EVENT, $method);
+}
+
+
+/**
+ * Add a push form a rule action
+ */
+function ga_push_action_push_pageview($location, $page, $title, $method) {
+  $push = array(
+    'location'        => $location,
+    'page'            => $page,
+    'title'           => $title,
+  );
+  ga_push_add($push, GA_PUSH_TYPE_PAGEVIEW, $method);
 }

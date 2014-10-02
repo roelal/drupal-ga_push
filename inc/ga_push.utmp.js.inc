@@ -37,6 +37,10 @@ function ga_push_method_utmp_js_push() {
           case GA_PUSH_TYPE_ECOMMERCE:
             $script .= _ga_push_method_utmp_js_push_ecommerce_script($push);
           break;
+
+          case GA_PUSH_TYPE_PAGEVIEW:
+            $script .= _ga_push_method_utmp_js_push_pageview_script($push);
+          break;
         }
       }
       _ga_push_method_utmp_js_add_script($script);
@@ -136,6 +140,22 @@ function _ga_push_method_utmp_js_push_ecommerce_script($push) {
   return $script;
 }
 
+/**
+ * Generates the ga JS code for pushing an event to GA.
+ *
+ * @param array $push
+ *   Event data.
+ *
+ * @return string
+ *   JS code with push code.
+ */
+function _ga_push_method_utmp_js_push_pageview_script($push) {
+  // Remove empty parameters
+  $push  = array_filter($push);
+  // Convert to JS function.
+  $script = "ga('send', 'pageview', " . json_encode($push) . ");\n";
+  return $script;
+}
 
 /**
  * Adds generated script with push data.
