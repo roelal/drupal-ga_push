@@ -3,14 +3,14 @@
  * @file
  * UTMP: method and functions for Universal Tracking Measure Protocol.
  *
- * Check https://developers.google.com/analytics/devguides/collection/protocol/v1/devguide
+ * @see https://developers.google.com/analytics/devguides/collection/protocol/v1/devguide
  */
 
 // Google UTMP Endpoint URL.
 define('GA_PUSH_METHOD_UTMP_HOST_ENDPOINT', 'ssl.google-analytics.com/collect');
 
 /**
- * Method: UTMP
+ * GA Push Method callback: UTMP (php).
  */
 function ga_push_method_utmp_php($push, $type, $options) {
 
@@ -46,14 +46,13 @@ function ga_push_method_utmp_php($push, $type, $options) {
   }
 }
 
-
 /**
  * Returns data array for a event tacking.
  *
- * @param Array $push
+ * @param array $push
  *   Array with event data.
  *
- * @return Array
+ * @return array
  *   Array with the event data preparad to be sent to GA.
  */
 function ga_push_method_php_utmp_construct_event_request_data($push) {
@@ -75,8 +74,7 @@ function ga_push_method_php_utmp_construct_event_request_data($push) {
   }
 
   // @TODO: Check if this attribute is still used.
-  //if (isset($push['non-interaction'])) {
-  //
+  // if (isset($push['non-interaction'])
 
   return $data;
 }
@@ -85,10 +83,10 @@ function ga_push_method_php_utmp_construct_event_request_data($push) {
 /**
  * Returns data arrays for a eCommerce tacking.
  *
- * @param Array $push
+ * @param array $push
  *   Array with transaction and items data.
  *
- * @return Array
+ * @return array
  *   Array with two keys with eCommerce data preparad to be sent to GA:
  *     - transaction: transaction data to send to GA.
  *     - items: Array with data to send to GA for each item.
@@ -111,7 +109,6 @@ function ga_push_method_utmp_php_construct_ecommerce_request_data($push) {
 
   // Items data.
   foreach ($push['items'] as $value) {
-    // @TODO: Dev guide says some keys are not required, is it true? No price, no qty required?
     $data['items'][] = array(
       't' => 'item',
       'ti' => $value['order_id'],
@@ -123,18 +120,18 @@ function ga_push_method_utmp_php_construct_ecommerce_request_data($push) {
       'cu' => !empty($value['currency']) ? $value['currency'] : NULL,
     );
   }
+
   return $data;
 }
 
 /**
  * Returns data array for a pageview tracking.
  *
- * @param Array $push
+ * @param array $push
  *   Array with pageview data.
  *
- * @return Array
+ * @return array
  *   Array with the pageview data ready to be sent to GA.
- *
  */
 function ga_push_method_php_utmp_construct_pageview_request_data($push) {
 
@@ -159,7 +156,7 @@ function ga_push_method_php_utmp_construct_pageview_request_data($push) {
  * @param string $method
  *   Method to use (GET or POST).
  *
- * @see ga_push_add().
+ * @see ga_push_add()
  */
 function ga_push_method_utmp_php_request($data = array(), $options = array(), $method = 'POST') {
 
@@ -179,13 +176,20 @@ function ga_push_method_utmp_php_request($data = array(), $options = array(), $m
 }
 
 /**
- * Get an UUID ver 4 identifier form cookie or generates one on fallback
- * @return UUID ver 4 identifier
+ * Get an UUID ver 4 identifier form cookie or generates one on fallback.
+ *
+ * @return string
+ *   UUID ver 4 identifier
  */
 function ga_push_method_php_utmp_get_uuid() {
   if (isset($_COOKIE['_ga'])) {
-    list($version, $domainDepth, $cid1, $cid2) = explode('.', $_COOKIE["_ga"], 4);
-    $contents = array('version' => $version, 'domainDepth' => $domainDepth, 'cid' => $cid1 . '.' . $cid2);
+    list($version, $domain_depth, $cid1, $cid2)
+      = explode('.', $_COOKIE["_ga"], 4);
+
+    $contents = array(
+      'version' => $version,
+      'domainDepth' => $domain_depth,
+      'cid' => $cid1 . '.' . $cid2);
     $cid = $contents['cid'];
   }
   else {
@@ -201,25 +205,22 @@ function ga_push_method_php_utmp_get_uuid() {
  * Thanks to Andrew Mooer at php.net.
  * http://www.php.net/manual/en/function.uniqid.php#94959
  *
- * @return type
+ * @return string
+ *   UUID.
  */
 function ga_push_method_php_utmp_gen_uuid() {
-  return sprintf( '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+  return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
     // 32 bits for "time_low"
-    mt_rand(0, 0xffff ), mt_rand(0, 0xffff),
-
+    mt_rand(0, 0xffff), mt_rand(0, 0xffff),
     // 16 bits for "time_mid"
     mt_rand(0, 0xffff),
-
     // 16 bits for "time_hi_and_version",
     // four most significant bits holds version number 4
     mt_rand(0, 0x0fff) | 0x4000,
-
     // 16 bits, 8 bits for "clk_seq_hi_res",
     // 8 bits for "clk_seq_low",
     // two most significant bits holds zero and one for variant DCE1.1
     mt_rand(0, 0x3fff) | 0x8000,
-
     // 48 bits for "node"
     mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
   );

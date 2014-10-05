@@ -1,11 +1,11 @@
 <?php
 /**
  * @file
- * Rules implementation
+ * Rules implementation.
  */
 
 /**
- * Implements hook_rules_action_info
+ * Implements hook_rules_action_info().
  */
 function ga_push_rules_action_info() {
 
@@ -94,7 +94,7 @@ function ga_push_rules_action_info() {
 }
 
 /**
- * Add a push form a rule action
+ * Add a push event from a rules action.
  */
 function ga_push_action_push_event($category, $action, $label, $value, $non_interaction, $method) {
   $push = array(
@@ -107,9 +107,8 @@ function ga_push_action_push_event($category, $action, $label, $value, $non_inte
   ga_push_add($push, GA_PUSH_TYPE_EVENT, $method);
 }
 
-
 /**
- * Add a push form a rule action
+ * Add a push pageview from a rules action.
  */
 function ga_push_action_push_pageview($location, $page, $title, $method) {
   $push = array(

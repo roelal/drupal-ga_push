@@ -5,14 +5,19 @@
  */
 
 /**
- * Method: PHP-GA
+ * GA Push Method callback: PHP-GA (php).
  */
 function ga_push_method_php_ga($push, $type, $options) {
 
   $php_ga_path = libraries_get_path('php-ga');
-  include_once($php_ga_path . '/src/autoload.php');
+  include_once $php_ga_path . '/src/autoload.php';
 
-  //use UnitedPrototype\GoogleAnalytics;  //causes 500 Internal Server error, so need to use full namespace references eg UnitedPrototype\GoogleAnalytics\Tracker instead of GoogleAnalytics\Tracker
+  /*
+   * use UnitedPrototype\GoogleAnalytics;
+   * causes 500 Internal Server error, so need to use full namespace references.
+   * For example:
+   * UnitedPrototype\GoogleAnalytics\Tracker instead of GoogleAnalytics\Tracker
+   */
 
   $ua = !empty($options['tid']) ? $options['tid'] : variable_get('googleanalytics_account', '');
   $host = str_replace(array('http://', 'https://'), array('', ''), $GLOBALS['base_url']);
@@ -20,7 +25,7 @@ function ga_push_method_php_ga($push, $type, $options) {
 
   // Visitor:
   $visitor = new UnitedPrototype\GoogleAnalytics\Visitor();
-  $visitor->setIpAddress($_SERVER['REMOTE_ADDR']);
+  $visitor->setIpAddress(ip_address());
   $visitor->setUserAgent($_SERVER['HTTP_USER_AGENT']);
   if (!empty($options['utma'])) {
     $visitor->fromUtma($options['utma']);
@@ -80,8 +85,10 @@ function ga_push_method_php_ga($push, $type, $options) {
           $item->setOrderId($value['order_id']);
           $item->setSku($value['sku']);
           $item->setName($value['name']);
-          //$item->setCategory($value['category]);
-          //Until it changes in the current library, the category method  -> set Variation. http://code.google.com/p/php-ga/issues/detail?id=13
+          // $item->setCategory($value['category]);
+          // Until it changes in the current library:
+          // the category method -> set Variation.
+          // http://code.google.com/p/php-ga/issues/detail?id=13
           $item->setVariation($value['category']);
           $item->setPrice($value['price']);
           $item->setQuantity($value['quantity']);

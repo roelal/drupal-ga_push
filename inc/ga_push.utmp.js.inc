@@ -1,11 +1,12 @@
 <?php
 /**
  * @file
- * UTMP Javascript: method and functions
+ * UTMP Javascript: method and functions.
  */
 
-
-
+/**
+ * GA Push Method callback: UTMP (js).
+ */
 function ga_push_method_utmp_js($push, $type, $options) {
   $push_info = array(
     'push' => $push,
@@ -13,7 +14,6 @@ function ga_push_method_utmp_js($push, $type, $options) {
   );
   $_SESSION['ga_push_utmp'][] = $push_info;
 }
-
 
 /**
  * Send the ga push to JS on page load using Universal Analytics Event Tracking.
@@ -32,15 +32,15 @@ function ga_push_method_utmp_js_push() {
         switch ($type) {
           case GA_PUSH_TYPE_EVENT:
             $script .= _ga_push_method_utmp_js_push_event_script($push);
-          break;
+            break;
 
           case GA_PUSH_TYPE_ECOMMERCE:
             $script .= _ga_push_method_utmp_js_push_ecommerce_script($push);
-          break;
+            break;
 
           case GA_PUSH_TYPE_PAGEVIEW:
             $script .= _ga_push_method_utmp_js_push_pageview_script($push);
-          break;
+            break;
         }
       }
       _ga_push_method_utmp_js_add_script($script);
@@ -61,7 +61,7 @@ function ga_push_method_utmp_js_push() {
  */
 function _ga_push_method_utmp_js_push_event_script($push) {
 
-  // Optional: default values
+  // Optional: default values.
   $push += array(
     'label' => '',
     'value' => 1,
@@ -83,8 +83,6 @@ function _ga_push_method_utmp_js_push_event_script($push) {
 
   return $script;
 }
-
-
 
 /**
  * Generates the ga JS code for pushing an ecommerce to GA.
@@ -150,7 +148,7 @@ function _ga_push_method_utmp_js_push_ecommerce_script($push) {
  *   JS code with push code.
  */
 function _ga_push_method_utmp_js_push_pageview_script($push) {
-  // Remove empty parameters
+  // Remove empty parameters:
   $push  = array_filter($push);
   // Convert to JS function.
   $script = "ga('send', 'pageview', " . json_encode($push) . ");\n";
@@ -162,7 +160,7 @@ function _ga_push_method_utmp_js_push_pageview_script($push) {
  *
  * Used by ga_push_method_utmp_js_push.
  *
- * @see ga_push_method_utmp_js_push().
+ * @see ga_push_method_utmp_js_push()
  *
  * @param string $script
  *   Generated script code to add.
@@ -171,8 +169,8 @@ function _ga_push_method_utmp_js_add_script($script) {
   $options = array(
     'type' => 'inline',
     'scope' => 'footer',
-    //'weight' => 0,
-    //'group' => JS_DEFAULT,
+    // 'weight' => 0,
+    // 'group' => JS_DEFAULT,
   );
   drupal_add_js($script, $options);
 }

@@ -1,9 +1,10 @@
 <?php
 /**
- * @file ga_push.module
+ * @file
+ * Drupal Module: GA Push.
  */
 
-//Methods:
+// Methods:
 // Classic GA.
 define('GA_PUSH_METHOD_DEFAULT', 'default');
 define('GA_PUSH_METHOD_JS', 'javascript');
@@ -21,7 +22,7 @@ define('GA_PUSH_TRACKING_METHOD_UNIVERSAL', 'universal');
 define('GA_PUSH_CLIENT_SIDE', 'client-side');
 define('GA_PUSH_SERVER_SIDE', 'server-side');
 
-//Types:
+// Types:
 define('GA_PUSH_TYPE_PAGEVIEW', 'pageview');
 define('GA_PUSH_TYPE_EVENT', 'event');
 define('GA_PUSH_TYPE_ECOMMERCE', 'ecommerce');
@@ -35,7 +36,7 @@ define('GA_PUSH_TYPE_SPEED', 'speed');
  */
 function ga_push_help($path, $arg) {
   switch ($path) {
-    // Main module help for the block module
+    // Main module help for the block module.
     case 'admin/help#ga_push':
       return '<p>' . t('A module that push Google Analytics events') . '</p>';
   }
@@ -87,8 +88,6 @@ function ga_push_module_implements_alter(&$implementations, $hook) {
     $implementations['ga_push'] = $group;
   }
 }
-
-
 
 /**
  * Implements hook_page_alter().
@@ -174,7 +173,7 @@ function ga_push_page_alter($main = 0) {
  *     - GA_PUSH_METHOD_UTMP_PHP
  *     - GA_PUSH_METHOD_UTMP_JS
  *
- * @param $options
+ * @param array $options
  *   (optional) An associative array of additional options, with the following
  *   elements:
  *
@@ -215,50 +214,45 @@ function ga_push_add($push, $type = GA_PUSH_TYPE_EVENT, $method_key = NULL, $opt
         $method = ga_push_get_method($method_key);
 
         if (isset($method['file'])) {
-          require_once($method['file']);
+          require_once $method['file'];
         }
 
-        switch ($type) { //TODO: deprecated!
-
+        // @TODO: remove deprecated!
+        switch ($type) {
           case GA_PUSH_TYPE_EVENT:
-
             // If the VALUE argument is not numeric -> 1
             $push['value'] = isset($push['value']) && is_numeric($push['value']) ? $push['value'] : 1;
             break;
-
-          case GA_PUSH_TYPE_ECOMMERCE:
-            //Commerce
-            break;
-
         }
 
         call_user_func($method['callback'], $push, $type, $options);
-
       }
       else {
-        //TODO: watchdog there's no method available
+        // @TODO: watchdog there's no method available.
       }
 
     }
-
   }
-
 }
 
 /**
- * Check if a GA PUSH method is available:
- * @param method_key
- * method identificator
- * @param type
- * Push type
+ * Check if a GA PUSH method is available.
+ *
+ * @param string $method_key
+ *   Method identificator.
+ * @param string $type
+ *   GA Push type.
+ *
+ * @return bool
+ *   Available.
  */
 function ga_push_method_available($method_key, $type = NULL) {
 
-  $available = FALSE; //Init
+  $available = FALSE;
   $methods   = ga_push_get_methods();
   $method    = $methods[$method_key];
 
-  //Check the method:
+  // Checks the method:
   if (is_bool($method['available'])) {
     $available = $method['available'];
   }
@@ -266,7 +260,7 @@ function ga_push_method_available($method_key, $type = NULL) {
     $available = call_user_func($method['available']);
   }
 
-  //Check its implements:
+  // Checks its implements:
   if (!is_null($type) && $available) {
     $available = isset($method['implements'][$type]) ? $method['implements'][$type] : FALSE;
   }
@@ -275,7 +269,7 @@ function ga_push_method_available($method_key, $type = NULL) {
 }
 
 /**
- * Get all ga_push_methods
+ * Get all GA Push methods.
  */
 function ga_push_get_methods() {
 
@@ -296,7 +290,10 @@ function ga_push_get_methods() {
 }
 
 /**
- * Get method
+ * Get GA Push method info.
+ *
+ * @param string $key
+ *   Method key.
  */
 function ga_push_get_method($key) {
   $methods = ga_push_get_methods();
@@ -304,7 +301,7 @@ function ga_push_get_method($key) {
 }
 
 /**
- * Returns all available methods as option list:
+ * Returns all available methods as option list.
  */
 function ga_push_get_methods_option_list($type = NULL, $default = TRUE) {
   $options = array();
@@ -324,39 +321,38 @@ function ga_push_get_methods_option_list($type = NULL, $default = TRUE) {
 }
 
 /**
- * Get the options list for events
+ * Get the options list for events.
  */
 function ga_push_get_methods_option_list_event() {
   return ga_push_get_methods_option_list(GA_PUSH_TYPE_EVENT);
 }
 
 /**
- * Get the options list for page views
+ * Get the options list for page views.
  */
 function ga_push_get_methods_option_list_pageview() {
   return ga_push_get_methods_option_list(GA_PUSH_TYPE_PAGEVIEW);
 }
 
 /**
- * Get the options list for ecommerce
+ * Get the options list for ecommerce.
  */
 function ga_push_get_methods_option_list_ecommerce() {
   return ga_push_get_methods_option_list(GA_PUSH_TYPE_ECOMMERCE);
 }
 
 /**
- * Get the event non interaction rules options list
+ * Get the event non interaction rules options list.
  */
 function ga_push_get_event_non_interaction_option_list() {
   return array(
-    false => t("False"),
-    true  => t("True")
+    FALSE => t("False"),
+    TRUE => t("True"),
   );
 }
 
-
 /**
- * Implements hook_ga_push_method()
+ * Implements hook_ga_push_method().
  */
 function ga_push_ga_push_method() {
 
@@ -411,7 +407,7 @@ function ga_push_ga_push_method() {
     'description' => 'Universal Tracking, Measurement Protocol',
     'machine_name' => GA_PUSH_METHOD_UTMP_PHP,
     'callback' => 'ga_push_method_utmp_php',
-    'file' =>  $module_path . '/inc/ga_push.utmp.php.inc',
+    'file' => $module_path . '/inc/ga_push.utmp.php.inc',
     'implements' => array(
       GA_PUSH_TYPE_EVENT => TRUE,
       GA_PUSH_TYPE_ECOMMERCE => TRUE,
@@ -427,7 +423,7 @@ function ga_push_ga_push_method() {
     'description' => 'Universal Tracking, Measurement Protocol',
     'machine_name' => GA_PUSH_METHOD_UTMP_JS,
     'callback' => 'ga_push_method_utmp_js',
-    'file' =>  $module_path . '/inc/ga_push.utmp.js.inc',
+    'file' => $module_path . '/inc/ga_push.utmp.js.inc',
     'implements' => array(
       GA_PUSH_TYPE_EVENT => TRUE,
       GA_PUSH_TYPE_ECOMMERCE => TRUE,
@@ -442,7 +438,7 @@ function ga_push_ga_push_method() {
 }
 
 /**
- * Check if php_ga is available
+ * Checks if php_ga library is available.
  */
 function ga_push_method_php_ga_available() {
   $libraries = libraries_get_libraries();
@@ -459,6 +455,7 @@ function ga_push_method_php_ga_available() {
  *   Data push array.
  * @param bool $initialize_empty
  *   Initialize empty values.
+ *
  * @return array
  *   Mapped data.
  */
@@ -480,6 +477,7 @@ function ga_push_push_mapper($key_map, $data, $initialize_empty = FALSE) {
  *
  * @param array $array
  *   Array to filter.
+ *
  * @return array
  *   Filtered array.
  */

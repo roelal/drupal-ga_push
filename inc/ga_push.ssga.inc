@@ -5,7 +5,7 @@
  */
 
 /**
- * Method: SSGA
+ * GA Push Method callback: SSGA (php).
  */
 function ga_push_method_ssga($push, $type, $options) {
 
@@ -13,26 +13,27 @@ function ga_push_method_ssga($push, $type, $options) {
 
     $ga = new ssga();
 
-    //Set your Google Analytics key
+    // Set your Google Analytics key:
     $id = !empty($options['tid']) ? $options['tid'] : variable_get('googleanalytics_account', '');
     $ga->setAccountId($id);
 
-    //Set your charset
+    // Set your charset:
     $ga->setCharset("UTF-8");
 
-    //Set your hostname
-    $ga->setHostName($GLOBALS['base_url']); //TODO: domain?
+    // Set your hostname:
+    // @TODO: domain integration.
+    $ga->setHostName($GLOBALS['base_url']);
 
-    //Set language
+    // Set language:
     $ga->setLanguage($GLOBALS['language']->language);
 
-    //Set an event (based on http://code.google.com/apis/analytics/docs/tracking/eventTrackerGuide.html)
+    // Set an event based on:
+    // http://code.google.com/apis/analytics/docs/tracking/eventTrackerGuide.html
 
     switch ($type) {
-
       case GA_PUSH_TYPE_EVENT:
 
-        // Complete optional parameters
+        // Complete optional parameters:
         $push += array(
           'label' => '',
           'value' => 1,
@@ -40,6 +41,7 @@ function ga_push_method_ssga($push, $type, $options) {
 
         $ga->setEvent($push['category'], $push['action'], $push['label'], $push['value']);
         break;
+
       /*
       case '_trackPageview': //TODO: is useful?
 
@@ -52,12 +54,12 @@ function ga_push_method_ssga($push, $type, $options) {
       */
     }
 
-    //Submit an event
-    $ga->create(); //createEvent
+    // Push the event.
+    $ga->create();
 
   }
   else {
-    //Throw an error
+    // @TODO: Throw an error
   }
 
 }

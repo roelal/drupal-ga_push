@@ -1,15 +1,11 @@
 <?php
 /**
  * @file
- * Javascript: method and functions
+ * Classic GA Javascript: method and functions.
  */
 
-
 /**
- * Callback for Javascript Classic method.
- *
- * @param type $push
- * @param type $type
+ * GA Push Method callback: Javascript Classic (javascript).
  */
 function ga_push_method_javascript($push, $type, $options) {
 
@@ -18,11 +14,11 @@ function ga_push_method_javascript($push, $type, $options) {
     'type' => $type,
   );
   $_SESSION['ga_push'][] = $push_info;
-
 }
 
 /**
- * Send the ga push to JS on page load
+ * Send the ga push to JS on page load.
+ *
  * @see https://developers.google.com/analytics/devguides/collection/gajs
  */
 function ga_push_method_javascript_push() {
@@ -42,7 +38,7 @@ function ga_push_method_javascript_push() {
 
           case GA_PUSH_TYPE_EVENT:
 
-            // Optional: default values
+            // Optional: default values:
             $push += array(
               'label' => '',
               'value' => 1,
@@ -119,7 +115,6 @@ function ga_push_method_javascript_push() {
               $script .= "_gaq.push(" . json_encode(array_values($item_mapped_push)) . ");\n";
             }
 
-
             // Currency: by default, you can configure a common, global, currency
             // for all transactions and items through the Google Analytics management
             // web interface. By default, the global currency is used for all items
@@ -141,8 +136,8 @@ function ga_push_method_javascript_push() {
       $options = array(
         'type' => 'inline',
         'scope' => 'footer',
-        //'weight' => 0,
-        //'group' => JS_DEFAULT,
+        // 'weight' => 0,
+        // 'group' => JS_DEFAULT,
       );
       drupal_add_js($script, $options);
     }
