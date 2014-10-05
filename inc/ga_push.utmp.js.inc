@@ -41,6 +41,10 @@ function ga_push_method_utmp_js_push() {
           case GA_PUSH_TYPE_PAGEVIEW:
             $script .= _ga_push_method_utmp_js_push_pageview_script($push);
             break;
+
+          case GA_PUSH_TYPE_SOCIAL:
+            $script .= _ga_push_method_utmp_js_push_script($push, 'social');
+            break;
         }
       }
       _ga_push_method_utmp_js_add_script($script);
@@ -152,6 +156,29 @@ function _ga_push_method_utmp_js_push_pageview_script($push) {
   $push  = array_filter($push);
   // Convert to JS function.
   $script = "ga('send', 'pageview', " . json_encode($push) . ");\n";
+  return $script;
+}
+
+/**
+ * Generates the ga send JS code.
+ *
+ * @param array $push
+ *   Data.
+ * @param string $hit_type
+ *   The hit type: social, pageview...
+ *
+ * @return string
+ *   JS code with push code.
+ */
+function _ga_push_method_utmp_js_push_script($push, $hit_type) {
+  // Remove empty parameters:
+  $push = array_filter($push);
+
+  // Add the hitType: social.
+  $push['hitType'] = $hit_type;
+
+  // Convert to JS function.
+  $script = "ga('send', " . json_encode($push) . ");\n";
   return $script;
 }
 

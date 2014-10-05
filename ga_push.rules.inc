@@ -90,6 +90,40 @@ function ga_push_rules_action_info() {
     ),
   );
 
+  $items['ga_push_action_push_social'] = array(
+    'label' => t('Ga push: social'),
+    'group' => t('GA Push'),
+    'parameter' => array(
+      'socialNetwork' => array(
+        'type' => 'text',
+        'label' => t('Social network'),
+        'description' => t('The network on which the action occurs (e.g. Facebook, Twitter).'),
+        'translatable' => FALSE,
+        'optional' => FALSE,
+      ),
+      'socialAction' => array(
+        'type' => 'text',
+        'label' => t('Social action'),
+        'description' => t("The type of action that happens (e.g. Like, Send, Tweet)."),
+        'optional' => FALSE,
+      ),
+      'socialTarget' => array(
+        'type' => 'text',
+        'label' => t('Page'),
+        'description' => t("Specifies the target of a social interaction. This value is typically a URL but can be any text. (e.g. http://mycoolpage.com)."),
+        'optional' => FALSE,
+      ),
+      'method' => array(
+        'type' => 'text',
+        'label' => t('Method'),
+        'description' => t("Select the method"),
+        'options list' => 'ga_push_get_methods_option_list_social',
+        'default value' => GA_PUSH_METHOD_DEFAULT,
+        'optional' => FALSE,
+      ),
+    ),
+  );
+
   return $items;
 }
 
@@ -117,4 +151,16 @@ function ga_push_action_push_pageview($location, $page, $title, $method) {
     'title'           => $title,
   );
   ga_push_add($push, GA_PUSH_TYPE_PAGEVIEW, $method);
+}
+
+/**
+ * Add a push pageview from a rules action.
+ */
+function ga_push_action_push_social($network, $action, $target, $method) {
+  $push = array(
+    'socialNetwork' => $network,
+    'socialAction'  => $action,
+    'socialTarget'  => $target,
+  );
+  ga_push_add($push, GA_PUSH_TYPE_SOCIAL, $method);
 }
