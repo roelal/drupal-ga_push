@@ -88,7 +88,7 @@ function ga_push_method_javascript_push() {
             $transaction_mapped_push = ga_push_clean_empty_array_tail($transaction_mapped_push);
 
             // Add method.
-            array_unshift($transaction_push_map, '_addTrans');
+            array_unshift($transaction_mapped_push, '_addTrans');
 
             // Build up the transaction.
             $script .= "_gaq.push(" . json_encode(array_values($transaction_mapped_push)) . ");\n";
