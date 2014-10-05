@@ -39,11 +39,11 @@ function ga_push_method_utmp_js_push() {
             break;
 
           case GA_PUSH_TYPE_PAGEVIEW:
-            $script .= _ga_push_method_utmp_js_push_pageview_script($push);
+            $script .= _ga_push_method_utmp_js_push_send_script($push, 'pageview');
             break;
 
           case GA_PUSH_TYPE_SOCIAL:
-            $script .= _ga_push_method_utmp_js_push_script($push, 'social');
+            $script .= _ga_push_method_utmp_js_push_send_script($push, 'social');
             break;
         }
       }
@@ -83,7 +83,7 @@ function _ga_push_method_utmp_js_push_event_script($push) {
   $mapped_push = ga_push_push_mapper($push_map, $push);
 
   // Convert to JS function.
-  $script = "ga('send', 'event', " . json_encode($mapped_push) . ");";
+  $script = _ga_push_method_utmp_js_push_send_script($mapped_push, 'event');
 
   return $script;
 }
@@ -143,23 +143,6 @@ function _ga_push_method_utmp_js_push_ecommerce_script($push) {
 }
 
 /**
- * Generates the ga JS code for pushing an event to GA.
- *
- * @param array $push
- *   Event data.
- *
- * @return string
- *   JS code with push code.
- */
-function _ga_push_method_utmp_js_push_pageview_script($push) {
-  // Remove empty parameters:
-  $push  = array_filter($push);
-  // Convert to JS function.
-  $script = "ga('send', 'pageview', " . json_encode($push) . ");\n";
-  return $script;
-}
-
-/**
  * Generates the ga send JS code.
  *
  * @param array $push
@@ -170,7 +153,7 @@ function _ga_push_method_utmp_js_push_pageview_script($push) {
  * @return string
  *   JS code with push code.
  */
-function _ga_push_method_utmp_js_push_script($push, $hit_type) {
+function _ga_push_method_utmp_js_push_send_script($push, $hit_type) {
   // Remove empty parameters:
   $push = array_filter($push);
 
@@ -179,6 +162,7 @@ function _ga_push_method_utmp_js_push_script($push, $hit_type) {
 
   // Convert to JS function.
   $script = "ga('send', " . json_encode($push) . ");\n";
+  
   return $script;
 }
 
