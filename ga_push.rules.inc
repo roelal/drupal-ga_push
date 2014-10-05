@@ -138,7 +138,7 @@ function ga_push_action_push_event($category, $action, $label, $value, $non_inte
     'value'           => (int) $value,
     'non-interaction' => (bool) $non_interaction,
   );
-  ga_push_add($push, GA_PUSH_TYPE_EVENT, $method);
+  ga_push_add_event($push, $method);
 }
 
 /**
@@ -150,7 +150,7 @@ function ga_push_action_push_pageview($location, $page, $title, $method) {
     'page'            => $page,
     'title'           => $title,
   );
-  ga_push_add($push, GA_PUSH_TYPE_PAGEVIEW, $method);
+  ga_push_add_pageview($push, $method);
 }
 
 /**
@@ -162,5 +162,5 @@ function ga_push_action_push_social($network, $action, $target, $method) {
     'socialAction'  => $action,
     'socialTarget'  => $target,
   );
-  ga_push_add($push, GA_PUSH_TYPE_SOCIAL, $method);
+  ga_push_add_social($push, $method);
 }
