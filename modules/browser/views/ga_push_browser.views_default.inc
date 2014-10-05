@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Views for the default order UI.
+ * Views default file for GA Push (browser) module.
  */
 
 /**
