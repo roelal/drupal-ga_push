@@ -124,6 +124,34 @@ function ga_push_rules_action_info() {
     ),
   );
 
+  $items['ga_push_action_push_exception'] = array(
+    'label' => t('Ga push: exception'),
+    'group' => t('GA Push'),
+    'parameter' => array(
+      'exDescription' => array(
+        'type' => 'text',
+        'label' => t('Description'),
+        'description' => t('A description of the exception..'),
+        'translatable' => FALSE,
+        'optional' => TRUE,
+      ),
+      'exFatal' => array(
+        'type' => 'boolean',
+        'label' => t('Is Fatal?'),
+        'description' => t('Indicates whether the exception was fatal. true indicates fatal.'),
+        'optional' => TRUE,
+      ),
+      'method' => array(
+        'type' => 'text',
+        'label' => t('Method'),
+        'description' => t("Select the method"),
+        'options list' => 'ga_push_get_methods_option_list_exception',
+        'default value' => GA_PUSH_METHOD_DEFAULT,
+        'optional' => FALSE,
+      ),
+    ),
+  );
+
   return $items;
 }
 
@@ -139,6 +167,17 @@ function ga_push_action_push_event($category, $action, $label, $value, $non_inte
     'non-interaction' => (bool) $non_interaction,
   );
   ga_push_add_event($push, $method);
+}
+
+/**
+ * Add a push exception from a rules action.
+ */
+function ga_push_action_push_exception($description, $is_fatal, $method) {
+  $push = array(
+    'exDescription' => $description,
+    'exFatal'       => (bool) $is_fatal,
+  );
+  ga_push_add_exception($push, $method);
 }
 
 /**

@@ -38,6 +38,10 @@ function ga_push_method_utmp_js_push() {
             $script .= _ga_push_method_utmp_js_push_ecommerce_script($push);
             break;
 
+          case GA_PUSH_TYPE_EXCEPTION:
+            $script .= _ga_push_method_utmp_js_push_exception_script($push);
+            break;
+
           case GA_PUSH_TYPE_PAGEVIEW:
             $script .= _ga_push_method_utmp_js_push_send_script($push, 'pageview');
             break;
@@ -143,6 +147,25 @@ function _ga_push_method_utmp_js_push_ecommerce_script($push) {
 }
 
 /**
+ * Generates the ga JS code for pushing an exception to GA.
+ *
+ * @param array $push
+ *   Event data.
+ *
+ * @return string
+ *   JS code with push code.
+ */
+function _ga_push_method_utmp_js_push_exception_script($push) {
+  // Remove empty parameters:
+  $push = array_filter($push);
+
+  // Convert to JS function.
+  $script = "ga('send', 'exception', " . json_encode($push) . ");\n";
+
+  return $script;
+}
+
+/**
  * Generates the ga send JS code.
  *
  * @param array $push
@@ -162,7 +185,7 @@ function _ga_push_method_utmp_js_push_send_script($push, $hit_type) {
 
   // Convert to JS function.
   $script = "ga('send', " . json_encode($push) . ");\n";
-  
+
   return $script;
 }
 

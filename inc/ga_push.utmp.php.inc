@@ -38,6 +38,12 @@ function ga_push_method_utmp_php($push, $type, $options) {
       }
       break;
 
+    case GA_PUSH_TYPE_EXCEPTION:
+      $event_data = ga_push_method_php_utmp_construct_exception_request_data($push);
+      // @TODO: Check response.
+      ga_push_method_utmp_php_request($event_data, $options);
+      break;
+
     case GA_PUSH_TYPE_PAGEVIEW:
       $pageview_data = ga_push_method_php_utmp_construct_pageview_request_data($push);
       // @TODO: Check response.
@@ -126,6 +132,27 @@ function ga_push_method_utmp_php_construct_ecommerce_request_data($push) {
       'cu' => !empty($value['currency']) ? $value['currency'] : NULL,
     );
   }
+
+  return $data;
+}
+
+/**
+ * Returns data array for a exception tracking.
+ *
+ * @param array $push
+ *   Array with pageview data.
+ *
+ * @return array
+ *   Array with the pageview data ready to be sent to GA.
+ */
+function ga_push_method_php_utmp_construct_exception_request_data($push) {
+  // @TODO: integrate with ga_push_analyticsjs_measurement_protocol_map().
+  // Initiallization with required keys.
+  $data = array(
+    't' => 'exception',
+    'exd' => !empty($push['exDescription']) ? $push['exDescription'] : NULL,
+    'exf' => !empty($push['exFatal']) ? $push['exFatal'] : NULL,
+  );
 
   return $data;
 }

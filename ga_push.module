@@ -26,6 +26,7 @@ define('GA_PUSH_SERVER_SIDE', 'server-side');
 define('GA_PUSH_TYPE_PAGEVIEW', 'pageview');
 define('GA_PUSH_TYPE_EVENT', 'event');
 define('GA_PUSH_TYPE_ECOMMERCE', 'ecommerce');
+define('GA_PUSH_TYPE_EXCEPTION', 'exception');
 define('GA_PUSH_TYPE_CUSTOM_VARIABLE', 'customvariable');
 define('GA_PUSH_TYPE_CAMPAIGN', 'campaign');
 define('GA_PUSH_TYPE_SOCIAL', 'social');
@@ -346,6 +347,40 @@ function ga_push_add_event($push, $method_key = NULL, $options = array()) {
 }
 
 /**
+ * Push a GA event.
+ *
+ * Event tracking allows you to measure how users interact with the content of
+ * your website. For example, you might want to measure how many times a button
+ * was pressed, or how many times a particular item was used in a web game.
+ *
+ * @see https://developers.google.com/analytics/devguides/collection/analyticsjs/exceptions
+ *
+ * Example:
+ * @code
+ *   ga_push_add_exception(array(
+ *     'exDescription' => 'DatabaseError',
+ *     'exFatal'       => FALSE,
+ *     'appName'       => 'myApp',
+ *     'appVersion'    => 1.0,
+ *   ));
+ * @endcode
+ *
+ * @param array $push
+ *   An associative array containing:
+ *   - exDescription: string
+ *     (optional) A description of the exception.
+ *   - exFatal: bool
+ *     (optional) Indicates whether the exception was fatal. true indicates fatal.
+ * @param string $method_key
+ *   @see ga_push_add()
+ * @param array $options
+ *   @see ga_push_add()
+ */
+function ga_push_add_exception($push, $method_key = NULL, $options = array()) {
+  ga_push_add($push, GA_PUSH_TYPE_EXCEPTION, $method_key, $options);
+}
+
+/**
  * Push a GA page tracking.
  *
  * Page tracking allows you to measure the number of views you had of a
@@ -515,6 +550,13 @@ function ga_push_get_methods_option_list_event() {
 }
 
 /**
+ * Get the options list for exception.
+ */
+function ga_push_get_methods_option_list_exception() {
+  return ga_push_get_methods_option_list(GA_PUSH_TYPE_EXCEPTION);
+}
+
+/**
  * Get the options list for page views.
  */
 function ga_push_get_methods_option_list_pageview() {
@@ -605,6 +647,7 @@ function ga_push_ga_push_method() {
     'implements' => array(
       GA_PUSH_TYPE_EVENT => TRUE,
       GA_PUSH_TYPE_ECOMMERCE => TRUE,
+      GA_PUSH_TYPE_EXCEPTION => TRUE,
       GA_PUSH_TYPE_PAGEVIEW => TRUE,
       GA_PUSH_TYPE_SOCIAL => TRUE,
     ),
@@ -622,6 +665,7 @@ function ga_push_ga_push_method() {
     'implements' => array(
       GA_PUSH_TYPE_EVENT => TRUE,
       GA_PUSH_TYPE_ECOMMERCE => TRUE,
+      GA_PUSH_TYPE_EXCEPTION => TRUE,
       GA_PUSH_TYPE_PAGEVIEW => TRUE,
       GA_PUSH_TYPE_SOCIAL => TRUE,
     ),
@@ -641,6 +685,15 @@ function ga_push_method_php_ga_available() {
   return strnatcmp(phpversion(), '5.3.0') >= 0 && isset($libraries['php-ga']);
 }
 
+/**
+ * Key relationship map between analyticsjs & measurement_protocol.
+ */
+function ga_push_analyticsjs_measurement_protocol_map() {
+  array(
+    'exDescription'	=> 'exd',
+    'exFatal'	=> 'exf',
+  );
+}
 
 /**
  * Helper function to translate array keys.
