@@ -11,7 +11,7 @@ function ga_push_rules_action_info() {
 
   $items['ga_push_action_push_event'] = array(
     'label' => t('Ga push: event'),
-    'group' => t('Others'),
+    'group' => t('GA Push'),
     'parameter' => array(
       'category' => array(
         'type' => 'text',
@@ -58,7 +58,7 @@ function ga_push_rules_action_info() {
 
   $items['ga_push_action_push_pageview'] = array(
     'label' => t('Ga push: page view'),
-    'group' => t('Others'),
+    'group' => t('GA Push'),
     'parameter' => array(
       'location' => array(
         'type' => 'text',
