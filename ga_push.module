@@ -714,6 +714,10 @@ function ga_push_analyticsjs_measurement_protocol_map() {
     // Exception:
     'exDescription'	=> 'exd',
     'exFatal'	=> 'exf',
+    // Pageview:
+    'location' => 'dh',
+    'page' => 'dp',
+    'title' => 'dt',
     // Social:
     'socialNetwork' => 'sn',
     'socialAction' => 'sa',

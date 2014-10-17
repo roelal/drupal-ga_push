@@ -140,16 +140,8 @@ function ga_push_method_php_utmp_construct_exception_request_data($push) {
  *   Array with the pageview data ready to be sent to GA.
  */
 function ga_push_method_php_utmp_construct_pageview_request_data($push) {
-
-  // Initiallization with required keys.
-  $data = array(
-    't' => 'pageview',
-    'dh' => !empty($push['location']) ? $push['location'] : NULL,
-    'dp' => !empty($push['page']) ? $push['page'] : NULL,
-    'dt' => !empty($push['title']) ? $push['title'] : NULL,
-  );
-
-  return $data;
+  $push['t'] = 'pageview';
+  return ga_push_analyticsjs_measurement_protocol_mapping($push);
 }
 
 /**
