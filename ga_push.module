@@ -700,6 +700,11 @@ function ga_push_method_php_ga_available() {
  */
 function ga_push_analyticsjs_measurement_protocol_map() {
   return array(
+    // Application:
+    'appName' => 'an',
+    'appId'   => 'aid',
+    'appVersion' => 'av',
+    'appInstallerId' => 'aiid',
     // Event:
     'eventCategory' => 'ec',
     'eventAction' => 'ea',
