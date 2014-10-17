@@ -39,7 +39,7 @@ function ga_push_method_ssga($push, $type, $options) {
           'value' => 1,
         );
 
-        $ga->setEvent($push['category'], $push['action'], $push['label'], $push['value']);
+        $ga->setEvent($push['eventCategory'], $push['eventAction'], $push['eventLabel'], $push['eventValue']);
         break;
 
       /*

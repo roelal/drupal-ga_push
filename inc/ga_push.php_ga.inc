@@ -49,15 +49,15 @@ function ga_push_method_php_ga($push, $type, $options) {
       $event = new UnitedPrototype\GoogleAnalytics\Event();
 
       // Required:
-      $event->setCategory($push['category']);
-      $event->setAction($push['action']);
+      $event->setCategory($push['eventCategory']);
+      $event->setAction($push['eventAction']);
 
       // Optional:
-      if (isset($push['label'])) {
-        $event->setLabel($push['label']);
+      if (isset($push['eventLabel'])) {
+        $event->setLabel($push['eventLabel']);
       }
-      if (isset($push['value'])) {
-        $event->setValue($push['value']);
+      if (isset($push['eventValue'])) {
+        $event->setValue($push['eventValue']);
       }
       if (isset($push['non-interaction'])) {
         $event->setNoninteraction($push['non-interaction']);

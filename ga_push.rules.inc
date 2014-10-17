@@ -160,10 +160,10 @@ function ga_push_rules_action_info() {
  */
 function ga_push_action_push_event($category, $action, $label, $value, $non_interaction, $method) {
   $push = array(
-    'category'        => $category,
-    'action'          => $action,
-    'label'           => $label,
-    'value'           => (int) $value,
+    'eventCategory'        => $category,
+    'eventAction'          => $action,
+    'eventLabel'           => $label,
+    'eventValue'           => (int) $value,
     'non-interaction' => (bool) $non_interaction,
   );
   ga_push_add_event($push, $method);
