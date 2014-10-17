@@ -726,22 +726,27 @@ function ga_push_analyticsjs_measurement_protocol_map() {
 }
 
 /**
- * @TODO
+ * Translates Analytics.js keys to UTMP keys.
+ *
+ * Push array data uses Analytics.js keys to name each param. UTMP uses
+ * another set of keys. This method translates those keys.
+ *
  * @param array $data
+ *   Array with keys to be translated.
+ *
+ * @return array
+ *   Array with keys translated.
  */
 function ga_push_analyticsjs_measurement_protocol_mapping($data) {
   $map = ga_push_analyticsjs_measurement_protocol_map();
   $data_mapped = array();
   foreach ($data as $key => $value) {
     $mkey = isset($map[$key]) ? $map[$key] : $key;
-
-    // @TODO: document!
-    // @see https://developers.google.com/analytics/devguides/collection/analyticsjs/custom-dims-mets
+    // Replace custom dimensions and metrics that uses Analytics.js keys with UTMP keys.
     $mkey = str_replace(array('dimension', 'metric'), array('cd', 'cm'), $mkey);
 
     $data_mapped[$mkey] = $value;
   }
-
   return $data_mapped;
 }
 
