@@ -35,8 +35,8 @@ function ga_push_method_ssga($push, $type, $options) {
 
         // Complete optional parameters:
         $push += array(
-          'label' => '',
-          'value' => 1,
+          'eventLabel' => '',
+          'eventValue' => 1,
         );
 
         $ga->setEvent($push['eventCategory'], $push['eventAction'], $push['eventLabel'], $push['eventValue']);
