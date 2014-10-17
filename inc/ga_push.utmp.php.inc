@@ -68,29 +68,9 @@ function ga_push_method_utmp_php($push, $type, $options) {
  *   Array with the event data preparad to be sent to GA.
  */
 function ga_push_method_php_utmp_construct_event_request_data($push) {
-
-  // Initiallization with required keys.
-  $data = array(
-    't' => 'event',
-    'ec' => $push['category'],
-    'ea' => $push['action'],
-  );
-
-  // Optional keys:
-  if (isset($push['label'])) {
-    $data['el'] = $push['label'];
-  }
-
-  if (isset($push['value'])) {
-    $data['ev'] = $push['value'];
-  }
-
-  // @TODO: Check if this attribute is still used.
-  // if (isset($push['non-interaction'])
-
-  return $data;
+  $push['t'] = 'event';
+  return ga_push_analyticsjs_measurement_protocol_mapping($push);
 }
-
 
 /**
  * Returns data arrays for a eCommerce tacking.

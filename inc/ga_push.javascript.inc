@@ -40,21 +40,21 @@ function ga_push_method_javascript_push() {
 
             // Optional: default values:
             $push += array(
-              'label' => '',
-              'value' => 1,
+              'eventLabel' => '',
+              'eventValue' => 1,
               // 'non-interaction' => false,
             );
 
             $push_map = array(
-              'category' => 'category',
-              'action'   => 'action',
-              'label'    => 'label',
-              'value'    => 'value',
-              'non-interaction' => 'non-interaction',
+              'eventCategory' => 'category',
+              'eventAction'   => 'action',
+              'eventLabel'    => 'label',
+              'eventValue'    => 'value',
+              'non-interaction' => 'non-interaction', // ?
             );
 
             // Mapping.
-            $mapped_push = ga_push_push_mapper($push_map, $push);
+            $mapped_push = ga_push_push_key_mapper($push_map, $push);
 
             // Add method.
             array_unshift($mapped_push, '_trackEvent');
@@ -83,7 +83,7 @@ function ga_push_method_javascript_push() {
 
             // Mapping and initialize empty values assure param order (so no
             // param is in place of another).
-            $transaction_mapped_push = ga_push_push_mapper($transaction_push_map, $push['trans'], TRUE);
+            $transaction_mapped_push = ga_push_push_key_mapper($transaction_push_map, $push['trans'], TRUE);
 
             $transaction_mapped_push = ga_push_clean_empty_array_tail($transaction_mapped_push);
 
@@ -95,7 +95,7 @@ function ga_push_method_javascript_push() {
 
             // Items.
             $item_push_map = array(
-              'order_id'       => 'order_id',
+              'order_id' => 'order_id',
               'sku'      => 'sku',
               'name'     => 'name',
               'category' => 'category',
@@ -106,7 +106,7 @@ function ga_push_method_javascript_push() {
             // Build up the items.
             foreach ($push['items'] as $value) {
               // Mapping.
-              $item_mapped_push = ga_push_push_mapper($item_push_map, $value, TRUE);
+              $item_mapped_push = ga_push_push_key_mapper($item_push_map, $value, TRUE);
               $item_mapped_push = ga_push_clean_empty_array_tail($item_mapped_push);
 
               // Adding method.

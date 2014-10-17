@@ -163,6 +163,16 @@ function ga_push_page_alter($main = 0) {
 function ga_push_add($push, $type = GA_PUSH_TYPE_EVENT, $method_key = NULL, $options = array()) {
   global $user;
 
+  $push_legacy_map = array(
+    'category' => 'eventCategory',
+    'action'   => 'eventAction',
+    'label'    => 'eventLabel',
+    'value'    => 'eventValue',
+  );
+
+  // Mapping.
+  $push = ga_push_push_data_mapper($push_legacy_map, $push);
+
   // Let other modules alter the current push data:
   drupal_alter('ga_push_add', $push, $type, $method_key, $options);
 
@@ -190,7 +200,7 @@ function ga_push_add($push, $type = GA_PUSH_TYPE_EVENT, $method_key = NULL, $opt
         switch ($type) {
           case GA_PUSH_TYPE_EVENT:
             // If the VALUE argument is not numeric -> 1
-            $push['value'] = isset($push['value']) && is_numeric($push['value']) ? $push['value'] : 1;
+            $push['eventValue'] = isset($push['eventValue']) && is_numeric($push['eventValue']) ? $push['eventValue'] : 1;
             break;
         }
 
@@ -316,23 +326,23 @@ function ga_push_add_ecommerce($push, $method_key = NULL, $options = array()) {
  * Example:
  * @code
  *   ga_push_add_event(array(
- *     'category'        => 'Videos',
- *     'action'          => 'Play',
- *     'label'           => 'Gone With the Wind',
- *     'value'           => 1,
- *     'non-interaction' => FALSE,
+ *     'eventCategory'        => 'Videos',
+ *     'eventAction'          => 'Play',
+ *     'eventLabel'           => 'Gone With the Wind',
+ *     'eventValue'           => 1,
+ *     'non-interaction'      => FALSE,
  *   ));
  * @endcode
  *
  * @param array $push
  *   An associative array containing:
- *   - category: string
+ *   - eventCategory: string
  *     Typically the object that was interacted with (e.g. button).
- *   - action: string
+ *   - eventAction: string
  *     The type of interaction (e.g. click).
- *   - label: string
+ *   - eventLabel: string
  *     (optional) Useful for categorizing events (e.g. nav buttons).
- *   - value: int
+ *   - eventValue: int
  *     (optional) Values must be non-negative. Useful to pass counts (e.g. 4 times).
  *   - non-interaction: bool
  *     (optional) A boolean that when set to true, indicates that the event hit
@@ -689,14 +699,47 @@ function ga_push_method_php_ga_available() {
  * Key relationship map between analyticsjs & measurement_protocol.
  */
 function ga_push_analyticsjs_measurement_protocol_map() {
-  array(
+  return array(
+    // Event:
+    'eventCategory' => 'ec',
+    'eventAction' => 'ea',
+    'eventLabel' => 'el',
+    'eventValue' => 'ev',
+    'non-interaction' => 'ni',
+    // Exception:
     'exDescription'	=> 'exd',
     'exFatal'	=> 'exf',
+    // Social:
+    'socialNetwork' => 'sn',
+    'socialAction' => 'sa',
+    'socialTarget' => 'st',
   );
 }
 
 /**
- * Helper function to translate array keys.
+ * @TODO
+ * @param array $data
+ */
+function ga_push_analyticsjs_measurement_protocol_mapping($data) {
+  $map = ga_push_analyticsjs_measurement_protocol_map();
+  $data_mapped = array();
+  foreach ($data as $key => $value) {
+    $mkey = isset($map[$key]) ? $map[$key] : $key;
+
+    // @TODO: document!
+    // @see https://developers.google.com/analytics/devguides/collection/analyticsjs/custom-dims-mets
+    $mkey = str_replace(array('dimension', 'metric'), array('cd', 'cm'), $mkey);
+
+    $data_mapped[$mkey] = $value;
+  }
+
+  return $data_mapped;
+}
+
+/**
+ * Helper function to asign data to keys.
+ *
+ * Only key_map keys will be mapped.
  *
  * @param array $key_map
  *   Array with keys to translate.
@@ -708,7 +751,7 @@ function ga_push_analyticsjs_measurement_protocol_map() {
  * @return array
  *   Mapped data.
  */
-function ga_push_push_mapper($key_map, $data, $initialize_empty = FALSE) {
+function ga_push_push_key_mapper($key_map, $data, $initialize_empty = FALSE) {
   $mapped_data = array();
   foreach ($key_map as $key => $target) {
     if (isset($data[$key])) {
@@ -718,6 +761,33 @@ function ga_push_push_mapper($key_map, $data, $initialize_empty = FALSE) {
       $mapped_data[$target] = '';
     }
   }
+  return $mapped_data;
+}
+
+/**
+ * Helper function to translate data keys.
+ *
+ * @param array $key_map
+ *   Array with keys to translate.
+ * @param array $data
+ *   Data push array.
+ * @param bool $initialize_empty
+ *   Initialize empty values.
+ *
+ * @return array
+ *   Mapped data.
+ */
+function ga_push_push_data_mapper($key_map, $data, $initialize_empty = FALSE) {
+  $mapped_data = array();
+  foreach ($data as $key => $value) {
+    $mkey = isset($key_map[$key]) ? $key_map[$key] : $key;
+    $mapped_data[$mkey] = $value;
+  }
+
+  if ($initialize_empty) {
+    $mapped_data += array_fill_keys($key_map, '');
+  }
+
   return $mapped_data;
 }
 

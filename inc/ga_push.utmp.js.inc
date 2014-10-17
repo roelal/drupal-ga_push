@@ -71,23 +71,13 @@ function _ga_push_method_utmp_js_push_event_script($push) {
 
   // Optional: default values.
   $push += array(
-    'label' => '',
-    'value' => 1,
+    'eventLabel' => '',
+    'eventValue' => 1,
     'non-interaction' => FALSE,
   );
 
-  $push_map = array(
-    'category' => 'eventCategory',
-    'action'   => 'eventAction',
-    'label'    => 'eventLabel',
-    'value'    => 'eventValue',
-  );
-
-  // Mapping.
-  $mapped_push = ga_push_push_mapper($push_map, $push);
-
   // Convert to JS function.
-  $script = _ga_push_method_utmp_js_push_send_script($mapped_push, 'event');
+  $script = _ga_push_method_utmp_js_push_send_script($push, 'event');
 
   return $script;
 }
@@ -117,7 +107,7 @@ function _ga_push_method_utmp_js_push_ecommerce_script($push) {
   );
 
   // Mapping.
-  $transaction_mapped_push = ga_push_push_mapper($transaction_push_map, $push['trans']);
+  $transaction_mapped_push = ga_push_push_key_mapper($transaction_push_map, $push['trans']);
 
   // Build up the transaction.
   $script .= "ga('ecommerce:addTransaction', " . json_encode($transaction_mapped_push) . ");\n";
@@ -136,7 +126,7 @@ function _ga_push_method_utmp_js_push_ecommerce_script($push) {
   // Build up the items.
   foreach ($push['items'] as $value) {
     // Mapping.
-    $item_mapped_push = ga_push_push_mapper($item_push_map, $value);
+    $item_mapped_push = ga_push_push_key_mapper($item_push_map, $value);
     $script .= "ga('ecommerce:addItem', " . json_encode($item_mapped_push) . ");\n";
   }
 
