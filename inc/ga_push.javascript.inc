@@ -71,11 +71,11 @@ function ga_push_method_javascript_push() {
 
             // Transaction.
             $transaction_push_map = array(
-              'order_id'       => 'order_id',
+              'id'             => 'order_id',
               'affiliation'    => 'affiliation',
-              'total'          => 'total',
-              'total_tax'      => 'total_tax',
-              'total_shipping' => 'total_shipping',
+              'revenue'        => 'total',
+              'tax'            => 'total_tax',
+              'shipping'       => 'total_shipping',
               'city'           => 'city',
               'region'         => 'region',
               'country'        => 'country',
@@ -95,7 +95,7 @@ function ga_push_method_javascript_push() {
 
             // Items.
             $item_push_map = array(
-              'order_id' => 'order_id',
+              'id'       => 'order_id',
               'sku'      => 'sku',
               'name'     => 'name',
               'category' => 'category',

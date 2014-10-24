@@ -96,38 +96,12 @@ function _ga_push_method_utmp_js_push_ecommerce_script($push) {
   // Include needed additional ga e-commerce library.
   $script = "ga('require', 'ecommerce', 'ecommerce.js');\n";
 
-  // Transaction.
-  $transaction_push_map = array(
-    'order_id'       => 'id',
-    'affiliation'    => 'affiliation',
-    'total'          => 'revenue',
-    'total_shipping' => 'shipping',
-    'total_tax'      => 'tax',
-    'currency'       => 'currency',
-  );
+  // Transaction:
+  $script .= "ga('ecommerce:addTransaction', " . json_encode($push['trans']) . ");\n";
 
-  // Mapping.
-  $transaction_mapped_push = ga_push_push_key_mapper($transaction_push_map, $push['trans']);
-
-  // Build up the transaction.
-  $script .= "ga('ecommerce:addTransaction', " . json_encode($transaction_mapped_push) . ");\n";
-
-  // Items.
-  $item_push_map = array(
-    'order_id' => 'id',
-    'name'     => 'name',
-    'sku'      => 'sku',
-    'category' => 'category',
-    'price'    => 'price',
-    'quantity' => 'quantity',
-    'currency' => 'currency',
-  );
-
-  // Build up the items.
+  // Items:
   foreach ($push['items'] as $value) {
-    // Mapping.
-    $item_mapped_push = ga_push_push_key_mapper($item_push_map, $value);
-    $script .= "ga('ecommerce:addItem', " . json_encode($item_mapped_push) . ");\n";
+    $script .= "ga('ecommerce:addItem', " . json_encode($value) . ");\n";
   }
 
   // Sending!

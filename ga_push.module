@@ -163,15 +163,10 @@ function ga_push_page_alter($main = 0) {
 function ga_push_add($push, $type = GA_PUSH_TYPE_EVENT, $method_key = NULL, $options = array()) {
   global $user;
 
-  $push_legacy_map = array(
-    'category' => 'eventCategory',
-    'action'   => 'eventAction',
-    'label'    => 'eventLabel',
-    'value'    => 'eventValue',
-  );
-
-  // Mapping.
-  $push = ga_push_push_data_mapper($push_legacy_map, $push);
+  // Legacy compatibility:
+  // Map old method keys to the new ones.
+  // @NOTE: this feature will be remove in future realeases.
+  $push = ga_push_add_legacy_params($push, $type);
 
   // Let other modules alter the current push data:
   drupal_alter('ga_push_add', $push, $type, $method_key, $options);
@@ -213,6 +208,48 @@ function ga_push_add($push, $type = GA_PUSH_TYPE_EVENT, $method_key = NULL, $opt
     }
   }
 }
+/**
+ * Maps old method keys to the new ones.
+ * This function is for legacy compatibility and will be removed on next releases.
+ */
+function ga_push_add_legacy_params($push, $type) {
+
+  switch ($type) {
+    case  GA_PUSH_TYPE_ECOMMERCE:
+      // Transaction:
+      $push_legacy_trans_map = array(
+        'order_id'       => 'id',
+        'total'          => 'revenue',
+        'total_shipping' => 'shipping',
+        'total_tax'      => 'tax',
+      );
+      $push['trans'] = ga_push_push_data_mapper($push_legacy_trans_map, $push['trans']);
+
+      // Items:
+      $push_legacy_items_map = array(
+        'order_id' => 'id',
+      );
+      foreach ($push['items'] as $key => $value) {
+        $push['items'][$key] = ga_push_push_data_mapper($push_legacy_items_map, $value);
+      }
+
+      break;
+
+    default:
+      $push_legacy_map = array(
+        // Event:
+        'category' => 'eventCategory',
+        'action'   => 'eventAction',
+        'label'    => 'eventLabel',
+        'value'    => 'eventValue',
+      );
+
+      // Mapping.
+      $push = ga_push_push_data_mapper($push_legacy_map, $push);
+  }
+
+  return $push;
+}
 
 /**
  * Push a GA ecommerce.
@@ -234,19 +271,19 @@ function ga_push_add($push, $type = GA_PUSH_TYPE_EVENT, $method_key = NULL, $opt
  * @code
  *   ga_push_add_ecommerce(array(
  *     'trans' => array(
- *       'order_id'       => '1234',
- *       'affiliation'    => 'Acme Clothing',
- *       'total'          => '11.99',
- *       'total_tax'      => '1.29',
- *       'total_shipping' => '5',
- *       'city'           => 'San Jose',
- *       'region'         => 'California',
- *       'country'        => 'USA',
- *       'currency'       => 'EUR'
+ *       'id'          => '1234',
+ *       'affiliation' => 'Acme Clothing',
+ *       'revenue'     => '11.99',
+ *       'tax'         => '1.29',
+ *       'shipping'    => '5',
+ *       'city'        => 'San Jose',
+ *       'region'      => 'California',
+ *       'country'     => 'USA',
+ *       'currency'    => 'EUR',
  *     ),
  *     'items' => array(
  *       array(
- *         'order_id' => '1234',
+ *         'id' => '1234',
  *         'sku'      => 'DD44',
  *         'name'     => 'T-Shirt',
  *         'category' => 'Green Medium',
@@ -262,19 +299,19 @@ function ga_push_add($push, $type = GA_PUSH_TYPE_EVENT, $method_key = NULL, $opt
  *   An associative array containing:
  *   - trans: array
  *     Transaction data. An associative array containing:
- *     - order_id:
+ *     - id:
  *       The transaction ID. (e.g. 1234).
  *     - affiliation:
  *      (optional) The store or affiliation from which this transaction occurred
  *      (e.g. Acme Clothing).
- *     - total:
- *       Revenue. Specifies the total revenue or grand total associated with the
+ *     - revenue:
+ *       Specifies the total revenue or grand total associated with the
  *       transaction (e.g. 11.99). This value may include shipping, tax costs,
  *       or other adjustments to total revenue that you want to include as part
  *       of your revenue calculations.
- *     - total_tax:
+ *     - tax:
  *       (optional) Specifies the total tax of the transaction. (e.g. 1.29).
- *     - total_shipping:
+ *     - shipping:
  *       (optional) Specifies the total shipping cost of the transaction. (e.g. 5).
  *     - city:
  *       (optional) city.
@@ -287,7 +324,7 @@ function ga_push_add($push, $type = GA_PUSH_TYPE_EVENT, $method_key = NULL, $opt
  *
  *   - items: array
  *     Items data. A multiple associative array containing on each row:
- *     - order_id:
+ *     - id:
  *       The transaction ID. This ID is what links items to the transactions to
  *       which they belong. (e.g. 1234)
  *     - name:
@@ -701,27 +738,42 @@ function ga_push_method_php_ga_available() {
 function ga_push_analyticsjs_measurement_protocol_map() {
   return array(
     // Application:
-    'appName' => 'an',
-    'appId'   => 'aid',
-    'appVersion' => 'av',
-    'appInstallerId' => 'aiid',
+    'appName'         => 'an',
+    'appId'           => 'aid',
+    'appVersion'      => 'av',
+    'appInstallerId'  => 'aiid',
+    // Ecommerce:
+    'id'              => 'ti',
+    'affiliation'     => 'ta',
+    'revenue'         => 'tr',
+    'tax'             => 'tt',
+    'shipping'        => 'ts',
+    'currency'        => 'cu',
+    'name'            => 'in',
+    'price'           => 'ip',
+    'quantity'        => 'iq',
+    'sku'             => 'ic',
+    'category'        => 'iv',
+    'country'         => 'co',
+    'city'            => 'ci',
+    'region'          => 'rg',
     // Event:
-    'eventCategory' => 'ec',
-    'eventAction' => 'ea',
-    'eventLabel' => 'el',
-    'eventValue' => 'ev',
+    'eventCategory'   => 'ec',
+    'eventAction'     => 'ea',
+    'eventLabel'      => 'el',
+    'eventValue'      => 'ev',
     'non-interaction' => 'ni',
     // Exception:
-    'exDescription'	=> 'exd',
-    'exFatal'	=> 'exf',
+    'exDescription'	  => 'exd',
+    'exFatal'	        => 'exf',
     // Pageview:
-    'location' => 'dh',
-    'page' => 'dp',
-    'title' => 'dt',
+    'location'        => 'dh',
+    'page'            => 'dp',
+    'title'           => 'dt',
     // Social:
-    'socialNetwork' => 'sn',
-    'socialAction' => 'sa',
-    'socialTarget' => 'st',
+    'socialNetwork'   => 'sn',
+    'socialAction'    => 'sa',
+    'socialTarget'    => 'st',
   );
 }
 

@@ -84,33 +84,19 @@ function ga_push_method_php_utmp_construct_event_request_data($push) {
  *     - items: Array with data to send to GA for each item.
  */
 function ga_push_method_utmp_php_construct_ecommerce_request_data($push) {
-
   $data = array();
 
   // Transaction data.
-  // @TODO: All keys should be present? are they all required?
-  $data['transaction'] = array(
-    't' => 'transaction',
-    'ti' => $push['trans']['order_id'],
-    'ta' => $push['trans']['affiliation'],
-    'tr' => $push['trans']['total'],
-    'tt' => $push['trans']['total_tax'],
-    'ts' => $push['trans']['total_shipping'],
-    'cu' => $push['trans']['currency'],
-  );
+  $tdata = array('t' => 'transaction');
+  $tdata += ga_push_analyticsjs_measurement_protocol_mapping($push['trans']);
+  $data['transaction'] = $tdata;
 
   // Items data.
+  $data['items'] = array();
   foreach ($push['items'] as $value) {
-    $data['items'][] = array(
-      't' => 'item',
-      'ti' => $value['order_id'],
-      'in' => $value['name'],
-      'ip' => !empty($value['price']) ? $value['price'] : NULL,
-      'iq' => !empty($value['quantity']) ? $value['quantity'] : NULL,
-      'ic' => !empty($value['sku']) ? $value['sku'] : NULL,
-      'iv' => !empty($value['category']) ? $value['category'] : NULL,
-      'cu' => !empty($value['currency']) ? $value['currency'] : NULL,
-    );
+    $idata = array('t' => 'item');
+    $idata += ga_push_analyticsjs_measurement_protocol_mapping($value);
+    $data['items'][] = $idata;
   }
 
   return $data;
