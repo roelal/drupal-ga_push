@@ -3,6 +3,8 @@
  * @file ga_push.module
  */
 
+use Drupal\Core\Routing\RouteMatchInterface;
+
 //Methods:
 // Classic GA.
 define('GA_PUSH_METHOD_DEFAULT', 'default');
@@ -33,11 +35,14 @@ define('GA_PUSH_TYPE_SPEED', 'speed');
 /**
  * Implements hook_help().
  */
-function ga_push_help($path, $arg) {
-  switch ($path) {
-    // Main module help for the block module
-    case 'admin/help#ga_push':
+function ga_push_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // @TODO Complete help texts
+    case 'help.page.ga_push':
       return '<p>' . t('A module that push Google Analytics events') . '</p>';
+
+    case 'ga_push.settings':
+      return '<p>' . t('Default method settings.') . '</p>';
   }
 }
 
@@ -63,7 +68,6 @@ function ga_push_menu() {
     'description' => "Global configuration of ga push.",
     'route_name' => 'ga_push.settings',
   );
-
 
   $items['admin/config/system/ga-push/settings'] = array(
     'title' => 'Ga push',
