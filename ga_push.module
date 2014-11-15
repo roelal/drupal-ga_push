@@ -47,19 +47,6 @@ function ga_push_help($route_name, RouteMatchInterface $route_match) {
 }
 
 /**
- * Implements hook_permission().
- */
-function ga_push_permission() {
-  return array(
-    'admin ga push' => array(
-      'title' => t('Administer ga push'),
-      'description' => t('Perform administration tasks for my ga push.'),
-    ),
-  );
-}
-
-
-/**
  * Implements hook_module_implements_alter().
  */
 function ga_push_module_implements_alter(&$implementations, $hook) {
