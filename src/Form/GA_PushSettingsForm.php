@@ -8,6 +8,7 @@
 namespace Drupal\ga_push\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
+use Drupal\Core\Form\FormStateInterface;
 
 class GA_PushSettingsForm extends ConfigFormBase {
 
@@ -21,8 +22,7 @@ class GA_PushSettingsForm extends ConfigFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state) {
-
+  public function buildForm(array $form, FormStateInterface $form_state) {
     $config = $this->config('ga_push.settings');
 
     $elements = ga_push_get_methods_option_list(NULL, FALSE);;
@@ -41,12 +41,11 @@ class GA_PushSettingsForm extends ConfigFormBase {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, array &$form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->config('ga_push.settings')
-      ->set('default_method', $form_state['values']['ga_push_default_method'])
+      ->set('default_method', $form_state->getValue('ga_push_default_method'))
       ->save();
 
     parent::submitForm($form, $form_state);
   }
 }
-
