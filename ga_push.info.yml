@@ -4,6 +4,8 @@ package: Statistics
 type: module
 version: 1.0
 core: 8.x
+configure: ga_push.settings
+
 dependencies:
 - node
 - google_analytics
