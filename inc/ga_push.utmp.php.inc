@@ -39,9 +39,9 @@ function ga_push_method_utmp_php($push, $type, $options) {
       break;
 
     case GA_PUSH_TYPE_EXCEPTION:
-      $event_data = ga_push_method_php_utmp_construct_exception_request_data($push);
+      $exception_data = ga_push_method_php_utmp_construct_exception_request_data($push);
       // @TODO: Check response.
-      ga_push_method_utmp_php_request($event_data, $options);
+      ga_push_method_utmp_php_request($exception_data, $options);
       break;
 
     case GA_PUSH_TYPE_PAGEVIEW:
@@ -51,9 +51,9 @@ function ga_push_method_utmp_php($push, $type, $options) {
       break;
 
     case GA_PUSH_TYPE_SOCIAL:
-      $pageview_data = ga_push_method_php_utmp_construct_social_request_data($push);
+      $social_data = ga_push_method_php_utmp_construct_social_request_data($push);
       // @TODO: Check response.
-      ga_push_method_utmp_php_request($pageview_data, $options);
+      ga_push_method_utmp_php_request($social_data, $options);
       break;
   }
 }
@@ -68,29 +68,9 @@ function ga_push_method_utmp_php($push, $type, $options) {
  *   Array with the event data preparad to be sent to GA.
  */
 function ga_push_method_php_utmp_construct_event_request_data($push) {
-
-  // Initiallization with required keys.
-  $data = array(
-    't' => 'event',
-    'ec' => $push['category'],
-    'ea' => $push['action'],
-  );
-
-  // Optional keys:
-  if (isset($push['label'])) {
-    $data['el'] = $push['label'];
-  }
-
-  if (isset($push['value'])) {
-    $data['ev'] = $push['value'];
-  }
-
-  // @TODO: Check if this attribute is still used.
-  // if (isset($push['non-interaction'])
-
-  return $data;
+  $push['t'] = 'event';
+  return ga_push_analyticsjs_measurement_protocol_mapping($push);
 }
-
 
 /**
  * Returns data arrays for a eCommerce tacking.
@@ -104,33 +84,19 @@ function ga_push_method_php_utmp_construct_event_request_data($push) {
  *     - items: Array with data to send to GA for each item.
  */
 function ga_push_method_utmp_php_construct_ecommerce_request_data($push) {
-
   $data = array();
 
   // Transaction data.
-  // @TODO: All keys should be present? are they all required?
-  $data['transaction'] = array(
-    't' => 'transaction',
-    'ti' => $push['trans']['order_id'],
-    'ta' => $push['trans']['affiliation'],
-    'tr' => $push['trans']['total'],
-    'tt' => $push['trans']['total_tax'],
-    'ts' => $push['trans']['total_shipping'],
-    'cu' => $push['trans']['currency'],
-  );
+  $tdata = array('t' => 'transaction');
+  $tdata += ga_push_analyticsjs_measurement_protocol_mapping($push['trans']);
+  $data['transaction'] = $tdata;
 
   // Items data.
+  $data['items'] = array();
   foreach ($push['items'] as $value) {
-    $data['items'][] = array(
-      't' => 'item',
-      'ti' => $value['order_id'],
-      'in' => $value['name'],
-      'ip' => !empty($value['price']) ? $value['price'] : NULL,
-      'iq' => !empty($value['quantity']) ? $value['quantity'] : NULL,
-      'ic' => !empty($value['sku']) ? $value['sku'] : NULL,
-      'iv' => !empty($value['category']) ? $value['category'] : NULL,
-      'cu' => !empty($value['currency']) ? $value['currency'] : NULL,
-    );
+    $idata = array('t' => 'item');
+    $idata += ga_push_analyticsjs_measurement_protocol_mapping($value);
+    $data['items'][] = $idata;
   }
 
   return $data;
@@ -146,15 +112,8 @@ function ga_push_method_utmp_php_construct_ecommerce_request_data($push) {
  *   Array with the pageview data ready to be sent to GA.
  */
 function ga_push_method_php_utmp_construct_exception_request_data($push) {
-  // @TODO: integrate with ga_push_analyticsjs_measurement_protocol_map().
-  // Initiallization with required keys.
-  $data = array(
-    't' => 'exception',
-    'exd' => !empty($push['exDescription']) ? $push['exDescription'] : NULL,
-    'exf' => !empty($push['exFatal']) ? $push['exFatal'] : NULL,
-  );
-
-  return $data;
+  $push['t'] = 'exception';
+  return ga_push_analyticsjs_measurement_protocol_mapping($push);
 }
 
 /**
@@ -167,16 +126,8 @@ function ga_push_method_php_utmp_construct_exception_request_data($push) {
  *   Array with the pageview data ready to be sent to GA.
  */
 function ga_push_method_php_utmp_construct_pageview_request_data($push) {
-
-  // Initiallization with required keys.
-  $data = array(
-    't' => 'pageview',
-    'dh' => !empty($push['location']) ? $push['location'] : NULL,
-    'dp' => !empty($push['page']) ? $push['page'] : NULL,
-    'dt' => !empty($push['title']) ? $push['title'] : NULL,
-  );
-
-  return $data;
+  $push['t'] = 'pageview';
+  return ga_push_analyticsjs_measurement_protocol_mapping($push);
 }
 
 /**
@@ -189,16 +140,8 @@ function ga_push_method_php_utmp_construct_pageview_request_data($push) {
  *   Array with the pageview data ready to be sent to GA.
  */
 function ga_push_method_php_utmp_construct_social_request_data($push) {
-
-  // Initiallization with required keys.
-  $data = array(
-    't' => 'social',
-    'sn' => !empty($push['socialNetwork']) ? $push['socialNetwork'] : NULL,
-    'sa' => !empty($push['socialAction']) ? $push['socialAction'] : NULL,
-    'st' => !empty($push['socialTarget']) ? $push['socialTarget'] : NULL,
-  );
-
-  return $data;
+  $push['t'] = 'social';
+  return ga_push_analyticsjs_measurement_protocol_mapping($push);
 }
 
 /**

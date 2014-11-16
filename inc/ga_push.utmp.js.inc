@@ -61,7 +61,7 @@ function ga_push_method_utmp_js_push_script($push, $type) {
       break;
 
     case GA_PUSH_TYPE_EXCEPTION:
-      $script = _ga_push_method_utmp_js_push_exception_script($push);
+      $script = _ga_push_method_utmp_js_push_send_script($push, 'exception');
       break;
 
     case GA_PUSH_TYPE_PAGEVIEW:
@@ -93,24 +93,12 @@ function _ga_push_method_utmp_js_push_event_script($push) {
 
   // Optional: default values.
   $push += array(
-    'label' => '',
-    'value' => 1,
-    'non-interaction' => FALSE,
+    'eventLabel' => '',
+    'eventValue' => 1,
   );
-
-  $push_map = array(
-    'category' => 'eventCategory',
-    'action'   => 'eventAction',
-    'label'    => 'eventLabel',
-    'value'    => 'eventValue',
-    'non-interaction' => 'nonInteraction',
-  );
-
-  // Mapping.
-  $mapped_push = ga_push_push_mapper($push_map, $push);
 
   // Convert to JS function.
-  $script = _ga_push_method_utmp_js_push_send_script($mapped_push, 'event');
+  $script = _ga_push_method_utmp_js_push_send_script($push, 'event');
 
   return $script;
 }
@@ -129,61 +117,16 @@ function _ga_push_method_utmp_js_push_ecommerce_script($push) {
   // Include needed additional ga e-commerce library.
   $script = "ga('require', 'ecommerce', 'ecommerce.js');\n";
 
-  // Transaction.
-  $transaction_push_map = array(
-    'order_id'       => 'id',
-    'affiliation'    => 'affiliation',
-    'total'          => 'revenue',
-    'total_shipping' => 'shipping',
-    'total_tax'      => 'tax',
-    'currency'       => 'currency',
-  );
+  // Transaction:
+  $script .= "ga('ecommerce:addTransaction', " . json_encode($push['trans']) . ");\n";
 
-  // Mapping.
-  $transaction_mapped_push = ga_push_push_mapper($transaction_push_map, $push['trans']);
-
-  // Build up the transaction.
-  $script .= "ga('ecommerce:addTransaction', " . json_encode($transaction_mapped_push) . ");\n";
-
-  // Items.
-  $item_push_map = array(
-    'order_id' => 'id',
-    'name'     => 'name',
-    'sku'      => 'sku',
-    'category' => 'category',
-    'price'    => 'price',
-    'quantity' => 'quantity',
-    'currency' => 'currency',
-  );
-
-  // Build up the items.
+  // Items:
   foreach ($push['items'] as $value) {
-    // Mapping.
-    $item_mapped_push = ga_push_push_mapper($item_push_map, $value);
-    $script .= "ga('ecommerce:addItem', " . json_encode($item_mapped_push) . ");\n";
+    $script .= "ga('ecommerce:addItem', " . json_encode($value) . ");\n";
   }
 
   // Sending!
   $script .= "ga('ecommerce:send');\n";
-
-  return $script;
-}
-
-/**
- * Generates the ga JS code for pushing an exception to GA.
- *
- * @param array $push
- *   Event data.
- *
- * @return string
- *   JS code with push code.
- */
-function _ga_push_method_utmp_js_push_exception_script($push) {
-  // Remove empty parameters:
-  $push = array_filter($push);
-
-  // Convert to JS function.
-  $script = "ga('send', 'exception', " . json_encode($push) . ");\n";
 
   return $script;
 }

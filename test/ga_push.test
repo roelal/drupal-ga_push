@@ -39,24 +39,24 @@ class GAPushUnitTestCase extends DrupalUnitTestCase {
     // Events:
 
     $this->pushes[GA_PUSH_TYPE_EVENT]['calv'] = array(
-      'category'        => 'Videos',
-      'action'          => 'Play',
-      'label'           => 'Gone With the Wind',
-      'value'           => 1,
-      'non-interaction' => FALSE,
+      'eventCategory'        => 'Videos',
+      'eventAction'          => 'Play',
+      'eventLabel'           => 'Gone With the Wind',
+      'eventValue'           => 1,
+      'nonInteraction'       => FALSE,
     );
 
     $this->pushes[GA_PUSH_TYPE_EVENT]['calvn'] = array(
-      'category'        => 'Videos',
-      'action'          => 'Play',
-      'label'           => 'Gone With the Wind',
-      'value'           => 1,
-      'non-interaction' => TRUE,
+      'eventCategory'        => 'Videos',
+      'eventAction'          => 'Play',
+      'eventLabel'           => 'Gone With the Wind',
+      'eventValue'           => 1,
+      'nonInteraction'       => TRUE,
     );
 
     $this->pushes[GA_PUSH_TYPE_EVENT]['ca'] = array(
-      'category'        => 'Videos',
-      'action'          => 'Play',
+      'eventCategory'        => 'Videos',
+      'eventAction'          => 'Play',
     );
 
     // Social:
