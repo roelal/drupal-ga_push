@@ -1,39 +1,40 @@
 <?php
 /**
  * @file
- * UTMP Javascript: method and functions.
+ * Universal Analytics js: method and functions.
  */
 
 /**
  * GA Push Method callback: UTMP (js).
  */
-function ga_push_method_utmp_js($push, $type, $options) {
+function ga_push_method_analytics_js($push, $type, $options) {
   $push_info = array(
     'push' => $push,
     'type' => $type,
   );
-  $_SESSION['ga_push_utmp'][] = $push_info;
+  $_SESSION['ga_push_' . GA_PUSH_METHOD_ANALYTICS_JS][] = $push_info;
 }
 
 /**
  * Send the ga push to JS on page load using Universal Analytics Event Tracking.
  */
-function ga_push_method_utmp_js_push() {
-  if (isset($_SESSION['ga_push_utmp'])) {
+function ga_push_method_analytics_js_push() {
+  $session_key = 'ga_push_' . GA_PUSH_METHOD_ANALYTICS_JS;
+  if (isset($_SESSION[$session_key])) {
     $id = variable_get('googleanalytics_account', '');
     if (!empty($id)) {
       $script = "var ga = ga || [];\n";
 
       // Process each push data that needs to be sent to Google Analytics.
-      foreach ($_SESSION['ga_push_utmp'] as $queued) {
+      foreach ($_SESSION[$session_key] as $queued) {
         $push = $queued['push'];
         $type = $queued['type'];
 
-        $script .= ga_push_method_utmp_js_push_script($push, $type);
+        $script .= ga_push_method_analytics_js_push_script($push, $type);
       }
 
-      _ga_push_method_utmp_js_add_script($script);
-      unset($_SESSION['ga_push_utmp']);
+      _ga_push_method_analytics_js_add_script($script);
+      unset($_SESSION[$session_key]);
     }
   }
 }
@@ -49,27 +50,27 @@ function ga_push_method_utmp_js_push() {
  * @return string
  *   Script code.
  */
-function ga_push_method_utmp_js_push_script($push, $type) {
+function ga_push_method_analytics_js_push_script($push, $type) {
 
   switch ($type) {
     case GA_PUSH_TYPE_EVENT:
-      $script = _ga_push_method_utmp_js_push_event_script($push);
+      $script = _ga_push_method_analytics_js_push_event_script($push);
       break;
 
     case GA_PUSH_TYPE_ECOMMERCE:
-      $script = _ga_push_method_utmp_js_push_ecommerce_script($push);
+      $script = _ga_push_method_analytics_js_push_ecommerce_script($push);
       break;
 
     case GA_PUSH_TYPE_EXCEPTION:
-      $script = _ga_push_method_utmp_js_push_send_script($push, 'exception');
+      $script = _ga_push_method_analytics_js_push_send_script($push, 'exception');
       break;
 
     case GA_PUSH_TYPE_PAGEVIEW:
-      $script = _ga_push_method_utmp_js_push_send_script($push, 'pageview');
+      $script = _ga_push_method_analytics_js_push_send_script($push, 'pageview');
       break;
 
     case GA_PUSH_TYPE_SOCIAL:
-      $script = _ga_push_method_utmp_js_push_send_script($push, 'social');
+      $script = _ga_push_method_analytics_js_push_send_script($push, 'social');
       break;
 
     default:
@@ -89,7 +90,7 @@ function ga_push_method_utmp_js_push_script($push, $type) {
  * @return string
  *   JS code with push code.
  */
-function _ga_push_method_utmp_js_push_event_script($push) {
+function _ga_push_method_analytics_js_push_event_script($push) {
 
   // Optional: default values.
   $push += array(
@@ -98,7 +99,7 @@ function _ga_push_method_utmp_js_push_event_script($push) {
   );
 
   // Convert to JS function.
-  $script = _ga_push_method_utmp_js_push_send_script($push, 'event');
+  $script = _ga_push_method_analytics_js_push_send_script($push, 'event');
 
   return $script;
 }
@@ -112,7 +113,7 @@ function _ga_push_method_utmp_js_push_event_script($push) {
  * @return string
  *   JS code with push code.
  */
-function _ga_push_method_utmp_js_push_ecommerce_script($push) {
+function _ga_push_method_analytics_js_push_ecommerce_script($push) {
 
   // Include needed additional ga e-commerce library.
   $script = "ga('require', 'ecommerce', 'ecommerce.js');\n";
@@ -142,7 +143,7 @@ function _ga_push_method_utmp_js_push_ecommerce_script($push) {
  * @return string
  *   JS code with push code.
  */
-function _ga_push_method_utmp_js_push_send_script($push, $hit_type) {
+function _ga_push_method_analytics_js_push_send_script($push, $hit_type) {
   // Remove empty parameters:
   $push = array_filter($push);
 
@@ -158,14 +159,14 @@ function _ga_push_method_utmp_js_push_send_script($push, $hit_type) {
 /**
  * Adds generated script with push data.
  *
- * Used by ga_push_method_utmp_js_push.
+ * Used by ga_push_method_analytics_js_push.
  *
- * @see ga_push_method_utmp_js_push()
+ * @see ga_push_method_analytics_js_push()
  *
  * @param string $script
  *   Generated script code to add.
  */
-function _ga_push_method_utmp_js_add_script($script) {
+function _ga_push_method_analytics_js_add_script($script) {
   $options = array(
     'type' => 'inline',
     'scope' => 'footer',

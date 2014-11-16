@@ -7,13 +7,13 @@
 /**
  * GA Push Method callback: Javascript Classic (javascript).
  */
-function ga_push_method_javascript($push, $type, $options) {
+function ga_push_method_ga_js($push, $type, $options) {
 
   $push_info = array(
     'push' => $push,
     'type' => $type,
   );
-  $_SESSION['ga_push'][] = $push_info;
+  $_SESSION['ga_push_' . GA_PUSH_METHOD_GA_JS][] = $push_info;
 }
 
 /**
@@ -21,15 +21,16 @@ function ga_push_method_javascript($push, $type, $options) {
  *
  * @see https://developers.google.com/analytics/devguides/collection/gajs
  */
-function ga_push_method_javascript_push() {
-  if (isset($_SESSION['ga_push'])) {
+function ga_push_method_ga_js_push() {
+  $session_key = 'ga_push_' . GA_PUSH_METHOD_GA_JS;
+  if (isset($_SESSION[$session_key])) {
 
     $id = variable_get('googleanalytics_account', '');
 
     if (!empty($id)) {
       $script = "var _gaq = _gaq || [];\n";
 
-      foreach ($_SESSION['ga_push'] as $queued) {
+      foreach ($_SESSION[$session_key] as $queued) {
 
         $push = $queued['push'];
         $type = $queued['type'];
@@ -131,7 +132,7 @@ function ga_push_method_javascript_push() {
         }
       }
 
-      unset($_SESSION['ga_push']);
+      unset($_SESSION[$session_key]);
 
       $options = array(
         'type' => 'inline',

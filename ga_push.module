@@ -7,12 +7,12 @@
 // Methods:
 // Classic GA.
 define('GA_PUSH_METHOD_DEFAULT', 'default');
-define('GA_PUSH_METHOD_JS', 'javascript');
+define('GA_PUSH_METHOD_GA_JS', 'ga-js');
 define('GA_PUSH_METHOD_SSGA', 'ssga');
 define('GA_PUSH_METHOD_PHP_GA', 'php-ga');
 // Universal Tracking, Measurement Protocol.
 define('GA_PUSH_METHOD_UTMP_PHP', 'utmp-php');
-define('GA_PUSH_METHOD_UTMP_JS', 'utmp-js');
+define('GA_PUSH_METHOD_ANALYTICS_JS', 'analytics-js');
 
 // Tracking methods:
 define('GA_PUSH_TRACKING_METHOD_CLASSIC', 'classic');
@@ -94,11 +94,11 @@ function ga_push_module_implements_alter(&$implementations, $hook) {
  * Implements hook_page_alter().
  */
 function ga_push_page_alter($main = 0) {
-  module_load_include('inc', 'ga_push', 'inc/ga_push.javascript');
-  ga_push_method_javascript_push();
+  module_load_include('inc', 'ga_push', 'inc/ga_push.ga_js');
+  ga_push_method_ga_js_push();
 
-  module_load_include('inc', 'ga_push', 'inc/ga_push.utmp.js');
-  ga_push_method_utmp_js_push();
+  module_load_include('inc', 'ga_push', 'inc/ga_push.analytics_js');
+  ga_push_method_analytics_js_push();
 }
 
 /**
@@ -179,7 +179,7 @@ function ga_push_add($push, $type = GA_PUSH_TYPE_EVENT, $method_key = NULL, $opt
       if (is_null($method_key)
         || $method_key == GA_PUSH_METHOD_DEFAULT
         || !is_null($method_key) && !ga_push_method_available($method_key, $type)) {
-        $default_method_key = variable_get('ga_push_default_method', GA_PUSH_METHOD_JS);
+        $default_method_key = variable_get('ga_push_default_method', GA_PUSH_METHOD_ANALYTICS_JS);
         $method_key = $default_method_key;
       }
 
@@ -451,7 +451,7 @@ function ga_push_add_exception($push, $method_key = NULL, $options = array()) {
  *   An associative array containing:
  *   - location: string
  *     (optional) URL of the page being tracked.
- *     By default, analytics.js sets this to the full document URL, excluding
+ *     By default, analytics_js sets this to the full document URL, excluding
  *     the fragment identifier.
  *   - page: string
  *     (optional) A string that is uniquely paired with each category, and
@@ -641,53 +641,27 @@ function ga_push_ga_push_method() {
 
   $module_path = drupal_get_path('module', 'ga_push');
 
-  $method[GA_PUSH_METHOD_JS] = array(
-    'name' => 'Javascript Classic (js)',
-    'description' => '',
-    'machine_name' => GA_PUSH_METHOD_JS,
-    'callback' => 'ga_push_method_javascript',
-    'file' => $module_path . '/inc/ga_push.javascript.inc',
+  $method[GA_PUSH_METHOD_ANALYTICS_JS] = array(
+    'name' => 'Analytics.js (js)',
+    'description' => l('Analytics.js', 'https://developers.google.com/analytics/devguides/collection/analyticsjs/'),
+    'machine_name' => GA_PUSH_METHOD_ANALYTICS_JS,
+    'callback' => 'ga_push_method_analytics_js',
+    'file' => $module_path . '/inc/ga_push.analytics_js.inc',
     'implements' => array(
       GA_PUSH_TYPE_EVENT => TRUE,
       GA_PUSH_TYPE_ECOMMERCE => TRUE,
+      GA_PUSH_TYPE_EXCEPTION => TRUE,
+      GA_PUSH_TYPE_PAGEVIEW => TRUE,
+      GA_PUSH_TYPE_SOCIAL => TRUE,
     ),
     'side' => GA_PUSH_CLIENT_SIDE,
-    'tracking_method' => GA_PUSH_TRACKING_METHOD_CLASSIC,
+    'tracking_method' => GA_PUSH_TRACKING_METHOD_UNIVERSAL,
     'available' => TRUE,
   );
 
-  $method[GA_PUSH_METHOD_SSGA] = array(
-    'name' => 'SSGA (php)',
-    'description' => 'requires php 5.2+, curl and ssga libraries',
-    'machine_name' => GA_PUSH_METHOD_SSGA,
-    'callback' => 'ga_push_method_ssga',
-    'file' => $module_path . '/inc/ga_push.ssga.inc',
-    'implements' => array(
-      GA_PUSH_TYPE_EVENT => TRUE,
-    ),
-    'side' => GA_PUSH_SERVER_SIDE,
-    'tracking_method' => GA_PUSH_TRACKING_METHOD_CLASSIC,
-    'available' => class_exists('ssga') && is_callable('curl_init'),
-  );
-
-  $method[GA_PUSH_METHOD_PHP_GA] = array(
-    'name' => 'PHP-GA (php)',
-    'description' => 'requires php 5.3 and php-ga library',
-    'machine_name' => GA_PUSH_METHOD_PHP_GA,
-    'callback' => 'ga_push_method_php_ga',
-    'file' => $module_path . '/inc/ga_push.php_ga.inc',
-    'implements' => array(
-      GA_PUSH_TYPE_EVENT => TRUE,
-      GA_PUSH_TYPE_ECOMMERCE => TRUE,
-    ),
-    'side' => GA_PUSH_SERVER_SIDE,
-    'tracking_method' => GA_PUSH_TRACKING_METHOD_CLASSIC,
-    'available' => 'ga_push_method_php_ga_available',
-  );
-
   $method[GA_PUSH_METHOD_UTMP_PHP] = array(
-    'name' => 'UTMP (php)',
-    'description' => 'Universal Tracking, Measurement Protocol',
+    'name' => 'Measurement Protocol (php)',
+    'description' => l('Measurement Protocol', 'https://developers.google.com/analytics/devguides/collection/protocol/v1/'),
     'machine_name' => GA_PUSH_METHOD_UTMP_PHP,
     'callback' => 'ga_push_method_utmp_php',
     'file' => $module_path . '/inc/ga_push.utmp.php.inc',
@@ -703,22 +677,48 @@ function ga_push_ga_push_method() {
     'available' => TRUE,
   );
 
-  $method[GA_PUSH_METHOD_UTMP_JS] = array(
-    'name' => 'UTMP (js)',
-    'description' => 'Universal Tracking, Measurement Protocol',
-    'machine_name' => GA_PUSH_METHOD_UTMP_JS,
-    'callback' => 'ga_push_method_utmp_js',
-    'file' => $module_path . '/inc/ga_push.utmp.js.inc',
+  $method[GA_PUSH_METHOD_GA_JS] = array(
+    'name' => 'Ga.js (js)',
+    'description' => '@deprecated ' . l('ga.js', 'https://developers.google.com/analytics/devguides/collection/gajs/'),
+    'machine_name' => GA_PUSH_METHOD_GA_JS,
+    'callback' => 'ga_push_method_ga_js',
+    'file' => $module_path . '/inc/ga_push.ga_js.inc',
     'implements' => array(
       GA_PUSH_TYPE_EVENT => TRUE,
       GA_PUSH_TYPE_ECOMMERCE => TRUE,
-      GA_PUSH_TYPE_EXCEPTION => TRUE,
-      GA_PUSH_TYPE_PAGEVIEW => TRUE,
-      GA_PUSH_TYPE_SOCIAL => TRUE,
     ),
     'side' => GA_PUSH_CLIENT_SIDE,
-    'tracking_method' => GA_PUSH_TRACKING_METHOD_UNIVERSAL,
+    'tracking_method' => GA_PUSH_TRACKING_METHOD_CLASSIC,
     'available' => TRUE,
+  );
+
+  $method[GA_PUSH_METHOD_PHP_GA] = array(
+    'name' => 'PHP-GA (php)',
+    'description' => '@deprecated requires php 5.3 and php-ga library',
+    'machine_name' => GA_PUSH_METHOD_PHP_GA,
+    'callback' => 'ga_push_method_php_ga',
+    'file' => $module_path . '/inc/ga_push.php_ga.inc',
+    'implements' => array(
+      GA_PUSH_TYPE_EVENT => TRUE,
+      GA_PUSH_TYPE_ECOMMERCE => TRUE,
+    ),
+    'side' => GA_PUSH_SERVER_SIDE,
+    'tracking_method' => GA_PUSH_TRACKING_METHOD_CLASSIC,
+    'available' => 'ga_push_method_php_ga_available',
+  );
+
+  $method[GA_PUSH_METHOD_SSGA] = array(
+    'name' => 'SSGA (php)',
+    'description' => '@deprecated requires php 5.2+, curl and ssga libraries',
+    'machine_name' => GA_PUSH_METHOD_SSGA,
+    'callback' => 'ga_push_method_ssga',
+    'file' => $module_path . '/inc/ga_push.ssga.inc',
+    'implements' => array(
+      GA_PUSH_TYPE_EVENT => TRUE,
+    ),
+    'side' => GA_PUSH_SERVER_SIDE,
+    'tracking_method' => GA_PUSH_TRACKING_METHOD_CLASSIC,
+    'available' => class_exists('ssga') && is_callable('curl_init'),
   );
 
   return $method;
