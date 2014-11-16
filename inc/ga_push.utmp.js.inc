@@ -29,32 +29,54 @@ function ga_push_method_utmp_js_push() {
         $push = $queued['push'];
         $type = $queued['type'];
 
-        switch ($type) {
-          case GA_PUSH_TYPE_EVENT:
-            $script .= _ga_push_method_utmp_js_push_event_script($push);
-            break;
-
-          case GA_PUSH_TYPE_ECOMMERCE:
-            $script .= _ga_push_method_utmp_js_push_ecommerce_script($push);
-            break;
-
-          case GA_PUSH_TYPE_EXCEPTION:
-            $script .= _ga_push_method_utmp_js_push_exception_script($push);
-            break;
-
-          case GA_PUSH_TYPE_PAGEVIEW:
-            $script .= _ga_push_method_utmp_js_push_send_script($push, 'pageview');
-            break;
-
-          case GA_PUSH_TYPE_SOCIAL:
-            $script .= _ga_push_method_utmp_js_push_send_script($push, 'social');
-            break;
-        }
+        $script .= ga_push_method_utmp_js_push_script($push, $type);
       }
+
       _ga_push_method_utmp_js_add_script($script);
       unset($_SESSION['ga_push_utmp']);
     }
   }
+}
+
+/**
+ * Generate the GA Push script code by type.
+ *
+ * @param array $push
+ *   Push data.
+ * @param string $type
+ *   Push type
+ *
+ * @return string
+ *   Script code.
+ */
+function ga_push_method_utmp_js_push_script($push, $type) {
+
+  switch ($type) {
+    case GA_PUSH_TYPE_EVENT:
+      $script = _ga_push_method_utmp_js_push_event_script($push);
+      break;
+
+    case GA_PUSH_TYPE_ECOMMERCE:
+      $script = _ga_push_method_utmp_js_push_ecommerce_script($push);
+      break;
+
+    case GA_PUSH_TYPE_EXCEPTION:
+      $script = _ga_push_method_utmp_js_push_exception_script($push);
+      break;
+
+    case GA_PUSH_TYPE_PAGEVIEW:
+      $script = _ga_push_method_utmp_js_push_send_script($push, 'pageview');
+      break;
+
+    case GA_PUSH_TYPE_SOCIAL:
+      $script = _ga_push_method_utmp_js_push_send_script($push, 'social');
+      break;
+
+    default:
+      $script = NULL;
+  }
+
+  return $script;
 }
 
 
