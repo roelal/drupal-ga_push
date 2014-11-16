@@ -81,6 +81,7 @@ function _ga_push_method_utmp_js_push_event_script($push) {
     'action'   => 'eventAction',
     'label'    => 'eventLabel',
     'value'    => 'eventValue',
+    'non-interaction' => 'nonInteraction',
   );
 
   // Mapping.
