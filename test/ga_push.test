@@ -30,8 +30,11 @@ class GAPushUnitTestCase extends DrupalUnitTestCase {
   public function setUp() {
     parent::setUp('ga_push', 'googleanalytics');
 
-    //$ua_code = 'UA-123456-1';
-    //variable_set('googleanalytics_account', $ua_code);
+    // $ua_code = 'UA-123456-1';
+    // variable_set('googleanalytics_account', $ua_code);
+
+    // Get defined vars:
+    module_load_include('module', 'ga_push');
 
     // Common pushes:
     $this->pushes = array();
@@ -76,7 +79,7 @@ class GAPushUnitTestCase extends DrupalUnitTestCase {
   /**
    * Unit test for ga_push_method_analytics_js_push_script(): Ecommerce.
    */
-  public function test_ecommerce_ga_push_method_analytics_js_push_script() {
+  public function testGaPushMethodAnalyticsJSPushScriptEcommerce() {
     $type = GA_PUSH_TYPE_ECOMMERCE;
     // @TODO!
   }
@@ -84,7 +87,7 @@ class GAPushUnitTestCase extends DrupalUnitTestCase {
   /**
    * Unit test for ga_push_method_analytics_js_push_script(): Event.
    */
-  public function testGaPushMethodUTMPjsPushScriptEvent() {
+  public function testGaPushMethodAnalyticsJSPushScriptEvent() {
     $type = GA_PUSH_TYPE_EVENT;
 
     // Load library:
@@ -110,7 +113,7 @@ class GAPushUnitTestCase extends DrupalUnitTestCase {
   /**
    * Unit test for ga_push_method_analytics_js_push_script(): Exception.
    */
-  public function testGaPushMethodUTMPjsPushScriptException() {
+  public function testGaPushMethodAnalyticsJSPushScriptException() {
     $type = GA_PUSH_TYPE_EXCEPTION;
     // @TODO!
   }
@@ -118,7 +121,7 @@ class GAPushUnitTestCase extends DrupalUnitTestCase {
   /**
    * Unit test for ga_push_method_analytics_js_push_script(): Pageview.
    */
-  public function testGaPushMethodUTMPjsPushScriptPageview() {
+  public function testGaPushMethodAnalyticsJSPushScriptPageview() {
     $type = GA_PUSH_TYPE_PAGEVIEW;
     // @TODO!
   }
@@ -126,7 +129,7 @@ class GAPushUnitTestCase extends DrupalUnitTestCase {
   /**
    * Unit test for ga_push_method_analytics_js_push_script(): Social.
    */
-  public function testGaPushMethodUTMPjsPushScriptSocial() {
+  public function testGaPushMethodAnalyticsJSPushScriptSocial() {
     $type = GA_PUSH_TYPE_SOCIAL;
 
     // Load library:
