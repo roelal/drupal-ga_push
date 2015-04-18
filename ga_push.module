@@ -140,7 +140,7 @@ function ga_push_page_alter($main = 0) {
  *   - Universal Tracking, Measurement Protocol.
  *     @see https://developers.google.com/analytics/devguides/collection/analyticsjs/
  *     - GA_PUSH_METHOD_UTMP_PHP
- *     - GA_PUSH_METHOD_UTMP_JS
+ *     - GA_PUSH_METHOD_ANALYTICS_JS
  *
  * @param array $options
  *   (optional) An associative array of additional options, with the following
@@ -277,10 +277,10 @@ function ga_push_add_legacy_params($push, $type) {
  *       'revenue'     => '11.99',
  *       'tax'         => '1.29',
  *       'shipping'    => '5',
- *       'city'        => 'San Jose',
- *       'region'      => 'California',
- *       'country'     => 'USA',
  *       'currency'    => 'EUR',
+ *       'city'        => 'San Jose',  // Classic Analytics only.
+ *       'region'      => 'California',  // Classic Analytics only.
+ *       'country'     => 'USA',  // Classic Analytics only.
  *     ),
  *     'items' => array(
  *       array(
@@ -315,11 +315,11 @@ function ga_push_add_legacy_params($push, $type) {
  *     - shipping:
  *       (optional) Specifies the total shipping cost of the transaction. (e.g. 5).
  *     - city:
- *       (optional) city.
+ *       (optional) city. Only compatible with Classic Analytics.
  *     - region:
- *       (optional) state or province.
+ *       (optional) state or province. Only compatible with Classic Analytics.
  *     - country:
- *       (optional) country.
+ *       (optional) country. Only compatible with Classic Analytics.
  *     - currency:
  *       currency (ISO 4217).
  *
@@ -734,6 +734,8 @@ function ga_push_method_php_ga_available() {
 
 /**
  * Key relationship map between analyticsjs & measurement_protocol.
+ *
+ * @see https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters
  */
 function ga_push_analyticsjs_measurement_protocol_map() {
   return array(
