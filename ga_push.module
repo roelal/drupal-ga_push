@@ -754,9 +754,6 @@ function ga_push_analyticsjs_measurement_protocol_map() {
     'quantity'        => 'iq',
     'sku'             => 'ic',
     'category'        => 'iv',
-    'country'         => 'co',
-    'city'            => 'ci',
-    'region'          => 'rg',
     // Event:
     'eventCategory'   => 'ec',
     'eventAction'     => 'ea',
