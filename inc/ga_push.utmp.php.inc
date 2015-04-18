@@ -155,12 +155,30 @@ function ga_push_method_php_utmp_construct_social_request_data($push) {
  *   Method to use (GET or POST).
  *
  * @see ga_push_add()
+ * @see https://developers.google.com/analytics/devguides/collection/protocol/v1/devguide
  */
 function ga_push_method_utmp_php_request($data = array(), $options = array(), $method = 'POST') {
 
   $data['v']   = 1;
   $data['tid'] = !empty($options['tid']) ? $options['tid'] : variable_get('googleanalytics_account', '');
   $data['cid'] = !empty($options['cid']) ? $options['cid'] : ga_push_method_php_utmp_get_uuid();
+
+  // @NOTE: Proxy Server:
+  // Some environments are not able to send hits to Google Analytics directly.
+  // To collect the IP and user agent from the client device and not the proxy
+  // server, you can specify both values in the measurement protocol, and they
+  // will override the values Google Analytics normally obtains from the
+  // request headers.
+
+  $user_agent = !empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : NULL;
+  if (!empty($user_agent)) {
+    $data += array('ua' => $user_agent);
+  }
+
+  $ip = ip_address();
+  if (!empty($ip)) {
+    $data += array('uip' => $ip);
+  }
 
   $url = 'https://' . GA_PUSH_METHOD_UTMP_HOST_ENDPOINT;
 
