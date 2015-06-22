@@ -160,8 +160,11 @@ function ga_push_method_php_utmp_construct_social_request_data($push) {
 function ga_push_method_utmp_php_request($data = array(), $options = array(), $method = 'POST') {
 
   $data['v']   = 1;
+  // Options variables:
   $data['tid'] = !empty($options['tid']) ? $options['tid'] : variable_get('googleanalytics_account', '');
   $data['cid'] = !empty($options['cid']) ? $options['cid'] : ga_push_method_php_utmp_get_uuid();
+  $data['ua']  = !empty($options['ua']) ? $options['ua'] : NULL;
+  $data['uip'] = !empty($options['uip']) ? $options['uip'] : NULL;
 
   // @NOTE: Proxy Server:
   // Some environments are not able to send hits to Google Analytics directly.

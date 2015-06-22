@@ -156,6 +156,10 @@ function ga_push_page_alter($main = 0) {
  *       Only for Classic GA methods.
  *     - 'utmb': Force Classic GA __utmb cookie of the current user cookie
  *       Only for Classic GA methods.
+ *     - 'ua': Override User Agent of the current user.
+ *       Only for Universal GA methods.
+ *     - 'uip': Override User IP of the current user.
+ *       Only for Universal GA methods.
  *
  *   All methods:
  *     - 'context': An array of aditional info to be passed to drupal_alter implementations.
