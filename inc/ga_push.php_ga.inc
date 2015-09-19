@@ -19,7 +19,7 @@ function ga_push_method_php_ga($push, $type, $options) {
    * UnitedPrototype\GoogleAnalytics\Tracker instead of GoogleAnalytics\Tracker
    */
 
-  $ua = !empty($options['tid']) ? $options['tid'] : variable_get('googleanalytics_account', '');
+  $ua = !empty($options['tid']) ? $options['tid'] : \Drupal::config('ga_push.settings')->get('default_method');
   $host = str_replace(array('http://', 'https://'), array('', ''), $GLOBALS['base_url']);
   $tracker = new UnitedPrototype\GoogleAnalytics\Tracker($ua, $host);
 

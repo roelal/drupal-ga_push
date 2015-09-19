@@ -27,7 +27,7 @@ function ga_push_settings_form($form, &$form_state) {
     '#type' => 'radios',
     '#title' => t('Default method'),
     '#options' => $options,
-    '#default_value' => variable_get('ga_push_default_method', GA_PUSH_METHOD_ANALYTICS_JS),
+    '#default_value' => \Drupal::config('ga_push.settings')->get('default_method'),
     '#description' => t("Select the default method, it could be overriden in function call or each configuration of rules."),
     '#required' => TRUE,
   );

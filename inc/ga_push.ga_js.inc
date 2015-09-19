@@ -24,9 +24,7 @@ function ga_push_method_ga_js($push, $type, $options) {
 function ga_push_method_ga_js_push() {
   $session_key = 'ga_push_' . GA_PUSH_METHOD_GA_JS;
   if (isset($_SESSION[$session_key])) {
-
-    $id = variable_get('googleanalytics_account', '');
-
+    $id = \Drupal::config('google_analytics.settings')->get('account');
     if (!empty($id)) {
       $script = "var _gaq = _gaq || [];\n";
 

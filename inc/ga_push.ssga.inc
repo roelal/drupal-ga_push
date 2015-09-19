@@ -14,7 +14,7 @@ function ga_push_method_ssga($push, $type, $options) {
     $ga = new ssga();
 
     // Set your Google Analytics key:
-    $id = !empty($options['tid']) ? $options['tid'] : variable_get('googleanalytics_account', '');
+    $id = !empty($options['tid']) ? $options['tid'] : \Drupal::config('google_analytics.settings')->get('account');
     $ga->setAccountId($id);
 
     // Set your charset:
