@@ -1,0 +1,7 @@
+name = Google Analytics Push: Log
+description = Google Analytics module that push log exceptions (example).
+core = 7.x
+package = Statistics
+dependencies[] = ga_push
+dependencies[] = rules
+configure = admin/config/workflow/rules/reaction/manage/ga_push_log_exception

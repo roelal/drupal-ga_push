@@ -5,46 +5,48 @@
  */
 
 /**
- * Method: SSGA
+ * GA Push Method callback: SSGA (php).
  */
-function ga_push_method_ssga($push, $type) {
+function ga_push_method_ssga($push, $type, $options) {
 
   if (class_exists('ssga')) {
 
     $ga = new ssga();
 
-    //Set your Google Analytics key
-    $id = variable_get('googleanalytics_account', '');
+    // Set your Google Analytics key:
+    $id = !empty($options['tid']) ? $options['tid'] : variable_get('googleanalytics_account', '');
     $ga->setAccountId($id);
 
-    //Set your charset
+    // Set your charset:
     $ga->setCharset("UTF-8");
 
-    //Set your hostname
-    $ga->setHostName($GLOBALS['base_url']); //TODO: domain?
+    // Set your hostname:
+    // @TODO: domain integration.
+    $ga->setHostName($GLOBALS['base_url']);
 
-    //Set language
+    // Set language:
     $ga->setLanguage($GLOBALS['language']->language);
 
-    //Set an event (based on http://code.google.com/apis/analytics/docs/tracking/eventTrackerGuide.html)
+    // Set an event based on:
+    // http://code.google.com/apis/analytics/docs/tracking/eventTrackerGuide.html
 
     switch ($type) {
-
       case GA_PUSH_TYPE_EVENT:
-        
-        // Complete optional parameters
+
+        // Complete optional parameters:
         $push += array(
-          'label' => '',
-          'value' => 1,
+          'eventLabel' => '',
+          'eventValue' => 1,
         );
 
-        $ga->setEvent($push['category'], $push['action'], $push['label'], $push['value']);
+        $ga->setEvent($push['eventCategory'], $push['eventAction'], $push['eventLabel'], $push['eventValue']);
         break;
+
       /*
       case '_trackPageview': //TODO: is useful?
 
         //Set a pageview
-        $ga->setPageView("/de/serverside/test"); 
+        $ga->setPageView("/de/serverside/test");
         //Set page title
         $ga->setPageTitle("Test");
 
@@ -52,12 +54,12 @@ function ga_push_method_ssga($push, $type) {
       */
     }
 
-    //Submit an event
-    $ga->create(); //createEvent
+    // Push the event.
+    $ga->create();
 
   }
   else {
-    //Throw an error
+    // @TODO: Throw an error
   }
 
 }
