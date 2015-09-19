@@ -17,12 +17,16 @@ function ga_push_method_analytics_js($push, $type, $options) {
 
 /**
  * Send the ga push to JS on page load using Universal Analytics Event Tracking.
+ *
+ * @return string
+ *   Analytics script.
  */
 function ga_push_method_analytics_js_push() {
   $session_key = 'ga_push_' . GA_PUSH_METHOD_ANALYTICS_JS;
+  $script = NULL;
   if (isset($_SESSION[$session_key])) {
     $ga_config = \Drupal::config('google_analytics.settings');
-    
+
     if (!empty($ga_config->get('account'))) {
       $script = "var ga = ga || [];\n";
 
@@ -34,10 +38,11 @@ function ga_push_method_analytics_js_push() {
         $script .= ga_push_method_analytics_js_push_script($push, $type);
       }
 
-      _ga_push_method_analytics_js_add_script($script);
       unset($_SESSION[$session_key]);
     }
   }
+
+  return $script;
 }
 
 /**
@@ -157,22 +162,3 @@ function _ga_push_method_analytics_js_push_send_script($push, $hit_type) {
   return $script;
 }
 
-/**
- * Adds generated script with push data.
- *
- * Used by ga_push_method_analytics_js_push.
- *
- * @see ga_push_method_analytics_js_push()
- *
- * @param string $script
- *   Generated script code to add.
- */
-function _ga_push_method_analytics_js_add_script($script) {
-  $options = array(
-    'type' => 'inline',
-    'scope' => 'footer',
-    // 'weight' => 0,
-    // 'group' => JS_DEFAULT,
-  );
-  drupal_add_js($script, $options);
-}

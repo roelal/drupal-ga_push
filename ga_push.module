@@ -62,14 +62,31 @@ function ga_push_module_implements_alter(&$implementations, $hook) {
 }
 
 /**
- * Implements hook_page_alter().
+ * Implements hook_page_attachments().
  */
-function ga_push_page_alter($main = 0) {
-  module_load_include('inc', 'ga_push', 'inc/ga_push.ga_js');
-  ga_push_method_ga_js_push();
+function ga_push_page_attachments(array &$attachments) {
+  $script = NULL;
 
+  module_load_include('inc', 'ga_push', 'inc/ga_push.ga_js');
+  $ga_js_push = ga_push_method_ga_js_push();
+  $script .= $ga_js_push;
+  
   module_load_include('inc', 'ga_push', 'inc/ga_push.analytics_js');
-  ga_push_method_analytics_js_push();
+  $analytics_js_push = ga_push_method_analytics_js_push();
+  $script .= $analytics_js_push;
+
+  // Add JS headers:
+  if (!empty($script)) {
+    $attachments['#attached']['html_head'][] = [
+      [
+        '#tag' => 'script',
+        '#value' => $script,
+        '#weight' => 10, // It must load after GA Module.
+      ],
+      'ga_push_tracking_script',
+    ];
+  }
+  
 }
 
 /**

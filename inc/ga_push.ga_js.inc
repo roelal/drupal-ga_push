@@ -20,9 +20,13 @@ function ga_push_method_ga_js($push, $type, $options) {
  * Send the ga push to JS on page load.
  *
  * @see https://developers.google.com/analytics/devguides/collection/gajs
+ *
+ * @return string
+ *   GA script.
  */
 function ga_push_method_ga_js_push() {
   $session_key = 'ga_push_' . GA_PUSH_METHOD_GA_JS;
+  $script = NULL;
   if (isset($_SESSION[$session_key])) {
     $id = \Drupal::config('google_analytics.settings')->get('account');
     if (!empty($id)) {
@@ -132,13 +136,8 @@ function ga_push_method_ga_js_push() {
 
       unset($_SESSION[$session_key]);
 
-      $options = array(
-        'type' => 'inline',
-        'scope' => 'footer',
-        // 'weight' => 0,
-        // 'group' => JS_DEFAULT,
-      );
-      drupal_add_js($script, $options);
     }
   }
+  
+  return $script;
 }
