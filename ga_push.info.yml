@@ -2,12 +2,11 @@ name: Google Analytics Push
 description: 'Google Analytics module to attach push events'
 package: Statistics
 type: module
-version: 1.0
+version: VERSION
 core: 8.x
 configure: ga_push.settings
 
 dependencies:
-- node
-- google_analytics
-- libraries
-configure: ga_push.admin
+  - node
+  - google_analytics
+  - libraries
