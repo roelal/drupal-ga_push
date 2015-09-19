@@ -178,8 +178,9 @@ function ga_push_method_utmp_php_request($data = array(), $options = array(), $m
   if (!empty($user_agent)) {
     $data += array('ua' => $user_agent);
   }
+  
+  $ip = \Drupal::request()->getClientIp();
 
-  $ip = ip_address();
   if (!empty($ip)) {
     $data += array('uip' => $ip);
   }
