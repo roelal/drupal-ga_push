@@ -164,8 +164,17 @@ function ga_push_method_utmp_php_request($data = array(), $options = array(), $m
   // Options variables:
   $data['tid'] = !empty($options['tid']) ? $options['tid'] : $ga_config->get('account');
   $data['cid'] = !empty($options['cid']) ? $options['cid'] : ga_push_method_php_utmp_get_uuid();
-  $data['ua']  = !empty($options['ua']) ? $options['ua'] : NULL;
-  $data['uip'] = !empty($options['uip']) ? $options['uip'] : NULL;
+
+  // Optional values:
+  $optional = array(
+    'ua',
+    'uip',
+  );
+  foreach ($optional as $value) {
+    if (array_key_exists($value, $options)) {
+      $data[$value] = $options[$value];
+    }
+  }
 
   // @NOTE: Proxy Server:
   // Some environments are not able to send hits to Google Analytics directly.
