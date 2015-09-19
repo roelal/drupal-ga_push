@@ -1,9 +1,0 @@
-name = Google Analytics Push
-description = Google Analytics module to attach push events
-core = 7.x
-package = Statistics
-dependencies[] = googleanalytics
-dependencies[] = libraries
-files[] = libs/ssga.class.inc
-files[] = test/ga_push.test
-configure = admin/config/system/ga-push/settings
