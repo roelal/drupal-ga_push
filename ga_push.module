@@ -203,7 +203,8 @@ function ga_push_get_methods() {
 
   static $callbacks = array();
   if (!count($callbacks)) {
-    foreach (module_implements('ga_push_method') as $module) {
+    $implementations = Drupal::moduleHandler()->getImplementations('ga_push_method');
+    foreach ($implementations as $module) {
       $router_items = call_user_func($module . '_ga_push_method');
       if (isset($router_items) && is_array($router_items)) {
         foreach (array_keys($router_items) as $method) {
