@@ -91,15 +91,15 @@ function ga_push_page_alter($main = 0) {
  * @see ga_push_add_pageview()
  * @see ga_push_add_social()
  *
- * @param array $push
+ * @param array $push_data['push']
  *   The push parameters. The value depends on the $type parameter.
- * @param string $type
+ * @param string $push_data['type']
  *   (optional) The GA Push type:
  *   - GA_PUSH_TYPE_EVENT (default)
  *   - GA_PUSH_TYPE_ECOMMERCE
  *   - GA_PUSH_TYPE_PAGEVIEW
  *   - GA_PUSH_TYPE_SOCIAL
- * @param string $method_key
+ * @param string $push_data['method_key']
  *   (optional) The method identificator
  *   - The globally configured setting
  *     - GA_PUSH_METHOD_DEFAULT (default)
@@ -113,7 +113,7 @@ function ga_push_page_alter($main = 0) {
  *     - GA_PUSH_METHOD_UTMP_PHP
  *     - GA_PUSH_METHOD_ANALYTICS_JS
  *
- * @param array $options
+ * @param array $push_data['options']
  *   (optional) An associative array of additional options, with the following
  *   elements:
  *
@@ -135,47 +135,53 @@ function ga_push_page_alter($main = 0) {
  *   All methods:
  *     - 'context': An array of aditional info to be passed to drupal_alter implementations.
  */
-function ga_push_add($push, $type = GA_PUSH_TYPE_EVENT, $method_key = NULL, $options = array()) {
+function ga_push_add($push_params, $type = GA_PUSH_TYPE_EVENT, $method_key = NULL, $options = array()) {
   global $user;
 
-  // Legacy compatibility:
+  $push = array(
+    'type' => $type,
+    'method_key' => $method_key,
+    'options' => $options,
+  );
+
+  // Add push parameters using legacy compatibility:
   // Map old method keys to the new ones.
   // @NOTE: this feature will be remove in future realeases.
-  $push = ga_push_add_legacy_params($push, $type);
+  $push['params'] = ga_push_add_legacy_params($push_params, $push['type']);
 
   // Let other modules alter the current push data:
-  Drupal::moduleHandler()->alter('ga_push_add', $push, $type, $method_key, $options);
+  Drupal::moduleHandler()->alter('ga_push_add', $push);
 
-  if (is_array($push) && count($push)) {
+  if (is_array($push['params']) && count($push['params'])) {
 
     // @TODO Check for _googleanalytics_visibility_user to work and Remove TRUE
     if (TRUE || _googleanalytics_visibility_user($user)) {
 
       // If the select method is not available or is not defined:
-      if (is_null($method_key)
-        || $method_key == GA_PUSH_METHOD_DEFAULT
-        || !is_null($method_key) && !ga_push_method_available($method_key, $type)) {
+      if (is_null($push['method_key'])
+        || $push['method_key'] == GA_PUSH_METHOD_DEFAULT
+        || !is_null($push['method_key']) && !ga_push_method_available($push['method_key'], $push['type'])) {
 
-        $method_key = \Drupal::config('ga_push.settings')->get('default_method');
+        $push['method_key'] = \Drupal::config('ga_push.settings')->get('default_method');
       }
 
-      if (!is_null($method_key)) {
+      if (!is_null($push['method_key'])) {
 
-        $method = ga_push_get_method($method_key);
+        $method = ga_push_get_method($push['method_key']);
 
         if (isset($method['file'])) {
           require_once $method['file'];
         }
 
         // @TODO: remove deprecated!
-        switch ($type) {
+        switch ($push['type']) {
           case GA_PUSH_TYPE_EVENT:
             // If the VALUE argument is not numeric -> 1
-            $push['eventValue'] = isset($push['eventValue']) && is_numeric($push['eventValue']) ? $push['eventValue'] : 1;
+            $push['params']['eventValue'] = isset($push['params']['eventValue']) && is_numeric($push['params']['eventValue']) ? $push['params']['eventValue'] : 1;
             break;
         }
 
-        call_user_func($method['callback'], $push, $type, $options);
+        call_user_func($method['callback'], $push['params'], $push['type'], $push['options']);
       }
       else {
         // @TODO: watchdog there's no method available.
@@ -184,6 +190,7 @@ function ga_push_add($push, $type = GA_PUSH_TYPE_EVENT, $method_key = NULL, $opt
     }
   }
 }
+
 /**
  * Maps old method keys to the new ones.
  * This function is for legacy compatibility and will be removed on next releases.
