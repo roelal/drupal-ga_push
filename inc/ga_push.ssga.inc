@@ -25,7 +25,7 @@ function ga_push_method_ssga($push, $type, $options) {
     $ga->setHostName($GLOBALS['base_url']);
 
     // Set language:
-    $ga->setLanguage($GLOBALS['language']->language);
+    $ga->setLanguage(Drupal::languageManager()->getDefaultLanguage()->getId());
 
     // Set an event based on:
     // http://code.google.com/apis/analytics/docs/tracking/eventTrackerGuide.html
