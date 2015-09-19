@@ -50,4 +50,12 @@ class GA_PushSettingsForm extends ConfigFormBase {
 
     parent::submitForm($form, $form_state);
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function getEditableConfigNames() {
+    return ['ga_push.settings'];
+  }
+
 }
