@@ -206,7 +206,8 @@ function ga_push_method_utmp_php_request($data = array(), $options = array(), $m
   try {
     switch($method) {
       case 'POST':
-        $response = \Drupal::httpClient()->post($url, $qoptions)->getBody();
+        $response = \Drupal::httpClient()
+          ->post($url, array('form_params' => $data));
         break;
 
       case 'GET':
