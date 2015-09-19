@@ -25,14 +25,13 @@ class GA_PushSettingsForm extends ConfigFormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $config = $this->config('ga_push.settings');
 
-    $elements = ga_push_get_methods_option_list(NULL, FALSE);;
+    $elements = ga_push_get_methods_option_list(NULL, FALSE);
 
     $form['ga_push_default_method'] = array(
       '#type' => 'radios',
       '#title' => $this->t('Default method'),
       '#options' => $elements,
       '#default_value' => $config->get('default_method'),
-
     );
 
     return parent::buildForm($form, $form_state);
