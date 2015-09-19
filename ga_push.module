@@ -155,8 +155,8 @@ function ga_push_add($push, $type = GA_PUSH_TYPE_EVENT, $method_key = NULL, $opt
       if (is_null($method_key)
         || $method_key == GA_PUSH_METHOD_DEFAULT
         || !is_null($method_key) && !ga_push_method_available($method_key, $type)) {
-        $default_method_key = variable_get('ga_push_default_method', GA_PUSH_METHOD_ANALYTICS_JS);
-        $method_key = $default_method_key;
+
+        $method_key = \Drupal::config('ga_push.settings')->get('default_method');
       }
 
       if (!is_null($method_key)) {
