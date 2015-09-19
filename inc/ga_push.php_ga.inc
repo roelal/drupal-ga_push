@@ -25,7 +25,7 @@ function ga_push_method_php_ga($push, $type, $options) {
 
   // Visitor:
   $visitor = new UnitedPrototype\GoogleAnalytics\Visitor();
-  $visitor->setIpAddress(ip_address());
+  $visitor->setIpAddress(\Drupal::request()->getClientIp());
   $visitor->setUserAgent($_SERVER['HTTP_USER_AGENT']);
   if (!empty($options['utma'])) {
     $visitor->fromUtma($options['utma']);
