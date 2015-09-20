@@ -156,7 +156,7 @@ function ga_push_method_php_utmp_construct_social_request_data($push) {
  *
  * @see ga_push_add()
  * @see https://developers.google.com/analytics/devguides/collection/protocol/v1/devguide
- */  
+ */
 function ga_push_method_utmp_php_request($data = array(), $options = array(), $method = 'POST') {
   $ga_config = \Drupal::config('google_analytics.settings');
 
@@ -187,22 +187,17 @@ function ga_push_method_utmp_php_request($data = array(), $options = array(), $m
   if (!empty($user_agent)) {
     $data += array('ua' => $user_agent);
   }
-  
-  $ip = \Drupal::request()->getClientIp();
 
+  $ip = \Drupal::request()->getClientIp();
   if (!empty($ip)) {
     $data += array('uip' => $ip);
   }
 
-  $url = 'https://' . GA_PUSH_METHOD_UTMP_HOST_ENDPOINT;
-
-  $qoptions = array(
-    'body' => array(\Drupal\Component\Utility\UrlHelper::buildQuery($data)),
-  );
-  
+  $url      = 'https://' . GA_PUSH_METHOD_UTMP_HOST_ENDPOINT;
   $response = NULL;
-  // @TODO Check \Drupal::httpClient()->get method, add defines to POST / GET
-  // constatns and complete switch
+  // Prevent browser cached data.
+  $data     += array ('z' => mt_rand());
+
   try {
     switch($method) {
       case 'POST':
@@ -211,20 +206,16 @@ function ga_push_method_utmp_php_request($data = array(), $options = array(), $m
         break;
 
       case 'GET':
-        $response = \Drupal::httpClient()->get($url, $qoptions)->getBody();
+        // @TODO better handling for query params.
+        $response = \Drupal::httpClient()
+          ->get($url . '?' . \Drupal\Component\Utility\UrlHelper::buildQuery($data));
         break;
     }
   }
-  catch (BadResponseException $exception) { // @TODO
-    $response = $exception->getResponse();
-    drupal_set_message(t('Failed to fetch file due to HTTP error "%error"', array('%error' => $response->getStatusCode() . ' ' . $response->getReasonPhrase())), 'error');
+  catch (RequestException $exception) {
+    watchdog_exception('ga_push', $exception);
     return FALSE;
   }
-  catch (RequestException $exception) { // @TODO
-    drupal_set_message(t('Failed to fetch file due to error "%error"', array('%error' => $exception->getMessage())), 'error');
-    return FALSE;
-  }
-
 }
 
 /**
