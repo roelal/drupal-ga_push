@@ -195,14 +195,6 @@ function ga_push_add($push, $type = GA_PUSH_TYPE_EVENT, $method_key = NULL, $opt
           require_once $method['file'];
         }
 
-        // @TODO: remove deprecated!
-        switch ($type) {
-          case GA_PUSH_TYPE_EVENT:
-            // If the VALUE argument is not numeric -> 1
-            $push['eventValue'] = isset($push['eventValue']) && is_numeric($push['eventValue']) ? $push['eventValue'] : 1;
-            break;
-        }
-
         call_user_func($method['callback'], $push, $type, $options);
       }
       else {
