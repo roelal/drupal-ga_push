@@ -32,5 +32,12 @@ function ga_push_settings_form($form, &$form_state) {
     '#required' => TRUE,
   );
 
+  $form['ga_push_debug'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Debug mode'),
+    '#default_value' => variable_get('ga_push_debug', FALSE),
+    '#description' => t('Active the debug mode: log GA push requests.'),
+  );
+
   return system_settings_form($form);
 }

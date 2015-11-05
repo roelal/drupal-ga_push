@@ -199,8 +199,33 @@ function ga_push_method_utmp_php_request($data = array(), $options = array(), $m
     'data' => drupal_http_build_query($data),
   );
 
+  // @NOTE: log the request/response. We do it in different watchdogs on purpose
+  // to detect non response requests.
+
+  $debug = variable_get('ga_push_debug', FALSE);
+
+  // LOG the request:
+  if ($debug) {
+    watchdog('ga_push', 'GA PUSH UTMP @type request with: @data', array(
+      '@type' => $data['t'],
+      '@data' => print_r($httpr_options, TRUE),
+    ), WATCHDOG_DEBUG);
+  }
+
   // @TODO: Check errors here so caller doesn't have to do it.
   $response = drupal_http_request($url, $httpr_options);
+  
+  // LOG the response:
+  if ($debug) {
+    // Cast object to array:
+    $response_log = (array) $response;
+    // Ignore data as it is a GIF.
+    unset($response_log['data']);
+    watchdog('ga_push', 'GA PUSH UTMP @type response with: @data', array(
+      '@type' => $data['t'],
+      '@data' => print_r($response_log, TRUE),
+    ), WATCHDOG_DEBUG);
+  }
 }
 
 /**
