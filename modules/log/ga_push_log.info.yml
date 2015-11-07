@@ -1,0 +1,10 @@
+name: Google Analytics Push Log
+description:  Google Analytics module that push log exceptions (example).
+package: Statistics
+type: module
+version: VERSION
+core: 8.x
+
+dependencies:
+  - ga_push
+  - rules
