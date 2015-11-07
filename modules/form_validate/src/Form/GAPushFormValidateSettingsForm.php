@@ -30,7 +30,7 @@ class GAPushFormValidateSettingsForm extends ConfigFormBase {
       '#title' => $this->t('Active forms'),
       '#default_value' => $config->get('form_list'),
       '#rows' => 10,
-      '#description' => t('Insert the form ids to be logged on validate by line. You can user regular expressions.'),
+      '#description' => t('Insert the form ids to be logged on validate by line. You can use regular expressions.'),
     );
 
     $form['show_form_ids'] = array(
