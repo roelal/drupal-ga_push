@@ -23,7 +23,7 @@ function ga_push_method_analytics_js_push() {
   if (isset($_SESSION[$session_key])) {
     $id = variable_get('googleanalytics_account', '');
     if (!empty($id)) {
-      $script = "var ga = ga || [];\n";
+      $script = "var ga = ga || function(){};\n";
 
       // Process each push data that needs to be sent to Google Analytics.
       foreach ($_SESSION[$session_key] as $queued) {
