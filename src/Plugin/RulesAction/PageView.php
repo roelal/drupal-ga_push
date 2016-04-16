@@ -45,6 +45,6 @@ class PageView extends RulesActionBase {
     ga_push_add_pageview(array(
      'location' => $location,
       'page'     => $page,
-      'title'    => $string));
+      'title'    => $title));
   }
 }
