@@ -109,7 +109,7 @@ function ga_push_rules_action_info() {
       ),
       'socialTarget' => array(
         'type' => 'text',
-        'label' => t('Page'),
+        'label' => t('Social target'),
         'description' => t("Specifies the target of a social interaction. This value is typically a URL but can be any text. (e.g. http://mycoolpage.com)."),
         'optional' => FALSE,
       ),
