@@ -12,7 +12,12 @@ function ga_push_method_analytics_js($push, $type, $options) {
     'push' => $push,
     'type' => $type,
   );
-  $_SESSION['ga_push_' . GA_PUSH_METHOD_ANALYTICS_JS][] = $push_info;
+
+  $key = 'ga_push_' . GA_PUSH_METHOD_ANALYTICS_JS;
+  if (!isset($_SESSION[$key])) {
+    $_SESSION[$key] = array();
+  }
+  $_SESSION[$key][] = $push_info;
 }
 
 /**
