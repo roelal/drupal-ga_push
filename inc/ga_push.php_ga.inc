@@ -19,7 +19,15 @@ function ga_push_method_php_ga($push, $type, $options) {
    * UnitedPrototype\GoogleAnalytics\Tracker instead of GoogleAnalytics\Tracker
    */
 
-  $ua = !empty($options['tid']) ? $options['tid'] : variable_get('googleanalytics_account', '');
+  $ua = !empty($options['tid']) ? $options['tid'] : variable_get('googleanalytics_account', NULL);
+
+  // If there is no analytics account configured, throw an exception. Trying to
+  // instantiate the Tracker class without a valid account will result in
+  // another less helpful exception anyway.
+  if (is_null($ua)) {
+    throw new Exception(t('The Google Analytics account has not been configured. Please ensure the @account_variable variable has been set.', array('@account_variable' => 'googleanalytics_account')));
+  }
+
   $host = str_replace(array('http://', 'https://'), array('', ''), $GLOBALS['base_url']);
   $tracker = new UnitedPrototype\GoogleAnalytics\Tracker($ua, $host);
 

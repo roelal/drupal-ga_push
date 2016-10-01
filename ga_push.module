@@ -195,7 +195,15 @@ function ga_push_add($push, $type = GA_PUSH_TYPE_EVENT, $method_key = NULL, $opt
           require_once $method['file'];
         }
 
-        call_user_func($method['callback'], $push, $type, $options);
+        // Excecute the push method callback function.
+        try {
+          call_user_func($method['callback'], $push, $type, $options);
+        }
+        catch (Exception $e) {
+          // Catch the errors to prevent a 500 error, which would prevent the
+          // other form validate/submit functions from executing.
+          watchdog_exception('ga_push', $e);
+        }
       }
       else {
         // @TODO: watchdog there's no method available.
