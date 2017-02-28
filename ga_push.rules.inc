@@ -14,6 +14,20 @@ function ga_push_rules_action_info() {
     'group' => t('GA Push'),
     'named parameter' => TRUE,
     'parameter' => array(
+      'method' => array(
+        'type' => 'text',
+        'label' => t('Method'),
+        'description' => t("Select the method"),
+        'options list' => 'ga_push_get_methods_option_list_event',
+        'default value' => GA_PUSH_METHOD_DEFAULT,
+        'optional' => FALSE,
+      ),
+      'event' => array(
+        'type' => 'text',
+        'label' => t('Event'),
+        'optional' => TRUE,
+        'description' => t('The event name for Data Layer.'),
+      ),
       'category' => array(
         'type' => 'text',
         'label' => t('Category'),
@@ -46,14 +60,9 @@ function ga_push_rules_action_info() {
         'default value' => FALSE,
         'optional' => TRUE,
       ),
-      'method' => array(
-        'type' => 'text',
-        'label' => t('Method'),
-        'description' => t("Select the method"),
-        'options list' => 'ga_push_get_methods_option_list_event',
-        'default value' => GA_PUSH_METHOD_DEFAULT,
-        'optional' => FALSE,
-      ),
+    ),
+    'callbacks' => array(
+      'form_alter' => 'ga_push_action_push_event_form_alter',
     ),
   );
 
@@ -160,6 +169,34 @@ function ga_push_rules_action_info() {
 }
 
 /**
+ * Ga push event action form alter.
+ *
+ * @param array $form
+ * @param array $form_state
+ */
+function ga_push_action_push_event_form_alter(&$form, &$form_state) {
+  // Event only will be visible if:
+  // - Datalayer method is selected.
+  // - Default method is selected and is set up as datalayer.
+
+  $default_method_key = variable_get('ga_push_default_method', GA_PUSH_METHOD_ANALYTICS_JS);
+  $states = array();
+  $states['visible'] = array(
+    '#edit-parameter-method-settings-method' => array(
+      array('value' => 'datalayer-js'),
+    ),
+  );
+
+  if ($default_method_key == GA_PUSH_METHOD_DATALAYER_JS) {
+    $states['visible']['#edit-parameter-method-settings-method'][] = array('value' => 'default');
+  }
+
+  $form['parameter']['event'] += array(
+    '#states' => $states,
+  );
+}
+
+/**
  * Add a push event from a rules action.
  */
 function ga_push_action_push_event($parameters) {
@@ -171,6 +208,14 @@ function ga_push_action_push_event($parameters) {
     'eventValue'           => strlen($value) ? (int) $value : NULL,
     'non-interaction' => (bool) $parameters['non-interaction'],
   );
+
+  // Add event property only for datalayer.
+  $default_method_key = variable_get('ga_push_default_method', GA_PUSH_METHOD_ANALYTICS_JS);
+  if ($parameters['method'] == GA_PUSH_METHOD_DATALAYER_JS
+    || ($parameters['method'] == GA_PUSH_METHOD_DEFAULT
+      && $default_method_key == GA_PUSH_METHOD_DATALAYER_JS)) {
+    $push['event'] = $parameters['event'];
+  }
   ga_push_add_event($push, $parameters['method']);
 }
 

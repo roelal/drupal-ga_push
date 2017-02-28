@@ -13,6 +13,7 @@ define('GA_PUSH_METHOD_PHP_GA', 'php-ga');
 // Universal Tracking, Measurement Protocol.
 define('GA_PUSH_METHOD_UTMP_PHP', 'utmp-php');
 define('GA_PUSH_METHOD_ANALYTICS_JS', 'analytics-js');
+define('GA_PUSH_METHOD_DATALAYER_JS', 'datalayer-js');
 
 // Tracking methods:
 define('GA_PUSH_TRACKING_METHOD_CLASSIC', 'classic');
@@ -99,6 +100,9 @@ function ga_push_page_alter($main = 0) {
 
   module_load_include('inc', 'ga_push', 'inc/ga_push.analytics_js');
   ga_push_method_analytics_js_push();
+
+  module_load_include('inc', 'ga_push', 'inc/ga_push.datalayer');
+  ga_push_method_datalayer_push();
 }
 
 /**
@@ -723,6 +727,20 @@ function ga_push_ga_push_method() {
     'side' => GA_PUSH_SERVER_SIDE,
     'tracking_method' => GA_PUSH_TRACKING_METHOD_CLASSIC,
     'available' => class_exists('ssga') && is_callable('curl_init'),
+  );
+
+  $method[GA_PUSH_METHOD_DATALAYER_JS] = array(
+    'name' => 'Datalayer.js (js)',
+    'description' => l('Data Layer', 'https://developers.google.com/tag-manager/devguide'),
+    'machine_name' => GA_PUSH_METHOD_DATALAYER_JS,
+    'callback' => 'ga_push_method_datalayer',
+    'file' => $module_path . '/inc/ga_push.datalayer.inc',
+    'implements' => array(
+      GA_PUSH_TYPE_EVENT => TRUE
+    ),
+    'side' => GA_PUSH_CLIENT_SIDE,
+    'tracking_method' => GA_PUSH_TRACKING_METHOD_UNIVERSAL,
+    'available' => TRUE,
   );
 
   return $method;
