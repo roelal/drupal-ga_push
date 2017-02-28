@@ -12,6 +12,7 @@ function ga_push_rules_action_info() {
   $items['ga_push_action_push_event'] = array(
     'label' => t('Ga push: event'),
     'group' => t('GA Push'),
+    'named parameter' => TRUE,
     'parameter' => array(
       'category' => array(
         'type' => 'text',
@@ -59,6 +60,7 @@ function ga_push_rules_action_info() {
   $items['ga_push_action_push_pageview'] = array(
     'label' => t('Ga push: page view'),
     'group' => t('GA Push'),
+    'named parameter' => TRUE,
     'parameter' => array(
       'location' => array(
         'type' => 'text',
@@ -93,6 +95,7 @@ function ga_push_rules_action_info() {
   $items['ga_push_action_push_social'] = array(
     'label' => t('Ga push: social'),
     'group' => t('GA Push'),
+    'named parameter' => TRUE,
     'parameter' => array(
       'socialNetwork' => array(
         'type' => 'text',
@@ -127,6 +130,7 @@ function ga_push_rules_action_info() {
   $items['ga_push_action_push_exception'] = array(
     'label' => t('Ga push: exception'),
     'group' => t('GA Push'),
+    'named parameter' => TRUE,
     'parameter' => array(
       'exDescription' => array(
         'type' => 'text',
@@ -158,48 +162,49 @@ function ga_push_rules_action_info() {
 /**
  * Add a push event from a rules action.
  */
-function ga_push_action_push_event($category, $action, $label, $value, $non_interaction, $method) {
+function ga_push_action_push_event($parameters) {
+  $value = trim($parameters['value']);
   $push = array(
-    'eventCategory'        => $category,
-    'eventAction'          => $action,
-    'eventLabel'           => $label,
-    'eventValue'           => (int) $value,
-    'non-interaction' => (bool) $non_interaction,
+    'eventCategory'        => $parameters['category'],
+    'eventAction'          => $parameters['action'],
+    'eventLabel'           => $parameters['label'],
+    'eventValue'           => strlen($value) ? (int) $value : NULL,
+    'non-interaction' => (bool) $parameters['non-interaction'],
   );
-  ga_push_add_event($push, $method);
+  ga_push_add_event($push, $parameters['method']);
 }
 
 /**
  * Add a push exception from a rules action.
  */
-function ga_push_action_push_exception($description, $is_fatal, $method) {
+function ga_push_action_push_exception($parameters) {
   $push = array(
-    'exDescription' => $description,
-    'exFatal'       => (bool) $is_fatal,
+    'exDescription' => $parameters['exDescription'],
+    'exFatal'       => (bool) $parameters['exFatal'],
   );
-  ga_push_add_exception($push, $method);
+  ga_push_add_exception($push, $parameters['method']);
 }
 
 /**
  * Add a push pageview from a rules action.
  */
-function ga_push_action_push_pageview($location, $page, $title, $method) {
+function ga_push_action_push_pageview($parameters) {
   $push = array(
-    'location'        => $location,
-    'page'            => $page,
-    'title'           => $title,
+    'location'        => $parameters['location'],
+    'page'            => $parameters['page'],
+    'title'           => $parameters['title'],
   );
-  ga_push_add_pageview($push, $method);
+  ga_push_add_pageview($push, $parameters['method']);
 }
 
 /**
  * Add a push pageview from a rules action.
  */
-function ga_push_action_push_social($network, $action, $target, $method) {
+function ga_push_action_push_social($parameters) {
   $push = array(
-    'socialNetwork' => $network,
-    'socialAction'  => $action,
-    'socialTarget'  => $target,
+    'socialNetwork' => $parameters['socialNetwork'],
+    'socialAction'  => $parameters['socialAction'],
+    'socialTarget'  => $parameters['socialTarget'],
   );
-  ga_push_add_social($push, $method);
+  ga_push_add_social($push, $parameters['method']);
 }
