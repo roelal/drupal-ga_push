@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * PHP-GA: method and functions
@@ -105,11 +106,8 @@ function ga_push_method_php_ga($push, $type, $options) {
         }
 
         $tracker->trackTransaction($transaction, $session, $visitor);
-
       }
 
       break;
-
   }
-
 }

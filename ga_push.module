@@ -1,9 +1,9 @@
 <?php
+
 /**
  * @file
  * Drupal Module: GA Push.
  */
-
 // Methods:
 // Classic GA.
 define('GA_PUSH_METHOD_DEFAULT', 'default');
@@ -76,7 +76,6 @@ function ga_push_menu() {
   );
 
   return $items;
-
 }
 
 /**
@@ -212,10 +211,10 @@ function ga_push_add($push, $type = GA_PUSH_TYPE_EVENT, $method_key = NULL, $opt
       else {
         // @TODO: watchdog there's no method available.
       }
-
     }
   }
 }
+
 /**
  * Maps old method keys to the new ones.
  * This function is for legacy compatibility and will be removed on next releases.
@@ -223,7 +222,7 @@ function ga_push_add($push, $type = GA_PUSH_TYPE_EVENT, $method_key = NULL, $opt
 function ga_push_add_legacy_params($push, $type) {
 
   switch ($type) {
-    case  GA_PUSH_TYPE_ECOMMERCE:
+    case GA_PUSH_TYPE_ECOMMERCE:
       // Transaction:
       $push_legacy_trans_map = array(
         'order_id'       => 'id',
@@ -526,8 +525,8 @@ function ga_push_add_social($push, $method_key = NULL, $options = array()) {
 function ga_push_method_available($method_key, $type = NULL) {
 
   $available = FALSE;
-  $methods   = ga_push_get_methods();
-  $method    = $methods[$method_key];
+  $methods = ga_push_get_methods();
+  $method = $methods[$method_key];
 
   // Checks the method:
   if (is_bool($method['available'])) {

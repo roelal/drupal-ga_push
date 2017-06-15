@@ -1,11 +1,11 @@
 <?php
+
 /**
  * @file
  * UTMP: method and functions for Universal Tracking Measure Protocol.
  *
  * @see https://developers.google.com/analytics/devguides/collection/protocol/v1/devguide
  */
-
 // Google UTMP Endpoint URL.
 define('GA_PUSH_METHOD_UTMP_HOST_ENDPOINT', 'ssl.google-analytics.com/collect');
 
@@ -27,7 +27,6 @@ function ga_push_method_utmp_php($push, $type, $options) {
         // Construct arrays.
         $ecommerce_data = ga_push_method_utmp_php_construct_ecommerce_request_data($push);
         // @TODO: Check request response.
-
         // Sending the transaction:
         ga_push_method_utmp_php_request($ecommerce_data['transaction'], $options);
 
@@ -159,11 +158,11 @@ function ga_push_method_php_utmp_construct_social_request_data($push) {
  */
 function ga_push_method_utmp_php_request($data = array(), $options = array(), $method = 'POST') {
 
-  $data['v']   = 1;
+  $data['v'] = 1;
   // Options variables:
   $data['tid'] = !empty($options['tid']) ? $options['tid'] : variable_get('googleanalytics_account', '');
   $data['cid'] = !empty($options['cid']) ? $options['cid'] : ga_push_method_php_utmp_get_uuid();
- 
+
   // Optional values:
   $optional = array(
     'ua',
@@ -209,12 +208,12 @@ function ga_push_method_utmp_php_request($data = array(), $options = array(), $m
     watchdog('ga_push', 'GA PUSH UTMP @type request with: @data', array(
       '@type' => $data['t'],
       '@data' => print_r($httpr_options, TRUE),
-    ), WATCHDOG_DEBUG);
+        ), WATCHDOG_DEBUG);
   }
 
   // @TODO: Check errors here so caller doesn't have to do it.
   $response = drupal_http_request($url, $httpr_options);
-  
+
   // LOG the response:
   if ($debug) {
     // Cast object to array:
@@ -224,7 +223,7 @@ function ga_push_method_utmp_php_request($data = array(), $options = array(), $m
     watchdog('ga_push', 'GA PUSH UTMP @type response with: @data', array(
       '@type' => $data['t'],
       '@data' => print_r($response_log, TRUE),
-    ), WATCHDOG_DEBUG);
+        ), WATCHDOG_DEBUG);
   }
 }
 
@@ -254,18 +253,18 @@ function ga_push_method_php_utmp_get_uuid() {
  */
 function ga_push_method_php_utmp_gen_uuid() {
   return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-    // 32 bits for "time_low"
-    mt_rand(0, 0xffff), mt_rand(0, 0xffff),
-    // 16 bits for "time_mid"
-    mt_rand(0, 0xffff),
-    // 16 bits for "time_hi_and_version",
-    // four most significant bits holds version number 4
-    mt_rand(0, 0x0fff) | 0x4000,
-    // 16 bits, 8 bits for "clk_seq_hi_res",
-    // 8 bits for "clk_seq_low",
-    // two most significant bits holds zero and one for variant DCE1.1
-    mt_rand(0, 0x3fff) | 0x8000,
-    // 48 bits for "node"
-    mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+      // 32 bits for "time_low"
+      mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+      // 16 bits for "time_mid"
+      mt_rand(0, 0xffff),
+      // 16 bits for "time_hi_and_version",
+      // four most significant bits holds version number 4
+      mt_rand(0, 0x0fff) | 0x4000,
+      // 16 bits, 8 bits for "clk_seq_hi_res",
+      // 8 bits for "clk_seq_low",
+      // two most significant bits holds zero and one for variant DCE1.1
+      mt_rand(0, 0x3fff) | 0x8000,
+      // 48 bits for "node"
+      mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
   );
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Universal Analytics js: method and functions.
@@ -84,7 +85,6 @@ function ga_push_method_analytics_js_push_script($push, $type) {
 
   return $script;
 }
-
 
 /**
  * Generates the ga JS code for pushing an event to GA.
@@ -175,8 +175,8 @@ function _ga_push_method_analytics_js_add_script($script) {
   $options = array(
     'type' => 'inline',
     'scope' => 'footer',
-    // 'weight' => 0,
-    // 'group' => JS_DEFAULT,
+      // 'weight' => 0,
+      // 'group' => JS_DEFAULT,
   );
   drupal_add_js($script, $options);
 }

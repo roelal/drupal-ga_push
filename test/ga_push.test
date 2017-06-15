@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Test case for testing the GA Push module.
@@ -32,7 +33,6 @@ class GAPushUnitTestCase extends DrupalUnitTestCase {
 
     // $ua_code = 'UA-123456-1';
     // variable_set('googleanalytics_account', $ua_code);
-
     // Get defined vars:
     module_load_include('module', 'ga_push');
 
@@ -42,38 +42,37 @@ class GAPushUnitTestCase extends DrupalUnitTestCase {
     // Events:
 
     $this->pushes[GA_PUSH_TYPE_EVENT]['calv'] = array(
-      'eventCategory'        => 'Videos',
-      'eventAction'          => 'Play',
-      'eventLabel'           => 'Gone With the Wind',
-      'eventValue'           => 1,
-      'nonInteraction'       => FALSE,
+      'eventCategory' => 'Videos',
+      'eventAction' => 'Play',
+      'eventLabel' => 'Gone With the Wind',
+      'eventValue' => 1,
+      'nonInteraction' => FALSE,
     );
 
     $this->pushes[GA_PUSH_TYPE_EVENT]['calvn'] = array(
-      'eventCategory'        => 'Videos',
-      'eventAction'          => 'Play',
-      'eventLabel'           => 'Gone With the Wind',
-      'eventValue'           => 1,
-      'nonInteraction'       => TRUE,
+      'eventCategory' => 'Videos',
+      'eventAction' => 'Play',
+      'eventLabel' => 'Gone With the Wind',
+      'eventValue' => 1,
+      'nonInteraction' => TRUE,
     );
 
     $this->pushes[GA_PUSH_TYPE_EVENT]['ca'] = array(
-      'eventCategory'        => 'Videos',
-      'eventAction'          => 'Play',
+      'eventCategory' => 'Videos',
+      'eventAction' => 'Play',
     );
 
     // Social:
 
     $this->pushes[GA_PUSH_TYPE_SOCIAL]['nat'] = array(
       'socialNetwork' => 'facebook',
-      'socialAction'  => 'like',
-      'socialTarget'  => 'http://mycoolpage.com',
+      'socialAction' => 'like',
+      'socialTarget' => 'http://mycoolpage.com',
     );
 
     $this->pushes[GA_PUSH_TYPE_SOCIAL]['n'] = array(
       'socialNetwork' => 'facebook',
     );
-
   }
 
   /**
@@ -107,7 +106,6 @@ class GAPushUnitTestCase extends DrupalUnitTestCase {
     $script = ga_push_method_analytics_js_push_script($push, $type);
     $expected = 'ga(\'send\', {"eventCategory":"Videos","eventAction":"Play","eventValue":1,"hitType":"event"});' . "\n";
     $this->assertTrue($expected === $script, 'GA Push Analytics js: event (ca)');
-
   }
 
   /**
@@ -144,7 +142,6 @@ class GAPushUnitTestCase extends DrupalUnitTestCase {
     $script = ga_push_method_analytics_js_push_script($push, $type);
     $expected = 'ga(\'send\', {"socialNetwork":"facebook","hitType":"social"});' . "\n";
     $this->assertTrue($expected === $script, 'GA Push Analytics js: social (n)');
-
   }
-
 }
+

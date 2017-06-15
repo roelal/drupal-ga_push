@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * SSGA: method and functions
@@ -43,7 +44,7 @@ function ga_push_method_ssga($push, $type, $options) {
         break;
 
       /*
-      case '_trackPageview': //TODO: is useful?
+        case '_trackPageview': //TODO: is useful?
 
         //Set a pageview
         $ga->setPageView("/de/serverside/test");
@@ -51,15 +52,13 @@ function ga_push_method_ssga($push, $type, $options) {
         $ga->setPageTitle("Test");
 
         break;
-      */
+       */
     }
 
     // Push the event.
     $ga->create();
-
   }
   else {
     // @TODO: Throw an error
   }
-
 }

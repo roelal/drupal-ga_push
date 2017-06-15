@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Rules implementation.
@@ -202,10 +203,10 @@ function ga_push_action_push_event_form_alter(&$form, &$form_state) {
 function ga_push_action_push_event($parameters) {
   $value = trim($parameters['value']);
   $push = array(
-    'eventCategory'        => $parameters['category'],
-    'eventAction'          => $parameters['action'],
-    'eventLabel'           => $parameters['label'],
-    'eventValue'           => strlen($value) ? (int) $value : NULL,
+    'eventCategory' => $parameters['category'],
+    'eventAction' => $parameters['action'],
+    'eventLabel' => $parameters['label'],
+    'eventValue' => strlen($value) ? (int) $value : NULL,
     'non-interaction' => (bool) $parameters['non-interaction'],
   );
 
@@ -235,9 +236,9 @@ function ga_push_action_push_exception($parameters) {
  */
 function ga_push_action_push_pageview($parameters) {
   $push = array(
-    'location'        => $parameters['location'],
-    'page'            => $parameters['page'],
-    'title'           => $parameters['title'],
+    'location' => $parameters['location'],
+    'page' => $parameters['page'],
+    'title' => $parameters['title'],
   );
   ga_push_add_pageview($push, $parameters['method']);
 }
@@ -248,8 +249,8 @@ function ga_push_action_push_pageview($parameters) {
 function ga_push_action_push_social($parameters) {
   $push = array(
     'socialNetwork' => $parameters['socialNetwork'],
-    'socialAction'  => $parameters['socialAction'],
-    'socialTarget'  => $parameters['socialTarget'],
+    'socialAction' => $parameters['socialAction'],
+    'socialTarget' => $parameters['socialTarget'],
   );
   ga_push_add_social($push, $parameters['method']);
 }

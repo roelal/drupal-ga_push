@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Classic GA Javascript: method and functions.
@@ -48,14 +49,14 @@ function ga_push_method_ga_js_push() {
             $push += array(
               'eventLabel' => '',
               'eventValue' => 1,
-              // 'non-interaction' => false,
+                // 'non-interaction' => false,
             );
 
             $push_map = array(
               'eventCategory' => 'category',
-              'eventAction'   => 'action',
-              'eventLabel'    => 'label',
-              'eventValue'    => 'value',
+              'eventAction' => 'action',
+              'eventLabel' => 'label',
+              'eventValue' => 'value',
               'non-interaction' => 'non-interaction', // ?
             );
 
@@ -77,14 +78,14 @@ function ga_push_method_ga_js_push() {
 
             // Transaction.
             $transaction_push_map = array(
-              'id'             => 'order_id',
-              'affiliation'    => 'affiliation',
-              'revenue'        => 'total',
-              'tax'            => 'total_tax',
-              'shipping'       => 'total_shipping',
-              'city'           => 'city',
-              'region'         => 'region',
-              'country'        => 'country',
+              'id' => 'order_id',
+              'affiliation' => 'affiliation',
+              'revenue' => 'total',
+              'tax' => 'total_tax',
+              'shipping' => 'total_shipping',
+              'city' => 'city',
+              'region' => 'region',
+              'country' => 'country',
             );
 
             // Mapping and initialize empty values assure param order (so no
@@ -101,11 +102,11 @@ function ga_push_method_ga_js_push() {
 
             // Items.
             $item_push_map = array(
-              'id'       => 'order_id',
-              'sku'      => 'sku',
-              'name'     => 'name',
+              'id' => 'order_id',
+              'sku' => 'sku',
+              'name' => 'name',
               'category' => 'category',
-              'price'    => 'price',
+              'price' => 'price',
               'quantity' => 'quantity',
             );
 
@@ -127,7 +128,7 @@ function ga_push_method_ga_js_push() {
             // and transactions.
             if (!empty($push['trans']['currency'])) {
               $script .= "_gaq.push(['_set', 'currencyCode', '"
-                . $push['trans']['currency'] . "']);\n";
+                  . $push['trans']['currency'] . "']);\n";
             }
 
             // Transaction - end:
@@ -142,8 +143,8 @@ function ga_push_method_ga_js_push() {
       $options = array(
         'type' => 'inline',
         'scope' => 'footer',
-        // 'weight' => 0,
-        // 'group' => JS_DEFAULT,
+          // 'weight' => 0,
+          // 'group' => JS_DEFAULT,
       );
       drupal_add_js($script, $options);
     }
