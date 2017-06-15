@@ -27,11 +27,15 @@ define('GA_PUSH_SERVER_SIDE', 'server-side');
 define('GA_PUSH_TYPE_PAGEVIEW', 'pageview');
 define('GA_PUSH_TYPE_EVENT', 'event');
 define('GA_PUSH_TYPE_ECOMMERCE', 'ecommerce');
+define('GA_PUSH_TYPE_ENHANCED_ECOMMERCE_PURCHASE', 'enhanced-ecommerce-purchase');
 define('GA_PUSH_TYPE_EXCEPTION', 'exception');
 define('GA_PUSH_TYPE_CUSTOM_VARIABLE', 'customvariable');
 define('GA_PUSH_TYPE_CAMPAIGN', 'campaign');
 define('GA_PUSH_TYPE_SOCIAL', 'social');
 define('GA_PUSH_TYPE_SPEED', 'speed');
+
+// Enhanced ecommerce prefix for products (pr), impressions (il), etc.
+define('GA_PUSH_ENHANCED_ECOMMERCE_PRODUCT_KEY', 'pr');
 
 /**
  * Implements hook_help().
@@ -131,6 +135,7 @@ function ga_push_page_alter($main = 0) {
  *   - GA_PUSH_TYPE_ECOMMERCE
  *   - GA_PUSH_TYPE_PAGEVIEW
  *   - GA_PUSH_TYPE_SOCIAL
+ *   - GA_PUSH_TYPE_ENHANCED_ECOMMERCE
  * @param string $method_key
  *   (optional) The method identificator
  *   - The globally configured setting
@@ -625,6 +630,13 @@ function ga_push_get_methods_option_list_ecommerce() {
 }
 
 /**
+ * Get the options list for enhanced ecommerce purchase.
+ */
+function ga_push_get_methods_option_list_enhanced_ecommerce_purchase() {
+  return ga_push_get_methods_option_list(GA_PUSH_TYPE_ENHANCED_ECOMMERCE_PURCHASE);
+}
+
+/**
  * Get the options list for page views.
  */
 function ga_push_get_methods_option_list_social() {
@@ -675,6 +687,7 @@ function ga_push_ga_push_method() {
     'implements' => array(
       GA_PUSH_TYPE_EVENT => TRUE,
       GA_PUSH_TYPE_ECOMMERCE => TRUE,
+      GA_PUSH_TYPE_ENHANCED_ECOMMERCE_PURCHASE => TRUE,
       GA_PUSH_TYPE_EXCEPTION => TRUE,
       GA_PUSH_TYPE_PAGEVIEW => TRUE,
       GA_PUSH_TYPE_SOCIAL => TRUE,
@@ -761,39 +774,68 @@ function ga_push_method_php_ga_available() {
 function ga_push_analyticsjs_measurement_protocol_map() {
   return array(
     // Application:
-    'appName'         => 'an',
-    'appId'           => 'aid',
-    'appVersion'      => 'av',
-    'appInstallerId'  => 'aiid',
+    'appName'           => 'an',
+    'appId'             => 'aid',
+    'appVersion'        => 'av',
+    'appInstallerId'    => 'aiid',
     // Ecommerce:
-    'id'              => 'ti',
-    'affiliation'     => 'ta',
-    'revenue'         => 'tr',
-    'tax'             => 'tt',
-    'shipping'        => 'ts',
-    'currency'        => 'cu',
-    'name'            => 'in',
-    'price'           => 'ip',
-    'quantity'        => 'iq',
-    'sku'             => 'ic',
-    'category'        => 'iv',
+    'id'                => 'ti',
+    'affiliation'       => 'ta',
+    'revenue'           => 'tr',
+    'tax'               => 'tt',
+    'shipping'          => 'ts',
+    'currency'          => 'cu',
+    'name'              => 'in',
+    'price'             => 'ip',
+    'quantity'          => 'iq',
+    'sku'               => 'ic',
+    'category'          => 'iv',
+    // Enhanced ecommerce:
+    'coupon'            => 'cc',
+    'checkoutStep'      => 'cos',
+    'checkoutOption'    => 'col',
+    'productActionList' => 'pal',
     // Event:
-    'eventCategory'   => 'ec',
-    'eventAction'     => 'ea',
-    'eventLabel'      => 'el',
-    'eventValue'      => 'ev',
-    'nonInteraction'  => 'ni',
+    'eventCategory'     => 'ec',
+    'eventAction'       => 'ea',
+    'eventLabel'        => 'el',
+    'eventValue'        => 'ev',
+    'nonInteraction'    => 'ni',
     // Exception:
-    'exDescription'	  => 'exd',
-    'exFatal'	        => 'exf',
+    'exDescription'	    => 'exd',
+    'exFatal'	          => 'exf',
     // Pageview:
-    'location'        => 'dh',
-    'page'            => 'dp',
-    'title'           => 'dt',
+    'location'          => 'dh',
+    'page'              => 'dp',
+    'title'             => 'dt',
     // Social:
-    'socialNetwork'   => 'sn',
-    'socialAction'    => 'sa',
-    'socialTarget'    => 'st',
+    'socialNetwork'     => 'sn',
+    'socialAction'      => 'sa',
+    'socialTarget'      => 'st',
+  );
+}
+
+/**
+ * Key relationship map between analyticsjs & measurement_protocol for
+ * enhanced ecommerce items (products, impressions, etc).
+ *
+ * Only store second part of the key.
+ * Example: pr<productIndex>nm -> nm.
+ *
+ * @see https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters
+ */
+function ga_push_analyticsjs_measurement_protocol_map_enhanced_ecommerce_item() {
+  return array(
+    'quantity'  => 'qt',
+    'price'     => 'pr',
+    'sku'       => 'id',
+    'name'      => 'nm',
+    'category'  => 'ca',
+    'variant'   => 'va',
+    'brand'     => 'br',
+    'position'  => 'po',
+    'couponCcode'    => 'cc',
+    'position'  => 'ps',
   );
 }
 
@@ -823,6 +865,36 @@ function ga_push_analyticsjs_measurement_protocol_mapping($data) {
 }
 
 /**
+ * Map enhanced ecommerce item (product, product impression) to measurement
+ * protocol format.
+ *
+ * @param array $item
+ *   Enhanced ecommerce item.
+ * @param int $index
+ *   Enhanced ecommerce index in the list of items.
+ * @param string $type
+ *   Product type key prefix (pr, promo, etc).
+ *
+ * @TODO: allow mapping for product impressions(il<listIndex>pi<productIndex>)!
+ */
+function ga_push_analyticsjs_measurement_protocol_mapping_enhanced_ecommerce_item($item, $index, $type) {
+  $map = ga_push_analyticsjs_measurement_protocol_map_enhanced_ecommerce_item();
+  $data_mapped = array();
+
+  foreach ($item as $key => $value) {
+    $mkey = isset($map[$key]) ? $map[$key] : $key;
+    // Replace custom dimensions and metrics that uses Analytics.js keys with UTMP keys.
+    $mkey = str_replace(array('dimension', 'metric'), array('cd', 'cm'), $mkey);
+    if (in_array($mkey, $map) || preg_match('/^(cd|cm)[0-9]*/', $mkey)) {
+      // Map enhanced ecommerce vars.
+      $data_mapped[$type . $index . $mkey] = $value;
+    }
+  }
+
+  return $data_mapped;
+}
+
+/**
  * Helper function to asign data to keys.
  *
  * Only key_map keys will be mapped.
@@ -840,6 +912,7 @@ function ga_push_analyticsjs_measurement_protocol_mapping($data) {
 function ga_push_push_key_mapper($key_map, $data, $initialize_empty = FALSE) {
   $mapped_data = array();
   foreach ($key_map as $key => $target) {
+    $key = str_replace(array('dimension', 'metric'), array('cd', 'cm'), $mkey);
     if (isset($data[$key])) {
       $mapped_data[$target] = $data[$key];
     }

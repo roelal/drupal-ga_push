@@ -37,6 +37,15 @@ function ga_push_method_utmp_php($push, $type, $options) {
       }
       break;
 
+    case GA_PUSH_TYPE_ENHANCED_ECOMMERCE_PURCHASE:
+      if (isset($push['trans']) && isset($push['items']) && count($push['items'])) {
+        // Construct arrays.
+        $ecommerce_data = ga_push_method_utmp_php_construct_enhanced_ecommerce_request_data($push);
+        // @TODO: Check request response.
+        ga_push_method_utmp_php_request($ecommerce_data['purchase'], $options);
+      }
+      break;
+
     case GA_PUSH_TYPE_EXCEPTION:
       $exception_data = ga_push_method_php_utmp_construct_exception_request_data($push);
       // @TODO: Check response.
@@ -96,6 +105,39 @@ function ga_push_method_utmp_php_construct_ecommerce_request_data($push) {
     $idata = array('t' => 'item');
     $idata += ga_push_analyticsjs_measurement_protocol_mapping($value);
     $data['items'][] = $idata;
+  }
+
+  return $data;
+}
+
+/**
+ * Returns data arrays for a enhanced eCommerce tracking.
+ *
+ * @param array $push
+ *   Array with transaction and items data.
+ *
+ * @return array
+ *   Array with two keys with eCommerce data preparad to be sent to GA:
+ *     - transaction: transaction data to send to GA.
+ *     - items: Array with data to send to GA for each item.
+ */
+function ga_push_method_utmp_php_construct_enhanced_ecommerce_request_data($push) {
+  $data = array();
+
+  // Transaction data.
+  $tdata = array('t' => 'pageview', 'pa' => 'purchase');
+  $tdata += ga_push_analyticsjs_measurement_protocol_mapping($push['trans']);
+  $data['purchase'] = $tdata;
+
+  // Items data.
+  foreach ($push['items'] as $index => $product) {
+    $product_number = $index + 1;
+    $data['purchase'] +=
+      ga_push_analyticsjs_measurement_protocol_mapping_enhanced_ecommerce_item(
+        $product,
+        $product_number,
+        GA_PUSH_ENHANCED_ECOMMERCE_PRODUCT_KEY
+      );
   }
 
   return $data;
