@@ -1,9 +1,9 @@
 <?php
+
 /**
  * @file
  * Drupal Module: GA Push (browser).
  */
-
 // @TODO: context integration.
 
 /**
@@ -14,8 +14,8 @@ function ga_push_browser_init() {
 
   $query = new EntityFieldQuery();
   $result = $query->entityCondition('entity_type', 'ga_push_browser_event')
-                  ->propertyCondition('status', 1)
-                  ->execute();
+      ->propertyCondition('status', 1)
+      ->execute();
 
   $gapb_events = array();
   if (isset($result['ga_push_browser_event'])) {
@@ -166,7 +166,7 @@ function ga_push_browser_menu() {
  *   User.
  * @param string $entity_type
  *   Entity type.
- * 
+ *
  * @return bool
  *   Access.
  */

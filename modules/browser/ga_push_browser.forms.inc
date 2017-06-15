@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Forms for the ga_push_browser module.
