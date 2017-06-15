@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Drupal Module: GA Push (form validate).
@@ -45,7 +46,6 @@ function ga_push_form_validate_form_alter(&$form, &$form_state, $form_id) {
   if ($log) {
     $form['#after_build'][] = 'ga_push_form_validate_form_after_build';
   }
-
 }
 
 /**
@@ -67,9 +67,9 @@ function ga_push_form_validate_get_validate_errors($form, $form_state) {
       // @TODO: filter the error output.
       $push = array(
         'eventCategory' => t('Form validate error'),
-        'eventAction'   => $form['form_id']['#value'] . ' - ' . $key,
-        'eventLabel'    => $error,
-        'eventValue'    => 1,
+        'eventAction' => $form['form_id']['#value'] . ' - ' . $key,
+        'eventLabel' => $error,
+        'eventValue' => 1,
       );
       ga_push_add_event($push);
     }
