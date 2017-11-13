@@ -20,8 +20,31 @@ function ga_push_method_datalayer($push, $type, $options) {
  * Send the ga push to JS on page load using Universal Analytics Event Tracking.
  */
 function ga_push_method_datalayer_push() {
+  $is_status_not_ok = FALSE;
+  $status_header = drupal_get_http_header('status');
+  if ($status_header !== null && 200 != substr($status_header, 0, 3)) {
+    $is_status_not_ok = TRUE;
+  }
+
+  $is_ajax_request = FALSE;
+  if (strpos(current_path(), 'ajax') !== FALSE) {
+    $is_ajax_request = TRUE;
+  }
+
+  $is_google_tag_enabled = FALSE;
+  if (function_exists('google_tag_page_process')) {
+    $is_google_tag_enabled = TRUE;
+  }
+
+  $jss = drupal_get_js();
+
   $session_key = 'ga_push_' . GA_PUSH_METHOD_DATALAYER_JS;
-  if (isset($_SESSION[$session_key])) {
+
+  if (!$is_status_not_ok
+    && !$is_ajax_request
+    && $is_google_tag_enabled
+    && isset($_SESSION[$session_key])
+  ) {
     $script = "var dataLayer = dataLayer || [];\n";
 
     // Process each push data that needs to be sent to Google Analytics.
@@ -117,6 +140,8 @@ function _ga_push_method_datalayer_js_add_script($script) {
   $options = array(
     'type' => 'inline',
     'scope' => 'header',
+    'cache' => FALSE,
+    'preprocess' => FALSE,
       // 'weight' => 0,
       // 'group' => JS_DEFAULT,
   );
